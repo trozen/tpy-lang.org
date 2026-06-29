@@ -11,8 +11,9 @@ use_directory_urls: true
 theme:
   name: material
   language: en
-  logo: assets/logo.svg    # the gradient "TPy" mark (replaces Material's default icon)
-  favicon: assets/logo.svg
+  custom_dir: overrides    # title-block override (see overrides/main.html)
+  logo: assets/logo.svg      # header mark (gradient "TPy")
+  favicon: assets/favicon.svg  # slightly wider mark for the browser tab
   font: false              # system fonts -- no external Google Fonts request
   palette:
     scheme: slate          # dark; colors set in stylesheets/extra.css

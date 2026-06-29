@@ -1,0 +1,6 @@
+{% extends "base.html" %}
+
+{#- Title scheme: docs home reads "TurboPython Documentation"; every other
+    page is "<Page> - TurboPython". site_name stays "TurboPython" so the
+    header wordmark isn't bloated. -#}
+{% block htmltitle %}<title>{% if page.is_homepage %}TurboPython Documentation{% elif page.title %}{{ page.title | striptags }} - {{ config.site_name }}{% else %}{{ config.site_name }}{% endif %}</title>{% endblock %}
