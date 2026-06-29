@@ -1,0 +1,9 @@
+# Python
+__pycache__/
+*.py[cod]
+
+# tpy build artifacts (from verifying examples compile)
+__tpyc__/
+
+# OS cruft
+.DS_Store

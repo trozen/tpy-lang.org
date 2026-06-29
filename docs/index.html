@@ -1,0 +1,572 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TurboPython - Python, compiled.</title>
+<style>
+  :root{
+    --bg:#0c0f17;
+    --bg2:#11151f;
+    --panel:#151a26;
+    --line:#222a3a;
+    --text:#e7ecf5;
+    --muted:#9aa6bd;
+    --faint:#6f7d99;
+    --accent:#ff8a3d;     /* turbo / heat */
+    --accent2:#ffd23d;    /* speed spark */
+    --py:#5aa9ff;         /* python blue */
+    --green:#54d489;
+    --mono:'SFMono-Regular',ui-monospace,'JetBrains Mono','Cascadia Code',Menlo,Consolas,monospace;
+    --sans:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    margin:0;background:var(--bg);color:var(--text);
+    font-family:var(--sans);line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+  }
+  a{color:inherit;text-decoration:none}
+  .wrap{max-width:1080px;margin:0 auto;padding:0 24px}
+
+  /* nav */
+  nav{
+    position:sticky;top:0;z-index:50;
+    backdrop-filter:blur(12px);
+    background:rgba(12,15,23,.72);
+    border-bottom:1px solid var(--line);
+  }
+  nav .wrap{display:flex;align-items:center;gap:28px;height:64px}
+  .logo{display:flex;align-items:center;gap:10px;font-weight:700;font-size:18px;letter-spacing:-.02em}
+  .logo .mark{
+    height:26px;min-width:26px;padding:0 8px;border-radius:7px;letter-spacing:-.03em;
+    background:linear-gradient(135deg,var(--accent),var(--accent2));
+    display:grid;place-items:center;color:#1a1206;font-weight:800;font-size:13.5px;
+    box-shadow:0 0 18px rgba(255,138,61,.35);
+  }
+  nav .links{display:flex;gap:24px;margin-left:auto;color:var(--muted);font-size:14.5px;font-weight:500}
+  nav .links a:hover{color:var(--text)}
+
+  /* hero */
+  .hero{position:relative;overflow:hidden;border-bottom:1px solid var(--line)}
+  .hero::before{
+    content:"";position:absolute;inset:-40% 0 auto 0;height:600px;
+    background:radial-gradient(60% 80% at 70% 0%,rgba(255,138,61,.16),transparent 60%),
+               radial-gradient(50% 70% at 20% 10%,rgba(90,169,255,.12),transparent 60%);
+    pointer-events:none;
+  }
+  .hero .wrap{position:relative;padding:72px 24px 72px;display:grid;grid-template-columns:.9fr 1.1fr;gap:44px;align-items:start}
+  h1{
+    font-size:45px;line-height:1.1;letter-spacing:-.02em;margin:0 0 20px;font-weight:680;
+  }
+  .lede{font-size:22px;line-height:1.5;font-weight:450;letter-spacing:-.005em;color:var(--muted);margin:0 0 28px;max-width:32em}
+  .lede b{color:var(--text);font-weight:680}
+  .feat{list-style:none;margin:0 0 30px;padding:0;display:flex;flex-direction:column;gap:13px}
+  .feat li{display:flex;gap:12px;align-items:flex-start;color:var(--muted);font-size:15px;line-height:1.5}
+  .feat .fic{flex:none;font-size:17px;line-height:1.4;width:22px;text-align:center}
+  .feat b{color:var(--text);font-weight:650}
+  .feat code,.lead code,.card code,.prose code,.note code{font-family:var(--mono);font-size:.9em;color:var(--accent2);background:rgba(255,210,61,.08);padding:1px 5px;border-radius:4px}
+  .copybtn{margin-left:auto;font-family:var(--sans);font-size:12px;font-weight:600;color:var(--muted);
+    background:var(--bg);border:1px solid var(--line);border-radius:7px;padding:4px 12px;cursor:pointer}
+  .copybtn:hover{color:var(--text);border-color:#3a4258}
+  .copybtn.copied{color:var(--green);border-color:rgba(84,212,137,.4)}
+  .cta{display:flex;gap:14px;flex-wrap:wrap}
+  .btn{
+    padding:12px 22px;border-radius:10px;font-weight:600;font-size:15px;cursor:pointer;
+    transition:transform .08s ease;
+  }
+  .btn:active{transform:translateY(1px)}
+  .btn-primary{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#1a1206;box-shadow:0 6px 24px rgba(255,138,61,.28)}
+  .btn-ghost{border:1px solid var(--line);color:var(--text)}
+  .btn-ghost:hover{border-color:#3a4258;background:var(--panel)}
+
+  /* code window */
+  .win{
+    background:var(--panel);border:1px solid var(--line);border-radius:14px;overflow:hidden;
+    box-shadow:0 24px 60px rgba(0,0,0,.45);
+  }
+  .win .bar{display:flex;align-items:center;gap:7px;padding:12px 14px;border-bottom:1px solid var(--line);background:var(--bg2)}
+  .win .bar i{width:11px;height:11px;border-radius:50%;display:block}
+  .win .bar .r{background:#ff5f57}.win .bar .y{background:#febc2e}.win .bar .g{background:#28c840}
+  .exnav{display:flex;align-items:center;gap:7px;margin-left:12px}
+  .exsel{appearance:none;-webkit-appearance:none;font-family:var(--mono);font-size:12.5px;color:var(--text);
+    background:var(--bg);border:1px solid var(--line);border-radius:7px;padding:5px 28px 5px 11px;cursor:pointer;
+    background-image:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="10" height="6" fill="none" stroke="%239aa6bd" stroke-width="1.4"><path d="M1 1l4 4 4-4"/></svg>');
+    background-repeat:no-repeat;background-position:right 9px center;}
+  .exsel:hover{border-color:#3a4258}
+  .exsel:focus{outline:none;border-color:var(--accent)}
+  .exsel option{background:var(--panel);color:var(--text)}
+  .exbtn{font-family:var(--mono);font-size:15px;line-height:1;color:var(--muted);background:var(--bg);
+    border:1px solid var(--line);border-radius:7px;width:27px;height:27px;cursor:pointer;display:grid;place-items:center;padding:0}
+  .exbtn:hover{color:var(--text);border-color:#3a4258}
+  .exbtn:active{transform:translateY(1px)}
+  .exbtn:disabled{opacity:.32;cursor:default;color:var(--muted)}
+  .exbtn:disabled:hover{color:var(--muted);border-color:var(--line)}
+  #exCode{height:676px;overflow:auto}
+  .topbanner{border-bottom:1px solid var(--line);background:rgba(255,138,61,.05)}
+  .topbanner .wrap{display:flex;align-items:center;gap:10px;padding:10px 24px;font-size:13.5px;color:var(--muted)}
+  .topbanner .dot{width:7px;height:7px;border-radius:50%;flex:none;background:var(--accent);box-shadow:0 0 8px var(--accent)}
+  .topbanner b{color:var(--text);font-weight:650}
+  .topbanner a{color:var(--accent2);font-weight:600;white-space:nowrap}
+  .topbanner a:hover{text-decoration:underline}
+  .cmdbox{background:var(--bg2);border:1px solid var(--line);border-radius:9px;overflow:hidden}
+  .cmdbox .cmd-line{background:transparent;border:0;border-radius:0}
+  .tabhead{display:flex;align-items:center;gap:2px;padding:0 8px;border-bottom:1px solid var(--line);background:rgba(0,0,0,.16)}
+  .tab{font-family:var(--sans);font-size:12.5px;font-weight:600;color:var(--muted);background:transparent;border:0;border-bottom:2px solid transparent;margin-bottom:-1px;padding:9px 13px;cursor:pointer}
+  .tab:hover{color:var(--text)}
+  .tab.is-active{color:var(--text);border-bottom-color:var(--accent)}
+  [hidden]{display:none}
+  pre{margin:0;padding:20px 22px;font-family:var(--mono);font-size:13.5px;line-height:1.7;overflow-x:auto}
+  .k{color:#ff9d6b}.fn{color:var(--py)}.s{color:#9be58b}.c{color:#5d6b85;font-style:italic}.n{color:#e7ecf5}.num{color:#ffd23d}
+  .run{border-top:1px solid var(--line);background:var(--bg2);padding:14px 22px;font-family:var(--mono);font-size:13px;line-height:1.9;white-space:pre;overflow-x:auto}
+  .run .p{color:var(--green)}.run .cmd{color:var(--text)}.run .o{color:var(--muted)}
+
+  /* themed scrollbars -- override the OS default on scrollable panels */
+  pre,.run{scrollbar-width:thin;scrollbar-color:#2c333f transparent}
+  pre::-webkit-scrollbar,.run::-webkit-scrollbar{height:9px;width:9px}
+  pre::-webkit-scrollbar-track,.run::-webkit-scrollbar-track{background:transparent}
+  pre::-webkit-scrollbar-thumb,.run::-webkit-scrollbar-thumb{
+    background:#2c333f;border-radius:99px;border:2px solid transparent;background-clip:padding-box;}
+  pre:hover::-webkit-scrollbar-thumb,.run:hover::-webkit-scrollbar-thumb{background:#3c4456;background-clip:padding-box}
+  pre::-webkit-scrollbar-thumb:hover{background:#4a5568;background-clip:padding-box}
+  pre::-webkit-scrollbar-corner{background:transparent}
+
+  /* sections */
+  section{padding:76px 0;border-bottom:1px solid var(--line)}
+  .eyebrow{color:var(--accent);font-weight:700;font-size:13px;letter-spacing:.08em;text-transform:uppercase;margin-bottom:12px}
+  h2{font-size:29px;letter-spacing:-.015em;margin:0 0 16px;font-weight:680;text-wrap:balance}
+  .lead{color:var(--muted);font-size:17px;max-width:44em;margin:0 0 14px}
+  .lead b{color:var(--text);font-weight:600}
+
+  .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:22px 22px 24px;transition:border-color .15s,transform .15s}
+  .card:hover{border-color:#37425a;transform:translateY(-2px)}
+  .card .ic{width:34px;height:34px;border-radius:9px;display:grid;place-items:center;font-size:17px;margin-bottom:14px;background:rgba(255,138,61,.1);border:1px solid rgba(255,138,61,.2)}
+  .card h3{margin:0 0 7px;font-size:16px;font-weight:700;letter-spacing:-.01em}
+  .card p{margin:0;color:var(--muted);font-size:14px;line-height:1.5}
+
+  /* differences: ownership centerpiece */
+  .t{color:#ffd9a0}
+  .ownhead{font-size:13px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--faint);margin:40px 0 14px}
+  .prose{color:var(--muted);font-size:15.5px;line-height:1.6;max-width:62em;margin:0 0 18px}
+  .prose b{color:var(--text);font-weight:600}
+  .owncase{display:flex;align-items:baseline;gap:10px;margin:26px 0 12px}
+  .owncase .own{font-family:var(--mono);font-size:11px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--accent);background:rgba(255,138,61,.1);border:1px solid rgba(255,138,61,.22);padding:2px 8px;border-radius:5px;flex:none}
+  .owncase h4{margin:0;font-size:15px;font-weight:650;color:var(--text)}
+  .pair{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:8px}
+  .codecard{background:var(--panel);border:1px solid var(--line);border-radius:12px;overflow:hidden;display:flex;flex-direction:column}
+  .codecard .cap{display:flex;align-items:center;gap:8px;padding:9px 15px;border-bottom:1px solid var(--line);font-size:12px;font-weight:600;background:var(--bg2);color:var(--muted)}
+  .codecard .cap .d{width:8px;height:8px;border-radius:50%;flex:none}
+  .codecard .cap .d.red{background:#ff5f57}.codecard .cap .d.amber{background:var(--accent2)}.codecard .cap .d.green{background:var(--green)}
+  .codecard pre{padding:15px 17px;font-size:12.5px;line-height:1.65;flex:1}
+  .diag{border-top:1px solid var(--line);padding:11px 15px;font-family:var(--mono);font-size:11.5px;line-height:1.5;display:flex;gap:8px;align-items:baseline}
+  .diag .lbl{flex:none;font-weight:700}
+  .diag.err{background:rgba(255,95,87,.06)} .diag.err .lbl{color:#ff7a70}
+  .diag.warn{background:rgba(255,210,61,.05)} .diag.warn .lbl{color:var(--accent2)}
+  .diag.ok{background:rgba(84,212,137,.06)} .diag.ok .lbl{color:var(--green)}
+  .diag .msg{color:var(--muted)}
+
+  .steps{display:flex;flex-direction:column;gap:24px;max-width:780px}
+  .step{display:flex;gap:16px;align-items:flex-start}
+  .stepn{flex:none;width:28px;height:28px;border-radius:8px;display:grid;place-items:center;font-weight:700;font-size:14px;color:#1a1206;background:linear-gradient(135deg,var(--accent),var(--accent2))}
+  .stepbody{flex:1;min-width:0}
+  .stepbody h3{margin:3px 0 12px;font-size:15.5px;font-weight:700}
+  .cmd-line{font-family:var(--mono);font-size:13.5px;color:var(--text);background:var(--bg2);border:1px solid var(--line);border-radius:9px;padding:12px 15px;overflow-x:auto;white-space:pre}
+  .cmd-line .p{color:var(--green)}
+  .cmd-line .o{color:var(--muted)}
+  .cmd-note{color:var(--faint);font-size:12.5px;margin:10px 0 0}
+  .cmd-note code{font-family:var(--mono);font-size:.92em;color:var(--accent2)}
+
+  /* honesty / cta */
+  .note{display:flex;gap:14px;align-items:flex-start;background:var(--panel);border:1px solid var(--line);border-left:3px solid var(--accent);border-radius:10px;padding:18px 22px;color:var(--muted);font-size:14.5px;margin-top:24px}
+  .note .ni{font-size:18px;flex:none;line-height:1.4}
+  .note b{color:var(--text)}
+  footer{padding:40px 0;color:var(--faint);font-size:13.5px;display:flex;gap:20px;align-items:center}
+  footer .links{margin-left:auto;display:flex;gap:20px}
+  footer a:hover{color:var(--muted)}
+
+  /* "coming soon" popover anchored to the clicked placeholder link */
+  .toast{position:fixed;transform:translate(-50%,-6px);
+    display:flex;align-items:center;gap:8px;background:var(--panel);border:1px solid var(--accent);
+    color:var(--text);font-size:13px;font-weight:600;padding:8px 14px;border-radius:9px;white-space:nowrap;
+    box-shadow:0 10px 28px rgba(0,0,0,.5);opacity:0;pointer-events:none;
+    transition:opacity .15s ease,transform .15s ease;z-index:100}
+  .toast.show{opacity:1;transform:translate(-50%,0)}
+  .toast .dot{width:7px;height:7px;border-radius:50%;flex:none;background:var(--accent);box-shadow:0 0 8px var(--accent)}
+
+  @media(max-width:860px){
+    .hero .wrap{grid-template-columns:1fr;padding:56px 24px}
+    h1{font-size:40px}
+    .grid{grid-template-columns:1fr}
+    .pair{grid-template-columns:1fr}
+    nav .links a{display:none}
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    html{scroll-behavior:auto}
+    *{transition-duration:.001ms !important;animation-duration:.001ms !important}
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="wrap">
+    <a class="logo" href="#" aria-label="TurboPython -- back to top"><span class="mark">TPy</span> TurboPython</a>
+    <div class="links">
+      <a href="#install">Install</a>
+      <a href="#differences">vs Python</a>
+      <a class="soon" href="#" title="Coming soon">Docs</a>
+    </div>
+  </div>
+</nav>
+
+<div class="topbanner">
+  <div class="wrap">
+    <span class="dot"></span>
+    <span><b>Early development.</b> Most of Python's syntax works&mdash;the parts that can be compiled
+    statically&mdash;but expect gaps in the standard library and rough edges. <a class="soon" href="#" title="Coming soon">See what works &rarr;</a></span>
+  </div>
+</div>
+
+<header class="hero">
+  <div class="wrap">
+    <div>
+      <h1 class="lede"><b>TurboPython</b> is a general purpose, statically typed language that
+        compiles Python through C++ to a native binary. It combines Python's syntax with an
+        ownership model that gives memory safety and predictable performance&mdash;no garbage
+        collector, no automatic reference counting, no GIL.</h1>
+      <ul class="feat">
+        <li><span class="fic">&#128013;</span><span><b>Familiar Python syntax</b>&mdash;standard Python with type annotations and a few extensions; most editors, type checkers and linters work out of the box.</span></li>
+        <li><span class="fic">&#9889;</span><span><b>Native compilation</b>&mdash;compiles to a standalone native binary, with systems-level control: fixed-width integers, pointers and spans, and no GIL for multithreading.</span></li>
+        <li><span class="fic">&#9201;</span><span><b>Predictable performance and memory</b>&mdash;no garbage collector and no automatic reference counting; memory is managed at compile time through ownership and borrowing, with opt-in <code>Rc</code> for shared ownership.</span></li>
+        <li><span class="fic">&#128737;</span><span><b>Compile-time memory safety</b>&mdash;ownership rules catch use-after-free and aliasing bugs before the program runs.</span></li>
+        <li><span class="fic">&#128230;</span><span><b>App or extension</b>&mdash;ship a standalone binary, embed as a CPython extension, or call existing C/C++ through <code>@native</code>.</span></li>
+      </ul>
+      <div class="cta">
+        <a class="btn btn-primary soon" href="#" title="Coming soon">Read the guide</a>
+        <a class="btn btn-ghost" href="#differences">How it differs from Python &rarr;</a>
+      </div>
+    </div>
+
+    <div class="win">
+      <div class="bar">
+        <i class="r"></i><i class="y"></i><i class="g"></i>
+        <div class="exnav">
+          <select id="exSel" class="exsel" aria-label="Choose example"></select>
+          <button class="exbtn" id="exPrev" type="button" aria-label="Previous example">&lsaquo;</button>
+          <button class="exbtn" id="exNext" type="button" aria-label="Next example">&rsaquo;</button>
+        </div>
+        <button class="copybtn" id="exCopy" type="button">Copy</button>
+      </div>
+<pre id="exCode"><span class="n">WIDTH</span>, <span class="n">HEIGHT</span>, <span class="n">MAX_ITER</span> = <span class="num">64</span>, <span class="num">28</span>, <span class="num">90</span>
+<span class="n">CHARS</span> = <span class="s">" .:-=+*#%@"</span>
+
+<span class="k">def</span> <span class="fn">escape</span>(<span class="n">cx</span>: <span class="n">float</span>, <span class="n">cy</span>: <span class="n">float</span>) -> <span class="n">int</span>:
+    <span class="n">x</span>, <span class="n">y</span> = <span class="num">0.0</span>, <span class="num">0.0</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="k">in</span> <span class="fn">range</span>(<span class="n">MAX_ITER</span>):
+        <span class="k">if</span> <span class="n">x</span>*<span class="n">x</span> + <span class="n">y</span>*<span class="n">y</span> > <span class="num">4.0</span>:
+            <span class="k">return</span> <span class="n">i</span>
+        <span class="n">x</span>, <span class="n">y</span> = <span class="n">x</span>*<span class="n">x</span> - <span class="n">y</span>*<span class="n">y</span> + <span class="n">cx</span>, <span class="num">2.0</span>*<span class="n">x</span>*<span class="n">y</span> + <span class="n">cy</span>
+    <span class="k">return</span> <span class="n">MAX_ITER</span>
+
+<span class="k">def</span> <span class="fn">main</span>() -> <span class="n">None</span>:
+    <span class="k">for</span> <span class="n">row</span> <span class="k">in</span> <span class="fn">range</span>(<span class="n">HEIGHT</span>):
+        <span class="n">cy</span> = -<span class="num">1.2</span> + <span class="num">2.4</span> * <span class="n">row</span> / <span class="n">HEIGHT</span>
+        <span class="k">for</span> <span class="n">col</span> <span class="k">in</span> <span class="fn">range</span>(<span class="n">WIDTH</span>):
+            <span class="n">cx</span> = -<span class="num">2.4</span> + <span class="num">3.2</span> * <span class="n">col</span> / <span class="n">WIDTH</span>
+            <span class="n">idx</span> = <span class="fn">escape</span>(<span class="n">cx</span>, <span class="n">cy</span>) % <span class="fn">len</span>(<span class="n">CHARS</span>)
+            <span class="fn">print</span>(<span class="n">CHARS</span>[<span class="n">idx</span>], <span class="n">end</span>=<span class="s">""</span>)
+        <span class="fn">print</span>(<span class="s">""</span>)
+
+<span class="n">main</span>()</pre>
+      <div class="run" id="exRun"><span class="p">$</span> <span class="cmd">tpy mandelbrot.py</span></div>
+    </div>
+  </div>
+</header>
+
+<section id="install">
+  <div class="wrap">
+    <div class="eyebrow">Installation</div>
+    <h2>Getting started</h2>
+    <p class="lead">TurboPython is a Python package that drives a C++ compiler. It installs from PyPI;
+      the build step uses a C++23 compiler (GCC 14+ or Clang 18+) on the PATH&mdash;or add the
+      <code>[bundled]</code> extra to ship one with it.</p>
+    <div class="steps">
+      <div class="step">
+        <span class="stepn">1</span>
+        <div class="stepbody">
+          <h3>Install the toolchain</h3>
+          <div class="cmdbox" id="installTabs">
+            <div class="tabhead">
+              <button class="tab is-active" data-tab="pip" type="button">pip</button>
+              <button class="tab" data-tab="uv" type="button">uv</button>
+              <button class="tab" data-tab="pipx" type="button">pipx</button>
+            </div>
+            <div class="cmd-line" data-panel="pip"><span class="p">$</span> pip install tpy-lang</div>
+            <div class="cmd-line" data-panel="uv" hidden><span class="p">$</span> uv tool install tpy-lang</div>
+            <div class="cmd-line" data-panel="pipx" hidden><span class="p">$</span> pipx install tpy-lang</div>
+          </div>
+          <p class="cmd-note">No C++ compiler on the PATH? Install <code>'tpy-lang[bundled]'</code> to bundle a self-contained one.</p>
+        </div>
+      </div>
+      <div class="step">
+        <span class="stepn">2</span>
+        <div class="stepbody">
+          <h3>Run a program</h3>
+          <div class="cmd-line"><span class="p">$</span> tpy hello.py            <span class="o"># compile and run</span></div>
+        </div>
+      </div>
+      <div class="step">
+        <span class="stepn">3</span>
+        <div class="stepbody">
+          <h3>Or build a standalone binary</h3>
+          <div class="cmd-line"><span class="p">$</span> tpyc -b -O hello.py   <span class="o"># optimized binary at __tpyc__/hello.d/release/hello</span></div>
+        </div>
+      </div>
+    </div>
+    <p style="color:var(--faint);font-size:13px;margin-top:20px">GCC 14+ ships with most current Linux
+      distributions; on macOS, a recent Homebrew LLVM/Clang works.</p>
+  </div>
+</section>
+
+<section id="differences">
+  <div class="wrap">
+    <div class="eyebrow">How it differs from Python</div>
+    <h2>Python syntax with static types and a strict ownership model.</h2>
+    <p class="lead"><b>Type annotations are required on function parameters, return types, and class
+      fields</b>; an unannotated integer literal defaults to a 32-bit <code>Int32</code>. Beyond these
+      rules, most code reads like standard Python, apart from its dynamic runtime features. Where a construct diverges from the static type and
+      ownership model, the compiler reports it, and its diagnostics name the required change.</p>
+
+    <h3 class="ownhead">Ownership</h3>
+    <p class="prose">Python reclaims objects automatically through reference counting, so a name is just a
+      shared reference. TurboPython has no garbage collector: <b>every value has exactly one owner</b> &mdash; a
+      function frame, a field, or a container &mdash; and the owner controls when it is freed. Locals and
+      parameters still alias as they do in Python; persistent storage owns its values. Three cases follow,
+      each shown with the compiler's actual output.</p>
+
+    <div class="owncase"><span class="own">frame</span><h4>A local is owned by the function that creates it.</h4></div>
+    <div class="pair">
+      <div class="codecard">
+        <div class="cap"><span class="d red"></span>Returning a local &mdash; won't compile</div>
+<pre><span class="k">def</span> <span class="fn">make</span>() -> <span class="t">Obj</span>:
+    <span class="n">o</span> = <span class="fn">Obj</span>(<span class="num">1</span>)
+    <span class="k">return</span> <span class="n">o</span>   <span class="c"># freed when make returns</span></pre>
+        <div class="diag err"><span class="lbl">error:</span><span class="msg">Cannot return local or temporary as reference. Object type 'Obj' is returned by reference. Use Own[Obj] to return by value.</span></div>
+      </div>
+      <div class="codecard">
+        <div class="cap"><span class="d green"></span>Transfer ownership out &mdash; compiles</div>
+<pre><span class="k">def</span> <span class="fn">make</span>() -> <span class="t">Own</span>[<span class="t">Obj</span>]:
+    <span class="n">o</span> = <span class="fn">Obj</span>(<span class="num">1</span>)
+    <span class="k">return</span> <span class="n">o</span>   <span class="c"># ownership moves to the caller</span></pre>
+        <div class="diag ok"><span class="lbl">ok:</span><span class="msg"><span class="t">x</span> = make() now owns the object.</span></div>
+      </div>
+    </div>
+    <p class="prose"><code>o</code> lives in <code>make</code>'s frame and is freed when the function returns;
+      returning it by reference would leave a dangling pointer. <code>Own[Obj]</code> hands the value itself to
+      the caller, who becomes its owner.</p>
+
+    <div class="owncase"><span class="own">field</span><h4>A field owns its value.</h4></div>
+    <div class="pair">
+      <div class="codecard">
+        <div class="cap"><span class="d amber"></span>Storing a borrowed value</div>
+<pre><span class="k">class</span> <span class="t">Cache</span>:
+    <span class="n">item</span>: <span class="t">Tag</span>
+    <span class="k">def</span> <span class="fn">__init__</span>(<span class="n">self</span>, <span class="n">t</span>: <span class="t">Tag</span>) -> <span class="t">None</span>:
+        <span class="n">self</span>.<span class="n">item</span> = <span class="n">t</span>   <span class="c"># Python would share a reference</span></pre>
+        <div class="diag warn"><span class="lbl">warning:</span><span class="msg">copies Tag into field; use copy() to make this explicit</span></div>
+      </div>
+      <div class="codecard">
+        <div class="cap"><span class="d green"></span>Take ownership of the argument &mdash; compiles</div>
+<pre><span class="k">class</span> <span class="t">Cache</span>:
+    <span class="n">item</span>: <span class="t">Tag</span>
+    <span class="k">def</span> <span class="fn">__init__</span>(<span class="n">self</span>, <span class="n">t</span>: <span class="t">Own</span>[<span class="t">Tag</span>]) -> <span class="t">None</span>:
+        <span class="n">self</span>.<span class="n">item</span> = <span class="n">t</span>   <span class="c"># the field takes ownership</span></pre>
+        <div class="diag ok"><span class="lbl">ok:</span><span class="msg">the argument moves into the field; no copy.</span></div>
+      </div>
+    </div>
+    <p class="prose">A field outlives the call that sets it, so it must own its value. Declaring the parameter
+      <code>Own[Tag]</code> transfers the caller's object in; <code>copy(t)</code> is the alternative when the caller
+      keeps its own. Fields are declared as typed class attributes and set in <code>__init__</code> &mdash;
+      there is no <code>__dict__</code>, so each one is a fixed, typed slot.</p>
+
+    <div class="owncase"><span class="own">container</span><h4>A collection owns its elements.</h4></div>
+    <div class="pair">
+      <div class="codecard">
+        <div class="cap"><span class="d amber"></span>Keep using a value after storing it</div>
+<pre><span class="n">l</span> = []
+<span class="n">o</span> = <span class="fn">Obj</span>(<span class="num">1</span>)
+<span class="n">l</span>.<span class="fn">append</span>(<span class="n">o</span>)   <span class="c"># implicit copy: o is used below</span>
+<span class="n">o</span>.<span class="n">x</span> = <span class="num">99</span></pre>
+        <div class="diag warn"><span class="lbl">warning:</span><span class="msg">copies Obj into owned storage; use copy() to make this explicit</span></div>
+      </div>
+      <div class="codecard">
+        <div class="cap"><span class="d green"></span>Make the copy explicit &mdash; compiles</div>
+<pre><span class="n">l</span> = []
+<span class="n">o</span> = <span class="fn">Obj</span>(<span class="num">1</span>)
+<span class="n">l</span>.<span class="fn">append</span>(<span class="fn">copy</span>(<span class="n">o</span>))
+<span class="n">o</span>.<span class="n">x</span> = <span class="num">99</span>      <span class="c"># the list holds its own copy</span></pre>
+        <div class="diag ok"><span class="lbl">ok:</span><span class="msg">the same copy happens either way; copy() just makes it explicit and clears the warning.</span></div>
+      </div>
+    </div>
+    <p class="prose">A list stores objects, not references, so the append copies either way &mdash; where Python
+      would share the same object. <code>copy()</code> doesn't introduce the copy; it makes the unavoidable one
+      explicit and clears the warning. And if <code>o</code> weren't used afterward, it would be <b>moved</b>
+      into the list instead &mdash; no copy at all.</p>
+
+    <h3 class="ownhead">Other differences</h3>
+    <p class="prose">Ownership is the conceptual shift. The rest are smaller, mechanical rules &mdash; the
+      type system's requirements, and the constraints a compiled language places on Python's more dynamic
+      features. They become familiar within the first few files.</p>
+    <div class="grid">
+      <div class="card">
+        <div class="ic">&#127991;</div>
+        <h3>Annotations required</h3>
+        <p>Function parameters, returns, and class fields are annotated; local variables are inferred. Python's optional hints become the contract.</p>
+      </div>
+      <div class="card">
+        <div class="ic">&#128290;</div>
+        <h3>Int32 by default</h3>
+        <p>A bare integer is a 32-bit <code>Int32</code>. <code>Int64</code>/<code>UInt32</code>/... pick a width; <code>int</code> is arbitrary-precision (heap-allocated for large values).</p>
+      </div>
+      <div class="card">
+        <div class="ic">&#128230;</div>
+        <h3>Value vs reference</h3>
+        <p>Primitives, tuples and views copy; classes, <code>list</code>, <code>dict</code>, <code>set</code> are reference types, passed and returned by reference.</p>
+      </div>
+      <div class="card">
+        <div class="ic">&#128292;</div>
+        <h3>str adapts to context</h3>
+        <p>A <code>str</code> is an owned string or a borrowed view depending on context; <code>String</code> and <code>StrView</code> spell it out. Plain <code>str</code> is the right default when allocations are fine.</p>
+      </div>
+      <div class="card">
+        <div class="ic">&#128274;</div>
+        <h3>Static, not dynamic</h3>
+        <p>No <code>eval</code>, monkey-patching, or runtime <code>__dict__</code> mutation. Types and structure are fixed at compile time.</p>
+      </div>
+      <div class="card">
+        <div class="ic">&#129520;</div>
+        <h3>Core types in <code>tpy</code></h3>
+        <p>TurboPython's own types (<code>Own</code>, <code>Int32</code>, <code>Span</code>, ...) live in the <code>tpy</code> module &mdash; a file can pull them all in with <code>from tpy import *</code>.</p>
+      </div>
+    </div>
+
+    <div class="note">
+      <span class="ni">&#129302;</span>
+      <span><b>AI assistants are supported.</b> <code>tpy --install-agent-docs docs</code> writes a
+      TurboPython primer alongside the code &mdash; the Python-to-TPy delta, the ownership rules, and the
+      idioms an assistant needs to generate correct TurboPython.</span>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap" style="display:flex;align-items:center;gap:14px;width:100%">
+    <a class="logo" href="#" style="font-size:15px" aria-label="TurboPython -- back to top"><span class="mark" style="height:22px;min-width:22px;padding:0 6px;font-size:11.5px">TPy</span> TurboPython</a>
+    <a href="https://tpy-lang.org">tpy-lang.org</a>
+    <div class="links">
+      <a href="https://pypi.org/project/tpy-lang/" target="_blank" rel="noopener">PyPI</a>
+      <span>&copy; 2026</span>
+    </div>
+  </div>
+</footer>
+
+<div class="toast" id="toast" role="status" aria-live="polite"><span class="dot"></span><span id="toastMsg"></span></div>
+
+<script src="examples.js"></script>
+<script>
+  // Example switcher -- depends on EXAMPLES (examples.js). If that file is
+  // missing or empty, leave the static placeholder and skip only this block,
+  // so the install tabs and toast handlers below still bind.
+  const hasExamples = typeof EXAMPLES !== 'undefined' && Array.isArray(EXAMPLES) && EXAMPLES.length > 0;
+  let cur = 0;
+
+  if (hasExamples) {
+    const code = document.getElementById('exCode'),
+          run = document.getElementById('exRun'),
+          sel = document.getElementById('exSel'),
+          prevBtn = document.getElementById('exPrev'),
+          nextBtn = document.getElementById('exNext'),
+          copyBtn = document.getElementById('exCopy');
+
+    EXAMPLES.forEach((ex, i) => {
+      const o = document.createElement('option');
+      o.textContent = (i + 1) + '. ' + ex.file;
+      sel.appendChild(o);
+    });
+
+    const show = (i) => {
+      i = Math.max(0, Math.min(EXAMPLES.length - 1, i));  // clamp, no wrap-around
+      cur = i;
+      const ex = EXAMPLES[i];
+      code.innerHTML = ex.code;
+      sel.selectedIndex = i;
+      prevBtn.disabled = (i === 0);
+      nextBtn.disabled = (i === EXAMPLES.length - 1);
+      run.innerHTML = '<span class="p">$</span> <span class="cmd">tpy ' + ex.file + '</span>';
+    };
+    sel.addEventListener('change', () => show(sel.selectedIndex));
+    prevBtn.addEventListener('click', () => show(cur - 1));
+    nextBtn.addEventListener('click', () => show(cur + 1));
+
+    copyBtn.addEventListener('click', async () => {
+      const text = EXAMPLES[cur].src;
+      let ok = false;
+      try {
+        await navigator.clipboard.writeText(text);
+        ok = true;
+      } catch (e) {
+        // clipboard API is blocked over file://; fall back to execCommand
+        const ta = document.createElement('textarea');
+        ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+        document.body.appendChild(ta); ta.select();
+        try { ok = document.execCommand('copy'); } catch (_) {}
+        document.body.removeChild(ta);
+      }
+      if (!ok) return;  // don't claim "Copied!" if both paths failed
+      copyBtn.textContent = 'Copied!'; copyBtn.classList.add('copied');
+      setTimeout(() => { copyBtn.textContent = 'Copy'; copyBtn.classList.remove('copied'); }, 1400);
+    });
+
+    show(0);
+  }
+
+  // Install method tabs (pip / uv / pipx) -- independent of EXAMPLES
+  const tabs = document.getElementById('installTabs');
+  tabs.querySelectorAll('.tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      const key = tab.dataset.tab;
+      tabs.querySelectorAll('.tab').forEach(t => t.classList.toggle('is-active', t === tab));
+      tabs.querySelectorAll('[data-panel]').forEach(p => { p.hidden = p.dataset.panel !== key; });
+    });
+  });
+
+  // Placeholder links announce their pages aren't built yet, via a transient toast.
+  const toast = document.getElementById('toast'),
+        toastMsg = document.getElementById('toastMsg');
+  let toastTimer;
+  function showToast(msg, target){
+    toastMsg.textContent = msg;
+    const r = target.getBoundingClientRect();
+    toast.style.top = (r.bottom + 10) + 'px';
+    toast.style.left = (r.left + r.width / 2) + 'px';
+    toast.classList.add('show');
+    // keep it inside the viewport once its width is known
+    const t = toast.getBoundingClientRect();
+    if (t.left < 8) toast.style.left = (8 + t.width / 2) + 'px';
+    else if (t.right > window.innerWidth - 8) toast.style.left = (window.innerWidth - 8 - t.width / 2) + 'px';
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => toast.classList.remove('show'), 1700);
+  }
+  document.querySelectorAll('a.soon').forEach(a => {
+    a.addEventListener('click', e => {
+      e.preventDefault();
+      showToast(a.dataset.soon || 'Coming soon', e.currentTarget);
+    });
+  });
+</script>
+
+</body>
+</html>
