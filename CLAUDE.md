@@ -22,17 +22,28 @@ experienced Python developers.
   not a dev build. (Known gap: the site uses some features ahead of the
   published release -- e.g. the `requests` example needs a post-0.4.0 tpy. Don't
   advertise examples a `pip`-installed user can't run.)
-- **Self-contained.** No external scripts, styles, fonts, or network requests in
-  `index.html` -- everything inline. Don't add a build framework or dependencies.
+- **Self-contained landing page.** No external scripts, styles, fonts, or network
+  requests in `index.html` -- everything inline, no framework. (The docs site under
+  `docs-site/` is the exception: it uses MkDocs Material.)
+- **Never hand-edit `docs/docs/`** -- it is the `mkdocs build` output. Edit
+  `docs-site/src/` and rebuild (`cd docs-site && mkdocs build`). Rebuild before
+  committing docs changes, or the served site goes stale.
 
 ## Voice / copy
+
+Applies to the **landing page** (`index.html`):
 
 - **Declarative, third-person, professional.** No marketing fluff, no cutesy
   taglines, no hype ("blazing", "sharper rules", "the compiler flags the rest").
 - **No second person.** Don't address the reader as "you"/"your" -- describe the
   language. Match the rest of the page.
 - Don't over-claim: features that aren't shipped/usable yet aren't "available".
-- Copy explains at showcase altitude; the (future) language guide teaches.
+- Copy explains at showcase altitude; the docs site teaches.
+
+The **docs site** (`docs-site/`) is currently written in the same declarative,
+no-second-person voice for consistency. Whether a guide should instead use
+second person ("you annotate...") is an open call for the user -- don't switch
+it unprompted.
 
 ## Examples
 

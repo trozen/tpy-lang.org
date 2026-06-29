@@ -19,12 +19,31 @@ sources and the generator sit at the repo root, outside the served folder.
 | Path | What |
 |------|------|
 | `docs/` | **The served site** -- GitHub Pages publishes this folder. |
-| `docs/index.html` | The whole page -- inline CSS + JS, no dependencies. Loads `examples.js` via `<script src>`. |
+| `docs/index.html` | The landing page -- inline CSS + JS, no dependencies. Loads `examples.js` via `<script src>`. |
 | `docs/examples.js` | **Generated** into `docs/` by `build_examples.py`. A `const EXAMPLES = [...]` array (per example: `label`, `file`, raw `src`, highlighted `code`). Do not edit by hand. |
+| `docs/docs/` | **Generated** docs site -- the `mkdocs build` output, served at `tpy-lang.org/docs/`. Do not edit by hand. |
 | `docs/CNAME` | The custom domain (`tpy-lang.org`). |
-| `examples/*.py` | Source: the example programs (the code shown on the site). |
+| `examples/*.py` | Source: the example programs (the code shown on the landing page). |
 | `build_examples.py` | Reads `examples/`, highlights them, writes `docs/examples.js`. Pure stdlib -- no `tpy` needed to regenerate. |
 | `verify_examples.py` | Compiles each example with `tpy` (runs the deterministic ones), failing on any that don't. Requires the toolchain; checks against the **published** `tpy`. |
+| `docs-site/` | Source for the docs site: `mkdocs.yml`, `src/` markdown, theme overrides, logo. Built with MkDocs Material into `docs/docs/`. |
+
+## Docs site
+
+The documentation at `tpy-lang.org/docs/` is built with **MkDocs + Material**.
+Source lives in `docs-site/`; the build output is committed to `docs/docs/`
+(same "commit the generated output" approach as `examples.js`). Rebuild after
+editing any docs source:
+
+```bash
+cd docs-site
+pip install -r requirements.txt        # first time: mkdocs-material
+mkdocs serve                           # preview at http://127.0.0.1:8000
+mkdocs build                           # writes ../docs/docs/  -- commit the result
+```
+
+**Rebuild before committing docs changes** -- `docs/docs/` is generated, so an
+edit to `docs-site/` that isn't rebuilt leaves the served site stale.
 
 ## Examples pipeline
 

@@ -1,0 +1,43 @@
+# Docs site source. Build with:  mkdocs build   (run from docs-site/)
+# Output goes to ../docs/docs, which GitHub Pages serves at tpy-lang.org/docs/.
+site_name: TurboPython
+site_url: https://tpy-lang.org/docs/
+site_description: TurboPython documentation -- writing TurboPython, and what works today.
+
+docs_dir: src              # markdown source
+site_dir: ../docs/docs     # build output, inside the Pages-served docs/ tree
+use_directory_urls: true
+
+theme:
+  name: material
+  language: en
+  logo: assets/logo.svg    # the gradient "TPy" mark (replaces Material's default icon)
+  favicon: assets/logo.svg
+  font: false              # system fonts -- no external Google Fonts request
+  palette:
+    scheme: slate          # dark; colors set in stylesheets/extra.css
+  features:
+    - navigation.sections
+    - navigation.top
+    - navigation.tracking
+    - toc.follow
+    - search.suggest
+    - search.highlight
+    - content.code.copy
+
+extra_css:
+  - stylesheets/extra.css
+
+nav:
+  - Home: index.md
+  - Guide: guide.md
+
+markdown_extensions:
+  - admonition
+  - toc:
+      permalink: true
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.superfences
+  - pymdownx.inlinehilite
+  - tables

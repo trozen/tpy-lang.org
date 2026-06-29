@@ -1,0 +1,87 @@
+/* ============================================================
+   TurboPython docs -- "B" treatment on Material for MkDocs:
+   soft-dark slate ground, serif body / sans headings, capped
+   reading measure, warm accent, landing-page header.
+   ============================================================ */
+
+[data-md-color-scheme="slate"] {
+  --md-hue: 222;
+  --md-default-bg-color:         #1b1f29;   /* soft slate, not pure black */
+  --md-default-fg-color:         #d7dde8;
+  --md-default-fg-color--light:  #9fa9bd;
+  --md-default-fg-color--lighter:#6b7689;
+  --md-default-fg-color--lightest:#3a4150;
+  --md-typeset-color:            #d7dde8;
+  --md-typeset-a-color:          #ffa766;   /* warm link */
+  --md-primary-fg-color:         #ff8a3d;
+  --md-accent-fg-color:          #ffa766;
+  --md-code-bg-color:            #141821;
+  --md-code-fg-color:            #d7dde8;
+}
+
+/* Body in a serif for comfortable long-form reading; headings stay sans. */
+.md-typeset {
+  font-family: 'Charter','Bitstream Charter',Georgia,'Times New Roman',serif;
+  font-size: .76rem;
+  line-height: 1.7;
+}
+.md-typeset h1,
+.md-typeset h2,
+.md-typeset h3,
+.md-typeset h4,
+.md-nav,
+.md-header,
+.md-tabs,
+.md-footer,
+.md-typeset .admonition-title {
+  font-family: system-ui,-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;
+}
+.md-typeset h1 { font-size:1.7rem; font-weight:650; letter-spacing:-.02em; color:#f2f5fa; margin-bottom:.3em; }
+.md-typeset h2 { font-size:1.3rem; letter-spacing:-.01em; margin-top:2em; }
+.md-typeset h3 { font-size:1.05rem; }
+.md-typeset h2, .md-typeset h3 { color:#eaeef5; }
+
+/* Cap the reading column -- the single biggest readability lever. */
+.md-content__inner { max-width: 44rem; margin-left:auto; margin-right:auto; }
+.md-content__inner > :first-child { margin-top: 1.2rem; }
+
+/* Header to match the landing page: dark translucent + blur, no shadow. */
+.md-header {
+  background-color: rgba(12,15,23,.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  color: #e7ecf5;
+  border-bottom: 1px solid #222a3a;
+  box-shadow: none;
+}
+.md-tabs { background-color: transparent; border-bottom: 1px solid #222a3a; }
+
+/* Wordmark: weight + tracking like the site's .logo. */
+.md-header__topic:first-child .md-ellipsis {
+  font-weight: 700; letter-spacing: -.02em; font-size: 1.05rem; color: #e7ecf5;
+}
+/* Logo (the gradient TPy mark) sits in Material's logo slot; give it the glow. */
+.md-header__button.md-logo img { height: 1.5rem; width: auto; filter: drop-shadow(0 0 10px rgba(255,138,61,.35)); }
+
+/* Inline code: warm, subtle. */
+.md-typeset code {
+  background: rgba(255,167,102,.1);
+  color: #ffbf8a;
+  border-radius: 4px;
+  padding: .1em .4em;
+}
+
+/* Code blocks: rounded, bordered, calm. */
+.md-typeset pre > code { border:1px solid #2a313f; border-radius:10px; }
+
+/* Admonitions tuned to the warm accent. */
+.md-typeset .admonition,
+.md-typeset details {
+  border-radius: 0 8px 8px 0;
+  border-left-width: 3px;
+  font-size: .82rem;
+}
+
+/* Links: subtle underline rather than full color blocks. */
+.md-typeset a { text-decoration: none; }
+.md-typeset a:hover { text-decoration: underline; }
