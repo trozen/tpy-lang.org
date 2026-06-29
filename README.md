@@ -24,6 +24,7 @@ sources and the generator sit at the repo root, outside the served folder.
 | `docs/CNAME` | The custom domain (`tpy-lang.org`). |
 | `examples/*.py` | Source: the example programs (the code shown on the site). |
 | `build_examples.py` | Reads `examples/`, highlights them, writes `docs/examples.js`. Pure stdlib -- no `tpy` needed to regenerate. |
+| `verify_examples.py` | Compiles each example with `tpy` (runs the deterministic ones), failing on any that don't. Requires the toolchain; checks against the **published** `tpy`. |
 
 ## Examples pipeline
 
@@ -35,7 +36,9 @@ Workflow when adding/editing an example:
 
 1. Edit (or add) the `.py` under `examples/`.
 2. **Verify it compiles with tpy** (this is the bar -- examples must be real).
-   With the toolchain installed (`pip install tpy-lang`):
+   With the toolchain installed (`pip install tpy-lang`), check them all at once:
+   `python3 verify_examples.py` (compiles each; runs the deterministic ones;
+   fails on any that don't). Or check one by hand:
    - runnable ones: `diff <(python3 <f>.py) <(tpy <f>.py)` (CPython parity) or just `tpy <f>.py`.
    - tpy-only / network ones (ownership, requests): `tpy -b <f>.py` (compile + link).
 3. Regenerate the data: `python3 build_examples.py`.
@@ -76,5 +79,6 @@ DNS for the apex domain points at GitHub Pages (A/AAAA records at the registrar)
   raw asyncio streams.
 - **Playground:** deferred (would need client-side compile -- Pyodide + in-browser
   C++ -> WASM; big project, not near-term).
-- **CI self-verify:** a workflow could `pip install tpy-lang`, run `build_examples.py`,
-  confirm every example still compiles, and regenerate `examples.js` before deploy.
+- **CI self-verify:** a workflow could `pip install tpy-lang`, run
+  `verify_examples.py` (confirm every example still compiles) and
+  `build_examples.py` (regenerate `examples.js`) before deploy.
