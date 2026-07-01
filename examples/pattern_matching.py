@@ -29,7 +29,7 @@ def main() -> None:
     for s in shapes:
         match s:
             case Circle(r):
-                a = 3.14159 * r * r
+                a = 3.14159 * r ** 2
             case Rect(w, h):
                 a = w * h
             case Triangle(b, h):
