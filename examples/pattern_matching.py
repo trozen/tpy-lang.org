@@ -18,7 +18,7 @@ class Triangle:
     base: float
     height: float
 
-Shape = Circle | Rect | Triangle
+type Shape = Circle | Rect | Triangle
 
 def main() -> None:
     shapes: list[Shape] = [Circle(1.0), Rect(2.0, 3.0), Triangle(4.0, 5.0)]
