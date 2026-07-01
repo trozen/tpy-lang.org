@@ -20,6 +20,7 @@ ORDER = [
     ("standard_types.py", "standard types"),
     ("stdlib_demo.py", "stdlib"),
     ("classes.py", "classes"),
+    ("pattern_matching.py", "pattern matching"),
     ("ownership.py", "ownership"),
     ("requests_demo.py", "requests + json"),
     ("async_demo.py", "async"),
