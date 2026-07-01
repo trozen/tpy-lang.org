@@ -1,22 +1,21 @@
 # tplib is TurboPython's standard library: packages for
 # common tasks, built for a statically compiled language.
 import tplib.requests as requests
-from tplib.json.model import model
+from tplib.json.model import model, field
 
 @model  # inspired by pydantic
-class Geo:
-    query: str      # the caller's IP
-    city: str
-    country: str
-    lat: float
-    lon: float
+class Repo:
+    full_name: str
+    description: str
+    language: str
+    stars: int = field(alias="stargazers_count")
+    forks: int = field(alias="forks_count")
 
 def main() -> None:
-    url = "http://ip-api.com/json"
+    url = "https://api.github.com/repos/python/cpython"
     # inspired by requests, a popular Python package
-    body = requests.get(url).text
-    geo = Geo.from_json(body)
-    print(f"{geo.query} in {geo.city}, {geo.country}")
-    print(f"at {geo.lat:.2f}, {geo.lon:.2f}")
+    repo = Repo.from_json(requests.get(url).text)
+    print(f"{repo.full_name} -- {repo.description}")
+    print(f"{repo.language}: {repo.stars} stars, {repo.forks} forks")
 
 main()

@@ -92,8 +92,6 @@ DNS for the apex domain points at GitHub Pages (A/AAAA records at the registrar)
   toast. Replace each with a real destination as those pages get written.
 - **"no GIL" claim:** the hero advertises "no GIL for multithreading"; threading
   isn't shipped yet. Meant to hold by launch -- soften the wording if it slips.
-- **HTTPS in examples:** TurboPython's `requests` is HTTP-only for now, so the
-  requests example hits `http://ip-api.com/json` as a stopgap.
 - **`http.server`:** no server module yet, so the async example builds HTTP on
   raw asyncio streams.
 - **Playground:** deferred (would need client-side compile -- Pyodide + in-browser
