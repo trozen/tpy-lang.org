@@ -15,7 +15,8 @@ def main() -> None:
     url = "https://api.github.com/repos/python/cpython"
     # inspired by requests, a popular Python package
     repo = Repo.from_json(requests.get(url).text)
-    print(f"{repo.full_name} -- {repo.description}")
-    print(f"{repo.language}: {repo.stars} stars, {repo.forks} forks")
+    print(f"{repo.full_name} ({repo.language})")
+    print(f"{repo.description}")
+    print(f"{repo.stars} stars, {repo.forks} forks")
 
 main()

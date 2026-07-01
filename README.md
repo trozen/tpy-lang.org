@@ -65,7 +65,8 @@ Workflow when adding/editing an example:
 
 Conventions:
 - **Keep lines <= ~57 chars.** The code window is ~61 chars wide; longer lines
-  scroll horizontally (ugly). `awk '{if(length>m)m=length}END{print m}' <f>.py`.
+  scroll horizontally (ugly). `verify_examples.py` enforces the 61-char window
+  (fails any example that exceeds it); aim for <=57 for a margin.
 - Comments explain a concept at **showcase altitude**, not full docs -- the
   examples are a taste, the language guide is where things get taught.
 

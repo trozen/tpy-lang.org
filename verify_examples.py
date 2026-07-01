@@ -17,6 +17,16 @@ ROOT = Path(__file__).resolve().parent
 SRC_DIR = ROOT / "examples"
 # Hit the network / nondeterministic -- compile + link only, don't run.
 NO_RUN = {"requests_demo.py", "async_demo.py"}
+# The source panel is ~61 chars wide; longer lines scroll horizontally (see
+# README). Enforce the hard window so a too-wide example fails the gate rather
+# than being caught by eye (aim for <=57 when authoring, for a margin).
+MAX_WIDTH = 61
+
+
+def wide_lines(path):
+    """Return (lineno, length) for every line over the code-window width."""
+    return [(i, len(line)) for i, line in
+            enumerate(path.read_text().splitlines(), 1) if len(line) > MAX_WIDTH]
 
 
 def check(path):
@@ -44,7 +54,12 @@ def main():
         sys.exit(f"no examples found in {SRC_DIR}")
     failures = []
     for path in files:
+        wide = wide_lines(path)
         ok, detail = check(path)
+        if wide:
+            ok = False
+            spans = ", ".join(f"L{n}={w}" for n, w in wide)
+            detail = f"lines exceed {MAX_WIDTH}-char window ({spans})"
         print(f"{'ok  ' if ok else 'FAIL'} {path.name:22} {detail}")
         if not ok:
             failures.append(path.name)

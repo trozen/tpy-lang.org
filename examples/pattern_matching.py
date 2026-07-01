@@ -1,7 +1,9 @@
-# Structural pattern matching over a union of types (algebraic data).
-# Each arm destructures one variant by position; because `a` is read after
-# the match with no default arm, the compiler proves the arms are exhaustive
-# -- drop one and it won't compile. Compiles to a jump over a tagged union.
+# Structural pattern matching over a union of types
+# (algebraic data), compiled to a jump over a tagged
+# union. Each arm destructures a variant by position;
+# the result is read with no default arm, so the compiler
+# proves the arms are exhaustive -- drop one and it won't
+# compile.
 from dataclasses import dataclass
 
 @dataclass
@@ -21,7 +23,9 @@ class Triangle:
 type Shape = Circle | Rect | Triangle
 
 def main() -> None:
-    shapes: list[Shape] = [Circle(1.0), Rect(2.0, 3.0), Triangle(4.0, 5.0)]
+    shapes: list[Shape] = [
+        Circle(1.0), Rect(2.0, 3.0), Triangle(4.0, 5.0),
+    ]
     for s in shapes:
         match s:
             case Circle(r):
