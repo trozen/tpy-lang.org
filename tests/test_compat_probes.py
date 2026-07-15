@@ -42,12 +42,7 @@ STDLIB_ABSENT = [
     "subprocess", "tempfile", "textwrap", "threading", "unittest", "uuid",
 ]
 
-needs_compiler = pytest.mark.skipif(_COMPILER_DIR is None, reason=(
-    "no TurboPython checkout found -- set $TPY_DIR or init vendor/tpy"
-))
 
-
-@needs_compiler
 @pytest.mark.parametrize("probe", PROBES, ids=[p.stem for p in PROBES])
 def test_feature_probe(probe: Path, tmp_path: Path) -> None:
     first = probe.read_text().splitlines()[0]
@@ -74,7 +69,6 @@ def test_feature_probe(probe: Path, tmp_path: Path) -> None:
             )
 
 
-@needs_compiler
 @pytest.mark.parametrize("module", STDLIB_BUNDLED)
 def test_stdlib_bundled(module: str, tmp_path: Path) -> None:
     src = tmp_path / "probe.py"
@@ -86,7 +80,6 @@ def test_stdlib_bundled(module: str, tmp_path: Path) -> None:
     )
 
 
-@needs_compiler
 @pytest.mark.parametrize("module", STDLIB_ABSENT)
 def test_stdlib_absent(module: str, tmp_path: Path) -> None:
     src = tmp_path / "probe.py"

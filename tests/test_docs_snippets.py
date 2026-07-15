@@ -2,8 +2,9 @@
 
 Run with:  pytest    (from the repo root)
 
-Skips cleanly if no compiler checkout is found -- see tests/README.md for how to
-point it at the `vendor/tpy` submodule (or a sibling `../tpy-poc`).
+Errors out if no compiler checkout is found (see tests/conftest.py) -- see
+tests/README.md for how to point it at the `vendor/tpy` submodule (or a
+sibling `../tpy-poc`).
 """
 from __future__ import annotations
 
@@ -15,10 +16,6 @@ _COMPILER_DIR = resolve_compiler_dir()
 _SNIPPETS = iter_all_snippets()
 
 
-@pytest.mark.skipif(_COMPILER_DIR is None, reason=(
-    "no TurboPython checkout found -- set $TPY_DIR, init the vendor/tpy "
-    "submodule, or place a sibling ../tpy-poc (see tests/README.md)"
-))
 @pytest.mark.parametrize("snippet", _SNIPPETS, ids=[s.ident for s in _SNIPPETS])
 def test_snippet_compiles(snippet):
     if snippet.skip:

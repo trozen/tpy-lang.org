@@ -16,12 +16,18 @@ experienced Python developers.
   site. Commit only when explicitly asked.
 - **Never hand-edit `docs/examples.js`** -- it is generated. Edit the programs
   in `examples/` and run `python3 build_examples.py`.
-- **Examples must be real.** Run `python3 verify_examples.py` before relying on
-  or showing an example. It compiles each against the `tpy` on PATH -- the
-  **published** package (`pip install tpy-lang`), which is what a visitor gets,
-  not a dev build. (Known gap: the site uses some features ahead of the
-  published release -- e.g. the `requests` example needs a post-0.4.0 tpy. Don't
-  advertise examples a `pip`-installed user can't run.)
+- **Examples must be real.** Run `make check` before relying on or showing an
+  example -- it compiles every docs snippet *and* every `examples/` program
+  against the pinned `vendor/tpy`, and fails rather than skipping if that
+  checkout is missing. Nothing the site shows should fail to compile.
+- **Before announcing the site, re-check the examples against the published
+  package.** `make check` uses the pin, which runs ahead of the release, so it
+  cannot prove a visitor can run what the landing page shows. Today they
+  cannot: `requests_demo.py` needs `tplib.requests`, which is unreleased, and
+  it is tile 6 on the page. This is knowingly accepted only because the site is
+  unannounced. `uv run --with tpy-lang python verify_examples.py` runs that
+  check against `pip install tpy-lang`; it must pass, or the affected examples
+  must come off the page, before anyone is pointed at the site.
 - **Self-contained landing page.** No external scripts, styles, fonts, or network
   requests in `index.html` -- everything inline, no framework. (The docs site under
   `docs-site/` is the exception: it uses MkDocs Material.)

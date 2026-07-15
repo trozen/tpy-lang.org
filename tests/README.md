@@ -13,7 +13,9 @@ The harness looks for a compiler checkout in this order:
 2. `vendor/tpy` -- the pinned submodule (recommended; reproducible).
 3. `../tpy-poc` -- a sibling working checkout (dev convenience).
 
-If none is found, the snippet tests skip cleanly.
+If none is found, the run errors out rather than skipping: every test here
+compiles something, so with no compiler the suite would report success having
+verified nothing.
 
 ### One-time submodule setup (recommended)
 
