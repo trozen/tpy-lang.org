@@ -1,0 +1,43 @@
+# Publishes docs/ to GitHub Pages at tpy-lang.org.
+#
+# This replaces Pages' default "deploy from a branch" builder, which cloned the
+# repo with submodules and so tried to fetch vendor/tpy -- a private repo, over
+# an SSH URL. Pages can do neither, and the build failed the moment .gitmodules
+# landed. Nothing here needs the compiler: docs/ is already built and committed
+# (see README.md), and vendor/tpy exists only to verify snippets locally.
+#
+# Requires Settings > Pages > Source == "GitHub Actions".
+
+name: pages
+
+on:
+  push:
+    branches: [master]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Let a running deploy finish rather than cancelling it half-published.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: false
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: docs   # includes CNAME, so the custom domain survives
+      - id: deployment
+        uses: actions/deploy-pages@v4

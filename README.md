@@ -81,8 +81,14 @@ python3 -m http.server -d docs 8000 # -> http://localhost:8000
 
 Served by **GitHub Pages** from the **`/docs` folder** of this repo's default
 branch, at the custom domain **`tpy-lang.org`** (set via `docs/CNAME` + Pages
-settings). Pushing to the default branch publishes. HTTPS is provisioned by
-GitHub (Let's Encrypt).
+settings). Pushing to the default branch publishes, via
+`.github/workflows/pages.yml`. HTTPS is provisioned by GitHub (Let's Encrypt).
+
+That workflow uploads `docs/` itself rather than letting Pages build the
+branch, because the default builder clones submodules and cannot fetch the
+private `vendor/tpy` over SSH. It follows that **Pages must stay on
+Settings > Pages > Source == "GitHub Actions"**; switching it back to
+"Deploy from a branch" reinstates the failure.
 
 DNS for the apex domain points at GitHub Pages (A/AAAA records at the registrar).
 
