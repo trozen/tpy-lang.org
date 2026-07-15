@@ -4,3 +4,10 @@
     page is "<Page> - TurboPython". site_name stays "TurboPython" so the
     header wordmark isn't bloated. -#}
 {% block htmltitle %}<title>{% if page.is_homepage %}TurboPython Documentation{% elif page.title %}{{ page.title | striptags }} - {{ config.site_name }}{% else %}{{ config.site_name }}{% endif %}</title>{% endblock %}
+
+{#- Pre-release notice above the header; a released build shows no banner.
+
+    Kept on one line deliberately: base.html guards the banner with
+    `{% if self.announce() %}` and does not trim, so any stray whitespace here
+    renders an empty banner strip on released builds. -#}
+{% block announce %}{% if config.extra.tpy_prerelease %}These docs describe TurboPython <strong>{{ config.extra.tpy_version }}</strong>, a pre-release of the upcoming {{ config.extra.tpy_release }}.{% endif %}{% endblock %}

@@ -1,0 +1,1363 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="TurboPython documentation -- writing TurboPython, and what works today.">
+      
+      
+      
+        <link rel="canonical" href="https://tpy-lang.org/docs/guide/ownership/">
+      
+      
+        <link rel="prev" href="../functions/">
+      
+      
+        <link rel="next" href="../data-modeling/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/favicon.svg">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+    <title>Ownership - TurboPython</title>
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+    
+    
+      <link rel="stylesheet" href="../../stylesheets/extra.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#ownership-and-references" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+        <aside class="md-banner">
+          <div class="md-banner__inner md-grid md-typeset">
+            
+            These docs describe TurboPython <strong>0.5.0.dev0</strong>, a pre-release of the upcoming 0.5.0.
+          </div>
+          
+        </aside>
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="/" title="TurboPython" class="md-header__button md-logo" aria-label="TurboPython" data-md-component="logo">
+      
+  <img src="../../assets/logo.svg" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            TurboPython
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Ownership
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+    
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+    
+      <div class="md-header__source">
+        <div class="md-source">
+          <div class="md-source__repository">
+            TurboPython 0.5.0.dev0
+            
+              <ul class="md-source__facts">
+                <li class="md-source__fact md-source__fact--version">v0.4.0-131-g97ffc74ca</li>
+              </ul>
+            
+          </div>
+        </div>
+      </div>
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="/" title="TurboPython" class="md-nav__button md-logo" aria-label="TurboPython" data-md-component="logo">
+      
+  <img src="../../assets/logo.svg" alt="logo">
+
+    </a>
+    TurboPython
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../getting-started/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Getting started
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Guide
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_3" id="__nav_3_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Guide
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../differences/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    How TPy differs
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../types/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Types
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../functions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Functions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Ownership
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Ownership
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#locals-and-parameters-alias-like-python" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Locals and parameters alias, like Python
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#a-frame-owns-its-locals" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        A frame owns its locals
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#a-container-owns-its-elements" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        A container owns its elements
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#a-field-owns-its-value" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        A field owns its value
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#in-practice" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        In practice
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#advanced-move-or-copy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Advanced: move or copy
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#advanced-explicit-borrows-readonlyt-ptrt" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Advanced: explicit borrows (readonly[T], Ptr[T])
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#advanced-shared-ownership-rc-arc" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Advanced: shared ownership (Rc, Arc)
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../data-modeling/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Data modeling
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../control-flow/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Control flow
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../efficiency/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Efficiency
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../building/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Building
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../cpp-rust/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Coming from C++/Rust
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../beyond/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Beyond the core
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../compatibility/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Compatibility
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#locals-and-parameters-alias-like-python" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Locals and parameters alias, like Python
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#a-frame-owns-its-locals" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        A frame owns its locals
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#a-container-owns-its-elements" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        A container owns its elements
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#a-field-owns-its-value" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        A field owns its value
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#in-practice" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        In practice
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#advanced-move-or-copy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Advanced: move or copy
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#advanced-explicit-borrows-readonlyt-ptrt" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Advanced: explicit borrows (readonly[T], Ptr[T])
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#advanced-shared-ownership-rc-arc" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Advanced: shared ownership (Rc, Arc)
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="ownership-and-references">Ownership and references<a class="headerlink" href="#ownership-and-references" title="Permanent link">&para;</a></h1>
+<p>Every program stores its data in memory, and that memory must be managed: an
+object is created, lives while the program uses it, and has to be released once
+nothing needs it anymore. Many languages automate this lifecycle so the
+programmer never sees it, usually with a garbage collector or with reference
+counting, and the convenience has a runtime cost. In Python that cost is always
+present: every variable is a reference to a heap object, a reference count is
+updated on every assignment, and a garbage collector collects the reference
+cycles.</p>
+<p>TurboPython manages object lifecycles at compile time instead. Two distinctions
+make this possible.</p>
+<p>First, TurboPython (like C#, Java, Swift, or Rust) separates <strong>value types</strong>
+from <strong>reference types</strong>. Value types are the simple data: <code>int</code> and the
+fixed-width integers, <code>float</code>, <code>bool</code>, <code>str</code>, <code>Char</code>, and tuples of these. A
+value lives directly in its variable and is copied on assignment -- the way
+numbers already appear to behave in Python. Value types have no lifecycle to
+manage; nothing on this page applies to them.</p>
+<p>Second, every reference-type object -- a class instance, a list, a dict -- has
+exactly one <strong>owner</strong>, known at compile time, and it lives exactly as long as
+its owner:</p>
+<ul>
+<li>An object created in a function is owned by that function's <strong>frame</strong> and
+  freed when the function returns.</li>
+<li>An object stored in a <strong>container</strong> or a <strong>field</strong> is owned by that storage.
+  This <em>durable storage</em> (the compiler's diagnostics call it <em>owned storage</em>)
+  holds its own value, not a shared reference. A module <strong>global</strong> also owns
+  its value; a reference-type global is assigned once, at module scope, and
+  cannot be reassigned later.</li>
+<li><strong>Local variables and parameters own nothing.</strong> The frame owns what the
+  call creates; the names only <em>borrow</em> -- in Python terms, they alias: two
+  names can refer to the same object, exactly as in Python.</li>
+</ul>
+<p>One owner with a known lifetime is what replaces the garbage collector. The
+compiler frees each object at the right point, stores it inline instead of
+behind a pointer, and rejects code that would keep a reference past its owner's
+lifetime. All of it is decided at compile time.</p>
+<p>Ownership is the one real shift from Python; the rest is ordinary Python with
+static types. It cannot be switched off, but it rarely needs to be written
+explicitly: the markers (<code>Own[T]</code>, <code>copy()</code>, <code>readonly[T]</code>) appear only where
+ownership transfers: where an object is returned or stored. For designs that
+genuinely need one object with several owners, an opt-in shared-ownership type
+(<code>Rc</code>) exists; it is covered briefly at the end of this page.</p>
+<h2 id="locals-and-parameters-alias-like-python">Locals and parameters alias, like Python<a class="headerlink" href="#locals-and-parameters-alias-like-python" title="Permanent link">&para;</a></h2>
+<p>An object created in a function is owned by that function's frame, and the
+frame frees it when the function returns. The local variable does not own the
+object: it only refers to it. Assignment therefore never copies: <code>b = a</code>
+makes <code>b</code> a second name for the same object. Passing an argument works the same
+way: the parameter becomes another name for the caller's object. A change
+made through one name is visible through every other.</p>
+<p>The examples reuse the <code>Reading</code> class from the
+<a href="../types/">Types page</a>; the <code>Own[...]</code> in its constructor is taught later on
+this page.</p>
+<!-- tpy: prelude run -->
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">tpy</span><span class="w"> </span><span class="kn">import</span> <span class="n">Own</span><span class="p">,</span> <span class="n">copy</span><span class="p">,</span> <span class="n">readonly</span><span class="p">,</span> <span class="n">Float64</span>
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="k">class</span><span class="w"> </span><span class="nc">Reading</span><span class="p">:</span>
+<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>    <span class="n">sensor</span><span class="p">:</span> <span class="nb">str</span>
+<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>    <span class="n">values</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Float64</span><span class="p">]</span>
+<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sensor</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">values</span><span class="p">:</span> <span class="n">Own</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">Float64</span><span class="p">]]):</span>
+<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">sensor</span> <span class="o">=</span> <span class="n">sensor</span>
+<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">values</span> <span class="o">=</span> <span class="n">values</span>
+<a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>
+<a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">():</span>
+<a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>    <span class="n">a</span> <span class="o">=</span> <span class="n">Reading</span><span class="p">(</span><span class="s2">&quot;boiler-3&quot;</span><span class="p">,</span> <span class="p">[</span><span class="mf">20.5</span><span class="p">])</span>   <span class="c1"># owned by main&#39;s frame</span>
+<a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>    <span class="n">b</span> <span class="o">=</span> <span class="n">a</span>                             <span class="c1"># b refers to the same object as a</span>
+<a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a>    <span class="n">b</span><span class="o">.</span><span class="n">sensor</span> <span class="o">=</span> <span class="s2">&quot;boiler-9&quot;</span>
+<a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a>    <span class="nb">print</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">sensor</span><span class="p">)</span>                   <span class="c1"># boiler-9</span>
+<a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a>
+<a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a><span class="n">main</span><span class="p">()</span>
+</code></pre></div>
+<p>Neither <code>a</code> nor <code>b</code> owns anything: both are <em>borrows</em>, names that refer to an
+object owned elsewhere. Reading a field, calling a method, passing the object
+on to another function -- all of it happens through borrows. That is why
+everyday TurboPython code looks and behaves exactly like Python, with no copies
+and no annotations.</p>
+<p>Ownership becomes visible at two points only: when an object is <em>returned</em> out
+of the frame that owns it, and when it is <em>stored</em> into durable storage -- a
+container or a field. The next three sections take these in turn.</p>
+<h2 id="a-frame-owns-its-locals">A frame owns its locals<a class="headerlink" href="#a-frame-owns-its-locals" title="Permanent link">&para;</a></h2>
+<p>A local variable lives in the frame of the function that creates it, and is
+freed when that function returns. It therefore cannot be returned by reference
+-- the reference would point at freed memory:</p>
+<!-- tpy: cont expect-error="Use Own[Reading] to return by value" -->
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="k">def</span><span class="w"> </span><span class="nf">make</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">Reading</span><span class="p">:</span>
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>    <span class="n">r</span> <span class="o">=</span> <span class="n">Reading</span><span class="p">(</span><span class="s2">&quot;boiler-3&quot;</span><span class="p">,</span> <span class="p">[</span><span class="mf">20.5</span><span class="p">])</span>
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>    <span class="k">return</span> <span class="n">r</span>     <span class="c1"># error: r is a local, freed when make() returns</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>error: Cannot return local or temporary as reference. Object type &#39;Reading&#39;
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>is returned by reference. Use Own[Reading] to return by value.
+</code></pre></div>
+<p>The diagnostic names a rule the page has not stated yet: a plain <code>Reading</code>
+return type returns a <em>reference</em> to the object, not the object itself. That
+is fine when the object outlives the function -- returning an element of a
+caller's list, for example:</p>
+<!-- tpy: cont -->
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="k">def</span><span class="w"> </span><span class="nf">first</span><span class="p">(</span><span class="n">items</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Reading</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Reading</span><span class="p">:</span>
+<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>    <span class="k">return</span> <span class="n">items</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>   <span class="c1"># borrowed from the caller&#39;s list</span>
+</code></pre></div>
+<p>A local dies with the frame, so it needs the other kind of return.
+<code>Own[Reading]</code> hands the object itself to the caller, and the caller's frame
+becomes its owner:</p>
+<!-- tpy: cont run -->
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="k">def</span><span class="w"> </span><span class="nf">make</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">Own</span><span class="p">[</span><span class="n">Reading</span><span class="p">]:</span>
+<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>    <span class="n">r</span> <span class="o">=</span> <span class="n">Reading</span><span class="p">(</span><span class="s2">&quot;boiler-3&quot;</span><span class="p">,</span> <span class="p">[</span><span class="mf">20.5</span><span class="p">])</span>
+<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>    <span class="k">return</span> <span class="n">r</span>     <span class="c1"># ownership moves to the caller</span>
+<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a>
+<a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a><span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">():</span>
+<a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a>    <span class="n">m</span> <span class="o">=</span> <span class="n">make</span><span class="p">()</span>   <span class="c1"># the object now lives in main&#39;s frame</span>
+<a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a>    <span class="nb">print</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">sensor</span><span class="p">)</span>   <span class="c1"># boiler-3</span>
+<a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a>
+<a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a><span class="n">main</span><span class="p">()</span>
+</code></pre></div>
+<h2 id="a-container-owns-its-elements">A container owns its elements<a class="headerlink" href="#a-container-owns-its-elements" title="Permanent link">&para;</a></h2>
+<p>A <code>list</code>, <code>dict</code>, or <code>set</code> stores its elements, not references to them. Most of
+the time this changes nothing -- building a list looks exactly like Python:</p>
+<!-- tpy: cont run -->
+<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">():</span>
+<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>    <span class="n">items</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Reading</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">):</span>
+<a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a>        <span class="n">items</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Reading</span><span class="p">(</span><span class="s2">&quot;boiler&quot;</span><span class="p">,</span> <span class="p">[</span><span class="mf">0.5</span> <span class="o">*</span> <span class="n">i</span><span class="p">]))</span>
+<a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a>    <span class="nb">print</span><span class="p">(</span><span class="n">items</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>   <span class="c1"># 1.0</span>
+<a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a>
+<a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a><span class="n">main</span><span class="p">()</span>
+</code></pre></div>
+<p>Each <code>Reading</code> here has no other user, so it simply becomes the list's element.
+Nothing is copied and nothing is shared. A store copies only when the compiler
+cannot simply hand the object over, that is, when some name still refers to
+the object after the store. (The exact rule is under
+<a href="#advanced-move-or-copy">Advanced: move or copy</a>.)</p>
+<p>Keeping a second name for the stored object is where TurboPython and CPython
+diverge. The list needs its own value, so the store makes a copy, and the
+compiler warns about it:</p>
+<!-- tpy: cont run -->
+<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">():</span>
+<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>    <span class="n">items</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Reading</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+<a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>    <span class="n">r</span> <span class="o">=</span> <span class="n">Reading</span><span class="p">(</span><span class="s2">&quot;boiler-3&quot;</span><span class="p">,</span> <span class="p">[</span><span class="mf">20.5</span><span class="p">])</span>
+<a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a>    <span class="n">items</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>          <span class="c1"># warning: copies r into the list (still used below)</span>
+<a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a>    <span class="n">r</span><span class="o">.</span><span class="n">sensor</span> <span class="o">=</span> <span class="s2">&quot;renamed&quot;</span>     <span class="c1"># changes r -- NOT the stored copy</span>
+<a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a>    <span class="nb">print</span><span class="p">(</span><span class="n">items</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">sensor</span><span class="p">)</span>   <span class="c1"># prints boiler-3; under CPython: renamed</span>
+<a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a>
+<a id="__codelineno-6-8" name="__codelineno-6-8" href="#__codelineno-6-8"></a><span class="n">main</span><span class="p">()</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>warning: copies Reading into owned storage; use copy() to make this explicit
+</code></pre></div>
+<div class="admonition warning">
+<p class="admonition-title">Differs from CPython</p>
+<p>This program prints <code>boiler-3</code>. Under CPython it prints <code>renamed</code>: the
+list would hold a reference to <code>r</code>, so the rename would show through the
+list. In TurboPython the element owns its own <code>Reading</code>, and the original
+<code>r</code> is a different object from the moment of the store. The compiler flags
+every such store with the <code>copies ... into owned storage</code> warning shown
+above, so this divergence is never silent.</p>
+</div>
+<p>The warning is acknowledged with <code>copy()</code>. The copy happens either way;
+<code>copy()</code> makes it intentional, visible in the code, and clears the warning. The
+copy is deep: the stored element owns its own complete structure, including
+everything the object itself owns.</p>
+<!-- tpy: cont run -->
+<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">():</span>
+<a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>    <span class="n">items</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Reading</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+<a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a>    <span class="n">r</span> <span class="o">=</span> <span class="n">Reading</span><span class="p">(</span><span class="s2">&quot;boiler-3&quot;</span><span class="p">,</span> <span class="p">[</span><span class="mf">20.5</span><span class="p">])</span>
+<a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a>    <span class="n">items</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">copy</span><span class="p">(</span><span class="n">r</span><span class="p">))</span>    <span class="c1"># the list holds its own copy, on purpose</span>
+<a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a>    <span class="n">r</span><span class="o">.</span><span class="n">sensor</span> <span class="o">=</span> <span class="s2">&quot;renamed&quot;</span>
+<a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a>    <span class="nb">print</span><span class="p">(</span><span class="n">items</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">sensor</span><span class="p">)</span>   <span class="c1"># boiler-3</span>
+<a id="__codelineno-8-7" name="__codelineno-8-7" href="#__codelineno-8-7"></a>
+<a id="__codelineno-8-8" name="__codelineno-8-8" href="#__codelineno-8-8"></a><span class="n">main</span><span class="p">()</span>
+</code></pre></div>
+<p>Often the copy is avoidable altogether: storing a value the program no longer
+uses costs nothing. How the compiler decides is covered below, under
+<a href="#advanced-move-or-copy">Advanced: move or copy</a> -- everyday code can stop at
+<code>copy()</code>.</p>
+<h2 id="a-field-owns-its-value">A field owns its value<a class="headerlink" href="#a-field-owns-its-value" title="Permanent link">&para;</a></h2>
+<p>A field outlives the call that sets it, so it must own its value rather than
+borrow one that may disappear. The rule is the same as for a container element:
+storing a borrowed value copies it. Here the borrowed value is the parameter.
+The caller still owns the object, so it cannot simply be taken; the store
+copies it into the field, and the compiler says so:</p>
+<!-- tpy: cont -->
+<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="k">class</span><span class="w"> </span><span class="nc">Cache</span><span class="p">:</span>
+<a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>    <span class="n">last</span><span class="p">:</span> <span class="n">Reading</span>
+<a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">r</span><span class="p">:</span> <span class="n">Reading</span><span class="p">):</span>
+<a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">last</span> <span class="o">=</span> <span class="n">r</span>    <span class="c1"># warning: copies r into the field</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>warning: copies Reading into field; use copy() to make this explicit
+</code></pre></div>
+<p>This is the same divergence from CPython as the container store above, flagged
+by the same kind of warning.</p>
+<p>For the field to <em>take</em> the caller's object instead of copying it, the
+parameter is declared <code>Own[Reading]</code> -- the same marker <code>Reading</code>'s own
+constructor uses to take the caller's list:</p>
+<!-- tpy: prelude -->
+<div class="highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="k">class</span><span class="w"> </span><span class="nc">Cache</span><span class="p">:</span>
+<a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a>    <span class="n">last</span><span class="p">:</span> <span class="n">Reading</span>
+<a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">r</span><span class="p">:</span> <span class="n">Own</span><span class="p">[</span><span class="n">Reading</span><span class="p">]):</span>
+<a id="__codelineno-11-4" name="__codelineno-11-4" href="#__codelineno-11-4"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">last</span> <span class="o">=</span> <span class="n">r</span>    <span class="c1"># the field takes ownership</span>
+</code></pre></div>
+<p>An <code>Own</code> parameter moves the question to the call site. A caller that is done
+with the object gives it up directly: no copy, no warning. A caller that
+keeps using the object afterwards faces the same rule as the container store:
+the argument must be copied, or the compiler warns:</p>
+<!-- tpy: cont run -->
+<div class="highlight"><pre><span></span><code><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">():</span>
+<a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a>    <span class="n">r</span> <span class="o">=</span> <span class="n">Reading</span><span class="p">(</span><span class="s2">&quot;boiler-3&quot;</span><span class="p">,</span> <span class="p">[</span><span class="mf">20.5</span><span class="p">])</span>
+<a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a>    <span class="n">c</span> <span class="o">=</span> <span class="n">Cache</span><span class="p">(</span><span class="n">copy</span><span class="p">(</span><span class="n">r</span><span class="p">))</span>       <span class="c1"># r stays in use below -- pass a copy</span>
+<a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a>    <span class="n">r</span><span class="o">.</span><span class="n">sensor</span> <span class="o">=</span> <span class="s2">&quot;renamed&quot;</span>
+<a id="__codelineno-12-5" name="__codelineno-12-5" href="#__codelineno-12-5"></a>    <span class="nb">print</span><span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">last</span><span class="o">.</span><span class="n">sensor</span><span class="p">)</span>     <span class="c1"># boiler-3</span>
+<a id="__codelineno-12-6" name="__codelineno-12-6" href="#__codelineno-12-6"></a>
+<a id="__codelineno-12-7" name="__codelineno-12-7" href="#__codelineno-12-7"></a><span class="n">main</span><span class="p">()</span>
+</code></pre></div>
+<h2 id="in-practice">In practice<a class="headerlink" href="#in-practice" title="Permanent link">&para;</a></h2>
+<p>Value types (<code>Int32</code>, <code>str</code>, ...) always stay plain: they copy, and ownership
+does not concern them. For reference types:</p>
+<table>
+<thead>
+<tr>
+<th>Situation</th>
+<th>Annotation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Passing an object to a function</td>
+<td>plain <code>T</code> -- it is borrowed</td>
+</tr>
+<tr>
+<td>A local that refers to another object</td>
+<td>plain <code>T</code> -- it borrows too</td>
+</tr>
+<tr>
+<td>Returning an object owned elsewhere (a field, an element)</td>
+<td>plain <code>T</code> -- a reference</td>
+</tr>
+<tr>
+<td>Returning a freshly built object</td>
+<td><code>Own[T]</code></td>
+</tr>
+<tr>
+<td>A field or parameter that takes ownership</td>
+<td><code>Own[T]</code></td>
+</tr>
+<tr>
+<td>Storing a last-use local, or an unnamed value like <code>Reading(...)</code></td>
+<td>nothing -- it moves (see below)</td>
+</tr>
+<tr>
+<td>Storing an object that is used again afterwards</td>
+<td><code>copy(...)</code> -- or restructure so it moves</td>
+</tr>
+<tr>
+<td>A parameter the function does not mutate</td>
+<td><code>readonly[T]</code> (optional)</td>
+</tr>
+</tbody>
+</table>
+<p>Ordinary annotated Python code already follows this table; no extra decisions
+are needed. The markers appear only where ownership actually transfers --
+returning an object, or storing one.</p>
+<h2 id="advanced-move-or-copy">Advanced: move or copy<a class="headerlink" href="#advanced-move-or-copy" title="Permanent link">&para;</a></h2>
+<p>Everything above is enough for everyday code: plain code borrows, a store
+copies when the original stays in use, and <code>copy()</code> accepts the warning. The
+rest of the page covers what the compiler actually does with each store, and
+the explicit borrow markers. It matters mostly for performance-sensitive code.</p>
+<p>Every store into durable storage needs a value the storage can own. The
+compiler obtains one in two ways.</p>
+<p><strong>A move.</strong> When the object was created in the current frame and the store is
+its last use, no one else needs it: the object is handed over as-is. No
+separate copy is made, and there is nothing to warn about:</p>
+<!-- tpy: cont run -->
+<div class="highlight"><pre><span></span><code><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">():</span>
+<a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a>    <span class="n">items</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Reading</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+<a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a>    <span class="n">r</span> <span class="o">=</span> <span class="n">Reading</span><span class="p">(</span><span class="s2">&quot;boiler-7&quot;</span><span class="p">,</span> <span class="p">[</span><span class="mf">21.0</span><span class="p">])</span>
+<a id="__codelineno-13-4" name="__codelineno-13-4" href="#__codelineno-13-4"></a>    <span class="n">items</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>          <span class="c1"># last use of r -- it moves into the list</span>
+<a id="__codelineno-13-5" name="__codelineno-13-5" href="#__codelineno-13-5"></a>    <span class="nb">print</span><span class="p">(</span><span class="n">items</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">sensor</span><span class="p">)</span>   <span class="c1"># boiler-7</span>
+<a id="__codelineno-13-6" name="__codelineno-13-6" href="#__codelineno-13-6"></a>
+<a id="__codelineno-13-7" name="__codelineno-13-7" href="#__codelineno-13-7"></a><span class="n">main</span><span class="p">()</span>
+</code></pre></div>
+<p>Constructing the value in place is the same move in its simplest form. A
+temporary -- an unnamed value like <code>Reading(...)</code> below -- has no other use by
+definition, so it always moves and never warns:</p>
+<!-- tpy: cont run -->
+<div class="highlight"><pre><span></span><code><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">():</span>
+<a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a>    <span class="n">items</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Reading</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+<a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a>    <span class="n">items</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Reading</span><span class="p">(</span><span class="s2">&quot;boiler-7&quot;</span><span class="p">,</span> <span class="p">[</span><span class="mf">21.0</span><span class="p">]))</span>   <span class="c1"># a temporary always moves</span>
+<a id="__codelineno-14-4" name="__codelineno-14-4" href="#__codelineno-14-4"></a>    <span class="nb">print</span><span class="p">(</span><span class="n">items</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">sensor</span><span class="p">)</span>                      <span class="c1"># boiler-7</span>
+<a id="__codelineno-14-5" name="__codelineno-14-5" href="#__codelineno-14-5"></a>
+<a id="__codelineno-14-6" name="__codelineno-14-6" href="#__codelineno-14-6"></a><span class="n">main</span><span class="p">()</span>
+</code></pre></div>
+<p>An alias counts as a use. If another name still refers to the object, the
+store is not its last use, so the compiler copies and warns instead of moving.
+No name is ever left pointing at a moved-away object:</p>
+<!-- tpy: cont run -->
+<div class="highlight"><pre><span></span><code><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a><span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">():</span>
+<a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a>    <span class="n">items</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Reading</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+<a id="__codelineno-15-3" name="__codelineno-15-3" href="#__codelineno-15-3"></a>    <span class="n">a</span> <span class="o">=</span> <span class="n">Reading</span><span class="p">(</span><span class="s2">&quot;boiler-3&quot;</span><span class="p">,</span> <span class="p">[</span><span class="mf">20.5</span><span class="p">])</span>
+<a id="__codelineno-15-4" name="__codelineno-15-4" href="#__codelineno-15-4"></a>    <span class="n">b</span> <span class="o">=</span> <span class="n">a</span>                    <span class="c1"># a second name for the object</span>
+<a id="__codelineno-15-5" name="__codelineno-15-5" href="#__codelineno-15-5"></a>    <span class="n">items</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>          <span class="c1"># not a move: b still needs it -- copy, warned</span>
+<a id="__codelineno-15-6" name="__codelineno-15-6" href="#__codelineno-15-6"></a>    <span class="n">b</span><span class="o">.</span><span class="n">sensor</span> <span class="o">=</span> <span class="s2">&quot;renamed&quot;</span>
+<a id="__codelineno-15-7" name="__codelineno-15-7" href="#__codelineno-15-7"></a>    <span class="nb">print</span><span class="p">(</span><span class="n">items</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">sensor</span><span class="p">)</span>   <span class="c1"># boiler-3</span>
+<a id="__codelineno-15-8" name="__codelineno-15-8" href="#__codelineno-15-8"></a>
+<a id="__codelineno-15-9" name="__codelineno-15-9" href="#__codelineno-15-9"></a><span class="n">main</span><span class="p">()</span>
+</code></pre></div>
+<p><strong>A copy.</strong> When a move is impossible -- the object is still referred to after
+the store, or it belongs to the caller (a parameter is a borrow, and never
+moves) -- the storage receives its own deep copy, and the compiler warns. The
+warning marks exactly where TurboPython and CPython behave differently:
+CPython would have shared the object instead. The wording varies with the
+target (<code>into field</code>, <code>into container</code>, <code>into owned storage</code>), and the fix is
+the same everywhere. A <code>copy()</code> written where the compiler would have moved is
+flagged from the other side:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a>warning: unnecessary copy() -- &#39;r&#39; is at its last use and would be moved
+<a id="__codelineno-16-2" name="__codelineno-16-2" href="#__codelineno-16-2"></a>automatically
+</code></pre></div>
+<p>Resolving a copy warning, in order of preference:</p>
+<ol>
+<li><strong>Restructure so the store is the last use</strong> -- the copy becomes a move.</li>
+<li><strong>Construct in place</strong> -- a temporary always moves.</li>
+<li><strong>Take <code>Own[T]</code> at the boundary</strong> -- when the caller should give the object
+   up, as in the <code>Cache</code> example above.</li>
+<li><strong>Accept the copy with <code>copy()</code></strong> -- when both the original and the stored
+   value are genuinely needed.</li>
+</ol>
+<h2 id="advanced-explicit-borrows-readonlyt-ptrt">Advanced: explicit borrows (<code>readonly[T]</code>, <code>Ptr[T]</code>)<a class="headerlink" href="#advanced-explicit-borrows-readonlyt-ptrt" title="Permanent link">&para;</a></h2>
+<p>These markers are rarely written. A parameter is already a borrow, never a
+copy. When a function does not mutate a parameter, the compiler sees that and
+treats the borrow as read-only automatically. The explicit forms exist to
+state that intent in the signature.</p>
+<p><code>readonly[T]</code> declares a parameter the function does not mutate; mutating
+through it is a compile error:</p>
+<!-- tpy: cont -->
+<div class="highlight"><pre><span></span><code><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a><span class="k">def</span><span class="w"> </span><span class="nf">first_value</span><span class="p">(</span><span class="n">r</span><span class="p">:</span> <span class="n">readonly</span><span class="p">[</span><span class="n">Reading</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Float64</span><span class="p">:</span>
+<a id="__codelineno-17-2" name="__codelineno-17-2" href="#__codelineno-17-2"></a>    <span class="k">return</span> <span class="n">r</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+</code></pre></div>
+<p><code>Ptr[T]</code> is an explicit pointer, for the uncommon case one is needed (an
+optional reference, or C++ interop). Ordinary code does not use it.</p>
+<div class="admonition note">
+<p class="admonition-title">Coming from C++/Rust</p>
+<p><code>Own[T]</code> is pass or return by value with move semantics -- like handing
+off a <code>std::unique_ptr&lt;T&gt;</code>, or Rust's by-value <code>T</code>. <code>readonly[T]</code> is
+<code>const T&amp;</code>, and <code>Ptr[T]</code> is a raw <code>T*</code>. A plain <code>T</code> parameter -- and a
+plain <code>T</code> <em>return type</em> -- is a reference, never a copy; reference returns
+by default are the biggest single departure from C++. Storage is
+single-owner as in Rust, but borrows are unchecked C++-style references:
+the compiler rejects references that escape their owner (returns, stores)
+and falls back to a copy when a live alias blocks a move. There is no
+aliasing-XOR-mutation rule to satisfy. The full mapping:
+<a href="../cpp-rust/">Coming from C++/Rust</a>.</p>
+</div>
+<h2 id="advanced-shared-ownership-rc-arc">Advanced: shared ownership (<code>Rc</code>, <code>Arc</code>)<a class="headerlink" href="#advanced-shared-ownership-rc-arc" title="Permanent link">&para;</a></h2>
+<p>Single ownership plus copies covers most designs, but not all of them. When one
+object genuinely needs several owners -- a cache and a live user, an object
+indexed by two dicts -- the standard library provides <code>Rc</code> (<code>from tplib import
+Rc</code>): opt-in shared ownership with reference counting, paid only where it is
+used. <code>Rc.new(...)</code> creates the shared object and <code>.clone()</code> adds an owner;
+clones alias the same object, as references do in Python. <code>Arc</code>
+(<code>from tplib.arc import Arc</code>) is its thread-safe sibling: the same shape with
+atomic counters, for sharing across threads.</p>
+<p>Everything else on this page is the default: one owner per object, decided at
+compile time.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      These docs describe <span class="tpy-version">TurboPython 0.5.0.dev0</span> (v0.4.0-131-g97ffc74ca).
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.indexes", "navigation.expand", "navigation.top", "navigation.tracking", "toc.follow", "search.suggest", "search.highlight", "content.code.copy", "content.tabs.link"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+    
+  </body>
+</html>

@@ -1,0 +1,1298 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="TurboPython documentation -- writing TurboPython, and what works today.">
+      
+      
+      
+        <link rel="canonical" href="https://tpy-lang.org/docs/guide/differences/">
+      
+      
+        <link rel="prev" href="../">
+      
+      
+        <link rel="next" href="../types/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/favicon.svg">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+    <title>How TPy differs - TurboPython</title>
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+    
+    
+      <link rel="stylesheet" href="../../stylesheets/extra.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#how-turbopython-differs-from-python" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+        <aside class="md-banner">
+          <div class="md-banner__inner md-grid md-typeset">
+            
+            These docs describe TurboPython <strong>0.5.0.dev0</strong>, a pre-release of the upcoming 0.5.0.
+          </div>
+          
+        </aside>
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="/" title="TurboPython" class="md-header__button md-logo" aria-label="TurboPython" data-md-component="logo">
+      
+  <img src="../../assets/logo.svg" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            TurboPython
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              How TPy differs
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+    
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+    
+      <div class="md-header__source">
+        <div class="md-source">
+          <div class="md-source__repository">
+            TurboPython 0.5.0.dev0
+            
+              <ul class="md-source__facts">
+                <li class="md-source__fact md-source__fact--version">v0.4.0-131-g97ffc74ca</li>
+              </ul>
+            
+          </div>
+        </div>
+      </div>
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="/" title="TurboPython" class="md-nav__button md-logo" aria-label="TurboPython" data-md-component="logo">
+      
+  <img src="../../assets/logo.svg" alt="logo">
+
+    </a>
+    TurboPython
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../getting-started/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Getting started
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Guide
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_3" id="__nav_3_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Guide
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    How TPy differs
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    How TPy differs
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#the-main-differences" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The main differences
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#function-signatures-require-annotations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Function signatures require annotations
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-int-type-is-exact-fixed-width-is-fast" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The int type is exact; fixed-width is fast
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#third-party-packages-cannot-be-imported" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Third-party packages cannot be imported
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#classes-have-a-fixed-set-of-fields" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Classes have a fixed set of fields
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-type-includes-none" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The type includes None
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#unions-are-real-types-match-branches-on-them" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Unions are real types; match branches on them
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#method-calls-bind-at-compile-time" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Method calls bind at compile time
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#durable-storage-owns-its-values" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Durable storage owns its values
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#most-of-python-works-unchanged" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Most of Python works unchanged
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#how-these-docs-flag-differences" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        How these docs flag differences
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../types/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Types
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../functions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Functions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ownership/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Ownership
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../data-modeling/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Data modeling
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../control-flow/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Control flow
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../efficiency/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Efficiency
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../building/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Building
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../cpp-rust/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Coming from C++/Rust
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../beyond/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Beyond the core
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../compatibility/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Compatibility
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#the-main-differences" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The main differences
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#function-signatures-require-annotations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Function signatures require annotations
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-int-type-is-exact-fixed-width-is-fast" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The int type is exact; fixed-width is fast
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#third-party-packages-cannot-be-imported" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Third-party packages cannot be imported
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#classes-have-a-fixed-set-of-fields" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Classes have a fixed set of fields
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-type-includes-none" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The type includes None
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#unions-are-real-types-match-branches-on-them" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Unions are real types; match branches on them
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#method-calls-bind-at-compile-time" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Method calls bind at compile time
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#durable-storage-owns-its-values" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Durable storage owns its values
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#most-of-python-works-unchanged" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Most of Python works unchanged
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#how-these-docs-flag-differences" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        How these docs flag differences
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="how-turbopython-differs-from-python">How TurboPython differs from Python<a class="headerlink" href="#how-turbopython-differs-from-python" title="Permanent link">&para;</a></h1>
+<p>TurboPython is Python's syntax over a different execution model. A program is
+type-checked, compiled to C++, and built into a native binary. Every variable
+has one static type, and every object has one owner. Code that breaks a typing
+or ownership rule is caught while compiling. The compiler either rejects it, or
+warns and inserts a runtime check. The result runs with no interpreter, no
+garbage collector, and no GIL.</p>
+<p>Each section below states one difference briefly and links to the guide page
+that covers it in full.</p>
+<h2 id="the-main-differences">The main differences<a class="headerlink" href="#the-main-differences" title="Permanent link">&para;</a></h2>
+<p>The syntax is Python's, and so is most of the semantics: loops,
+comprehensions, f-strings, generators, context managers, and exceptions all
+work as ordinary Python. A handful of things differ, and these are the ones
+that come up earliest:</p>
+<ul>
+<li>Functions require type annotations. Parameters and return types are
+  mandatory, as are class fields; locals are inferred.</li>
+<li>Integer literals default to <code>Int32</code>. <code>int</code> is arbitrary-precision as in
+  Python, but a bare literal is deduced as fixed-width <code>Int32</code>, which can
+  overflow and panic.</li>
+<li>Third-party packages written for regular Python cannot be imported.
+  Everything imported is compiled from source with the program, so a module
+  is importable only if TurboPython can compile it. Many standard-library
+  modules ship with the compiler; a typical pip package does not compile.</li>
+<li>Durable storage owns its values. Fields and containers store their values
+  inline and own them; locals and parameters alias, exactly as in Python.
+  This is the one deep difference: <a href="../ownership/">Ownership and references</a>.</li>
+</ul>
+<p>Where compiled behavior differs from CPython (the standard Python
+interpreter), the compiler warns or errors wherever it can, so these
+differences surface during development.</p>
+<h2 id="function-signatures-require-annotations">Function signatures require annotations<a class="headerlink" href="#function-signatures-require-annotations" title="Permanent link">&para;</a></h2>
+<p>Parameter types and the return type are mandatory. The compiler relies on
+them to check calls and generate typed code:</p>
+<!-- tpy: expect-error="must have type annotation" -->
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="k">def</span><span class="w"> </span><span class="nf">double</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>           <span class="c1"># error: &#39;x&#39; has no type annotation</span>
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>    <span class="k">return</span> <span class="n">x</span> <span class="o">*</span> <span class="mi">2</span>
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>
+<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="nb">print</span><span class="p">(</span><span class="n">double</span><span class="p">(</span><span class="mi">4</span><span class="p">))</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>error: Parameter &#39;x&#39; must have type annotation
+</code></pre></div>
+<p>Local variables are inferred; annotating them is allowed but rarely needed.
+More on designing signatures: <a href="../functions/">Functions and API boundaries</a>.</p>
+<h2 id="the-int-type-is-exact-fixed-width-is-fast">The <code>int</code> type is exact; fixed-width is fast<a class="headerlink" href="#the-int-type-is-exact-fixed-width-is-fast" title="Permanent link">&para;</a></h2>
+<p>Like Python, TurboPython's <code>int</code> is arbitrary-precision. It is always correct
+and never the fastest choice. The fixed-width types (<code>Int8</code> through <code>Int64</code>,
+unsigned variants, <code>Float32</code>/<code>Float64</code>) are fixed-size machine numbers. An
+unannotated integer literal infers as <code>Int32</code>:</p>
+<!-- tpy: run -->
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">():</span>
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>    <span class="n">n</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">**</span> <span class="mi">100</span>    <span class="c1"># int is arbitrary-precision</span>
+<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>    <span class="nb">print</span><span class="p">(</span><span class="n">n</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>    <span class="n">k</span> <span class="o">=</span> <span class="mi">5</span>                <span class="c1"># an unannotated literal is Int32</span>
+<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>    <span class="nb">print</span><span class="p">(</span><span class="n">k</span> <span class="o">*</span> <span class="n">k</span><span class="p">)</span>         <span class="c1"># 25</span>
+<a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a>
+<a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a><span class="n">main</span><span class="p">()</span>
+</code></pre></div>
+<p>Fixed-width arithmetic does not wrap silently. Overflow stops the program with
+a panic: <code>TurboPython panic: Int32 overflow in addition</code>. A panic is not an
+exception; it cannot be caught.</p>
+<p>Fixed-width types are for computation, and <code>int</code> is for genuinely unbounded
+arithmetic. The details, including literal inference and conversions:
+<a href="../types/">Types, inference and values</a>.</p>
+<h2 id="third-party-packages-cannot-be-imported">Third-party packages cannot be imported<a class="headerlink" href="#third-party-packages-cannot-be-imported" title="Permanent link">&para;</a></h2>
+<p>Importing a package written for regular Python fails to compile:</p>
+<!-- tpy: expect-error="Module 'numpy' not found" -->
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span>            <span class="c1"># error: no such module</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>error: Module &#39;numpy&#39; not found
+</code></pre></div>
+<p>TurboPython compiles the program and everything it imports, so a module is
+available only if it compiles as TurboPython. This is by design, not a
+temporary gap.</p>
+<div class="admonition info">
+<p class="admonition-title">Limited today</p>
+<p>A subset of the standard library is bundled.
+<a href="../../compatibility/">Compatibility</a> tracks which modules work.</p>
+</div>
+<h2 id="classes-have-a-fixed-set-of-fields">Classes have a fixed set of fields<a class="headerlink" href="#classes-have-a-fixed-set-of-fields" title="Permanent link">&para;</a></h2>
+<p>Fields are declared as annotations on the class. There is no <code>__dict__</code>, so an
+attribute that was never declared cannot be added later:</p>
+<!-- tpy: prelude -->
+<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="k">class</span><span class="w"> </span><span class="nc">Point</span><span class="p">:</span>
+<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>    <span class="n">x</span><span class="p">:</span> <span class="nb">int</span>
+<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+<a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">x</span> <span class="o">=</span> <span class="n">x</span>
+</code></pre></div>
+<!-- tpy: cont expect-error="has no field" -->
+<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">():</span>
+<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>    <span class="n">p</span> <span class="o">=</span> <span class="n">Point</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>    <span class="n">p</span><span class="o">.</span><span class="n">label</span> <span class="o">=</span> <span class="s2">&quot;origin&quot;</span>   <span class="c1"># error: &#39;label&#39; is not a declared field</span>
+<a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a>
+<a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a><span class="n">main</span><span class="p">()</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>error: Record &#39;Point&#39; has no field &#39;label&#39;
+</code></pre></div>
+<p>In exchange, objects are fixed-size and field access is a direct load, not a
+dictionary lookup. Classes, collections, and <code>match</code>:
+<a href="../data-modeling/">Data modeling</a>.</p>
+<h2 id="the-type-includes-none">The type includes <code>None</code><a class="headerlink" href="#the-type-includes-none" title="Permanent link">&para;</a></h2>
+<p>A value that may be <code>None</code> has a union type, <code>T | None</code>, and the compiler
+tracks it. Using it as a plain <code>T</code> without a check is flagged:</p>
+<!-- tpy: cont -->
+<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="k">def</span><span class="w"> </span><span class="nf">get_x</span><span class="p">(</span><span class="n">p</span><span class="p">:</span> <span class="n">Point</span> <span class="o">|</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>    <span class="k">return</span> <span class="n">p</span><span class="o">.</span><span class="n">x</span>           <span class="c1"># warning: p may be None here</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>warning: Potential None access on optional value; generated code adds
+<a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>runtime null check. Use &#39;if x is not None&#39; or &#39;assert x is not None&#39; to
+<a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a>prove safety and remove this warning.
+</code></pre></div>
+<p>The generated code stays safe (a runtime check is inserted), and the warning
+names the fix, which is to narrow the value before using it.</p>
+<!-- tpy: cont run -->
+<div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="k">def</span><span class="w"> </span><span class="nf">get_x</span><span class="p">(</span><span class="n">p</span><span class="p">:</span> <span class="n">Point</span> <span class="o">|</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a>    <span class="k">if</span> <span class="n">p</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+<a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a>        <span class="k">return</span> <span class="mi">0</span>
+<a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a>    <span class="k">return</span> <span class="n">p</span><span class="o">.</span><span class="n">x</span>           <span class="c1"># p is Point here -- no warning</span>
+<a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a>
+<a id="__codelineno-10-6" name="__codelineno-10-6" href="#__codelineno-10-6"></a><span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">():</span>
+<a id="__codelineno-10-7" name="__codelineno-10-7" href="#__codelineno-10-7"></a>    <span class="nb">print</span><span class="p">(</span><span class="n">get_x</span><span class="p">(</span><span class="n">Point</span><span class="p">(</span><span class="mi">3</span><span class="p">)))</span>   <span class="c1"># 3</span>
+<a id="__codelineno-10-8" name="__codelineno-10-8" href="#__codelineno-10-8"></a>    <span class="nb">print</span><span class="p">(</span><span class="n">get_x</span><span class="p">(</span><span class="kc">None</span><span class="p">))</span>       <span class="c1"># 0</span>
+<a id="__codelineno-10-9" name="__codelineno-10-9" href="#__codelineno-10-9"></a>
+<a id="__codelineno-10-10" name="__codelineno-10-10" href="#__codelineno-10-10"></a><span class="n">main</span><span class="p">()</span>
+</code></pre></div>
+<p>Narrowing <code>None</code> in full: <a href="../control-flow/">Control flow, None &amp; errors</a>.</p>
+<h2 id="unions-are-real-types-match-branches-on-them">Unions are real types; <code>match</code> branches on them<a class="headerlink" href="#unions-are-real-types-match-branches-on-them" title="Permanent link">&para;</a></h2>
+<p>In CPython, <code>A | B</code> is only a type hint. Here it is a real representation. The
+value carries a small marker, the <em>tag</em>, that records which member it currently
+holds. <code>match</code> compiles to a branch on that tag rather than a chain of
+<code>isinstance</code> checks. A missing <code>case</code> cannot fall through silently: with a
+declared return type, the compiler rejects a <code>match</code> that can reach the end of
+the function without returning.</p>
+<!-- tpy: run -->
+<div class="highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">math</span>
+<a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a>
+<a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a><span class="k">class</span><span class="w"> </span><span class="nc">Circle</span><span class="p">:</span>
+<a id="__codelineno-11-4" name="__codelineno-11-4" href="#__codelineno-11-4"></a>    <span class="n">r</span><span class="p">:</span> <span class="nb">float</span>
+<a id="__codelineno-11-5" name="__codelineno-11-5" href="#__codelineno-11-5"></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">r</span><span class="p">:</span> <span class="nb">float</span><span class="p">):</span>
+<a id="__codelineno-11-6" name="__codelineno-11-6" href="#__codelineno-11-6"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">r</span> <span class="o">=</span> <span class="n">r</span>
+<a id="__codelineno-11-7" name="__codelineno-11-7" href="#__codelineno-11-7"></a>
+<a id="__codelineno-11-8" name="__codelineno-11-8" href="#__codelineno-11-8"></a><span class="k">class</span><span class="w"> </span><span class="nc">Square</span><span class="p">:</span>
+<a id="__codelineno-11-9" name="__codelineno-11-9" href="#__codelineno-11-9"></a>    <span class="n">a</span><span class="p">:</span> <span class="nb">float</span>
+<a id="__codelineno-11-10" name="__codelineno-11-10" href="#__codelineno-11-10"></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">a</span><span class="p">:</span> <span class="nb">float</span><span class="p">):</span>
+<a id="__codelineno-11-11" name="__codelineno-11-11" href="#__codelineno-11-11"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">a</span> <span class="o">=</span> <span class="n">a</span>
+<a id="__codelineno-11-12" name="__codelineno-11-12" href="#__codelineno-11-12"></a>
+<a id="__codelineno-11-13" name="__codelineno-11-13" href="#__codelineno-11-13"></a><span class="k">def</span><span class="w"> </span><span class="nf">area</span><span class="p">(</span><span class="n">s</span><span class="p">:</span> <span class="n">Circle</span> <span class="o">|</span> <span class="n">Square</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<a id="__codelineno-11-14" name="__codelineno-11-14" href="#__codelineno-11-14"></a>    <span class="k">match</span> <span class="n">s</span><span class="p">:</span>
+<a id="__codelineno-11-15" name="__codelineno-11-15" href="#__codelineno-11-15"></a>        <span class="k">case</span> <span class="n">Circle</span><span class="p">(</span><span class="n">r</span><span class="o">=</span><span class="n">r</span><span class="p">):</span>
+<a id="__codelineno-11-16" name="__codelineno-11-16" href="#__codelineno-11-16"></a>            <span class="k">return</span> <span class="n">math</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">r</span> <span class="o">*</span> <span class="n">r</span>
+<a id="__codelineno-11-17" name="__codelineno-11-17" href="#__codelineno-11-17"></a>        <span class="k">case</span> <span class="n">Square</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="n">a</span><span class="p">):</span>
+<a id="__codelineno-11-18" name="__codelineno-11-18" href="#__codelineno-11-18"></a>            <span class="k">return</span> <span class="n">a</span> <span class="o">*</span> <span class="n">a</span>
+<a id="__codelineno-11-19" name="__codelineno-11-19" href="#__codelineno-11-19"></a>
+<a id="__codelineno-11-20" name="__codelineno-11-20" href="#__codelineno-11-20"></a><span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">():</span>
+<a id="__codelineno-11-21" name="__codelineno-11-21" href="#__codelineno-11-21"></a>    <span class="nb">print</span><span class="p">(</span><span class="n">area</span><span class="p">(</span><span class="n">Square</span><span class="p">(</span><span class="mf">3.0</span><span class="p">)))</span>   <span class="c1"># 9.0</span>
+<a id="__codelineno-11-22" name="__codelineno-11-22" href="#__codelineno-11-22"></a>
+<a id="__codelineno-11-23" name="__codelineno-11-23" href="#__codelineno-11-23"></a><span class="n">main</span><span class="p">()</span>
+</code></pre></div>
+<p>Unions and <code>match</code> in full: <a href="../data-modeling/">Data modeling</a>.</p>
+<h2 id="method-calls-bind-at-compile-time">Method calls bind at compile time<a class="headerlink" href="#method-calls-bind-at-compile-time" title="Permanent link">&para;</a></h2>
+<p>In CPython, method calls dispatch dynamically: an override runs whenever the
+object is a subclass instance. In TurboPython a call binds at compile time to
+the declared type, and the compiler warns on every override that would behave
+differently:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="k">class</span><span class="w"> </span><span class="nc">Animal</span><span class="p">:</span>
+<a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">sound</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a>        <span class="k">return</span> <span class="s2">&quot;...&quot;</span>
+<a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a>
+<a id="__codelineno-12-5" name="__codelineno-12-5" href="#__codelineno-12-5"></a><span class="k">class</span><span class="w"> </span><span class="nc">Dog</span><span class="p">(</span><span class="n">Animal</span><span class="p">):</span>
+<a id="__codelineno-12-6" name="__codelineno-12-6" href="#__codelineno-12-6"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">sound</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>      <span class="c1"># warning: hides Animal.sound</span>
+<a id="__codelineno-12-7" name="__codelineno-12-7" href="#__codelineno-12-7"></a>        <span class="k">return</span> <span class="s2">&quot;woof&quot;</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a>warning: Method &#39;Dog.sound&#39; hides &#39;Animal.sound&#39; -- any &#39;Animal&#39; reference
+<a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a>will call &#39;Animal.sound&#39;, not &#39;Dog.sound&#39; (differs from Python&#39;s dynamic
+<a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a>dispatch); make &#39;Animal&#39; a @dynamic protocol for runtime dispatch
+</code></pre></div>
+<p>Polymorphism is usually modeled with structural protocols or unions instead;
+<a href="../data-modeling/">Data modeling</a> shows both.</p>
+<h2 id="durable-storage-owns-its-values">Durable storage owns its values<a class="headerlink" href="#durable-storage-owns-its-values" title="Permanent link">&para;</a></h2>
+<p>Ownership is the one deep difference from CPython. In CPython, every variable,
+field, and list element is a reference, and a garbage collector frees objects.
+In TurboPython, locals and parameters still alias like Python, but a field or a
+container element <em>owns</em> its value. Storing an object that is still in use elsewhere makes a copy, and
+the compiler warns about every such copy. There is no garbage collector and no
+reference counting by default; lifetimes are decided at compile time.</p>
+<p><a href="../ownership/">Ownership and references</a> covers the model fully.</p>
+<h2 id="most-of-python-works-unchanged">Most of Python works unchanged<a class="headerlink" href="#most-of-python-works-unchanged" title="Permanent link">&para;</a></h2>
+<p>Those are the major differences. Ordinary code compiles and runs as it would
+in Python:</p>
+<!-- tpy: run -->
+<div class="highlight"><pre><span></span><code><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Iterator</span>
+<a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a>
+<a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a><span class="k">def</span><span class="w"> </span><span class="nf">evens</span><span class="p">(</span><span class="n">limit</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterator</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
+<a id="__codelineno-14-4" name="__codelineno-14-4" href="#__codelineno-14-4"></a>    <span class="n">n</span> <span class="o">=</span> <span class="mi">0</span>
+<a id="__codelineno-14-5" name="__codelineno-14-5" href="#__codelineno-14-5"></a>    <span class="k">while</span> <span class="n">n</span> <span class="o">&lt;</span> <span class="n">limit</span><span class="p">:</span>
+<a id="__codelineno-14-6" name="__codelineno-14-6" href="#__codelineno-14-6"></a>        <span class="k">yield</span> <span class="n">n</span>
+<a id="__codelineno-14-7" name="__codelineno-14-7" href="#__codelineno-14-7"></a>        <span class="n">n</span> <span class="o">+=</span> <span class="mi">2</span>
+<a id="__codelineno-14-8" name="__codelineno-14-8" href="#__codelineno-14-8"></a>
+<a id="__codelineno-14-9" name="__codelineno-14-9" href="#__codelineno-14-9"></a><span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">():</span>
+<a id="__codelineno-14-10" name="__codelineno-14-10" href="#__codelineno-14-10"></a>    <span class="n">squares</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span> <span class="o">*</span> <span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">5</span><span class="p">)]</span>
+<a id="__codelineno-14-11" name="__codelineno-14-11" href="#__codelineno-14-11"></a>    <span class="n">by_name</span> <span class="o">=</span> <span class="p">{</span><span class="sa">f</span><span class="s2">&quot;k</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">:</span> <span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">)}</span>
+<a id="__codelineno-14-12" name="__codelineno-14-12" href="#__codelineno-14-12"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;total=</span><span class="si">{</span><span class="nb">sum</span><span class="p">(</span><span class="n">squares</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>     <span class="c1"># total=30</span>
+<a id="__codelineno-14-13" name="__codelineno-14-13" href="#__codelineno-14-13"></a>    <span class="nb">print</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">by_name</span><span class="o">.</span><span class="n">items</span><span class="p">()))</span>
+<a id="__codelineno-14-14" name="__codelineno-14-14" href="#__codelineno-14-14"></a>    <span class="nb">print</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">evens</span><span class="p">(</span><span class="mi">8</span><span class="p">)))</span>              <span class="c1"># [0, 2, 4, 6]</span>
+<a id="__codelineno-14-15" name="__codelineno-14-15" href="#__codelineno-14-15"></a>    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;/tmp/note.txt&quot;</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fh</span><span class="p">:</span>
+<a id="__codelineno-14-16" name="__codelineno-14-16" href="#__codelineno-14-16"></a>        <span class="n">fh</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;ok&quot;</span><span class="p">)</span>
+<a id="__codelineno-14-17" name="__codelineno-14-17" href="#__codelineno-14-17"></a>    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;file written&quot;</span><span class="p">)</span>
+<a id="__codelineno-14-18" name="__codelineno-14-18" href="#__codelineno-14-18"></a>
+<a id="__codelineno-14-19" name="__codelineno-14-19" href="#__codelineno-14-19"></a><span class="n">main</span><span class="p">()</span>
+</code></pre></div>
+<p><code>try</code>/<code>except</code> also works as in Python; error handling has its own page,
+<a href="../control-flow/">Control flow, None &amp; errors</a>. Some conveniences are still
+missing, and <a href="../../compatibility/">Compatibility</a> tracks the gaps.</p>
+<h2 id="how-these-docs-flag-differences">How these docs flag differences<a class="headerlink" href="#how-these-docs-flag-differences" title="Permanent link">&para;</a></h2>
+<p>Five callouts appear throughout the guide, in fixed meanings:</p>
+<ul>
+<li><strong>Planned</strong> -- does not exist yet; on the roadmap.</li>
+<li><strong>Limited today</strong> -- partially works; states the current boundary and links
+  to Compatibility.</li>
+<li><strong>Differs from CPython</strong> -- behavior differs and the compiler warns or
+  errors; the callout names the diagnostic.</li>
+<li><strong>Silent difference from CPython</strong> -- behavior differs with no diagnostic
+  today; the callout flags it prominently.</li>
+<li><strong>Coming from C++/Rust</strong> -- asides for systems programmers. Python readers
+  can skip them.</li>
+</ul>
+<p>The guide continues with <a href="../types/">Types, inference and values</a>.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      These docs describe <span class="tpy-version">TurboPython 0.5.0.dev0</span> (v0.4.0-131-g97ffc74ca).
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.indexes", "navigation.expand", "navigation.top", "navigation.tracking", "toc.follow", "search.suggest", "search.highlight", "content.code.copy", "content.tabs.link"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+    
+  </body>
+</html>

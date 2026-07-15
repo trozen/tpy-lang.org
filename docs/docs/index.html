@@ -14,7 +14,7 @@
       
       
       
-        <link rel="next" href="guide/">
+        <link rel="next" href="getting-started/">
       
       
         
@@ -73,6 +73,14 @@
     </div>
     <div data-md-component="announce">
       
+        <aside class="md-banner">
+          <div class="md-banner__inner md-grid md-typeset">
+            
+            These docs describe TurboPython <strong>0.5.0.dev0</strong>, a pre-release of the upcoming 0.5.0.
+          </div>
+          
+        </aside>
+      
     </div>
     
     
@@ -82,7 +90,7 @@
 
 <header class="md-header md-header--shadow" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href="." title="TurboPython" class="md-header__button md-logo" aria-label="TurboPython" data-md-component="logo">
+    <a href="/" title="TurboPython" class="md-header__button md-logo" aria-label="TurboPython" data-md-component="logo">
       
   <img src="assets/logo.svg" alt="logo">
 
@@ -156,6 +164,21 @@
       
     
     
+    
+      <div class="md-header__source">
+        <div class="md-source">
+          <div class="md-source__repository">
+            TurboPython 0.5.0.dev0
+            
+              <ul class="md-source__facts">
+                <li class="md-source__fact md-source__fact--version">v0.4.0-131-g97ffc74ca</li>
+              </ul>
+            
+          </div>
+        </div>
+      </div>
+    
+    
   </nav>
   
 </header>
@@ -181,7 +204,7 @@
 
 <nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href="." title="TurboPython" class="md-nav__button md-logo" aria-label="TurboPython" data-md-component="logo">
+    <a href="/" title="TurboPython" class="md-nav__button md-logo" aria-label="TurboPython" data-md-component="logo">
       
   <img src="assets/logo.svg" alt="logo">
 
@@ -235,14 +258,412 @@
   
   
     <li class="md-nav__item">
-      <a href="guide/" class="md-nav__link">
+      <a href="getting-started/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
+    Getting started
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="guide/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
     Guide
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_3" id="__nav_3_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Guide
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="guide/differences/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    How TPy differs
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="guide/types/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Types
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="guide/functions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Functions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="guide/ownership/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Ownership
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="guide/data-modeling/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Data modeling
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="guide/control-flow/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Control flow
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="guide/efficiency/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Efficiency
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="guide/building/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Building
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="guide/cpp-rust/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Coming from C++/Rust
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="guide/beyond/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Beyond the core
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="compatibility/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Compatibility
   
 
     
@@ -291,19 +712,22 @@
 
 
 <h1 id="turbopython-documentation">TurboPython documentation<a class="headerlink" href="#turbopython-documentation" title="Permanent link">&para;</a></h1>
-<p>TurboPython is Python's syntax over a static type and ownership model, compiled
-through C++ to a native binary. These docs cover how to write it and what works
-today.</p>
+<p>TurboPython is a programming language and a compiler based on Python. It
+keeps Python's familiar syntax and adds a few extensions that let a program
+be statically compiled into a fast native binary. These docs cover how to
+write TurboPython and what works today.</p>
 <ul>
-<li><strong><a href="guide/">Guide</a></strong> — the Python-to-TurboPython delta, the ownership model,
-  and idiomatic patterns. The place to start.</li>
+<li><strong><a href="getting-started/">Getting started</a></strong> — installation, a first program,
+  and a ten-minute tour of the language.</li>
+<li><strong><a href="guide/">Guide</a></strong> — what changes coming from Python, the
+  ownership model, and idiomatic patterns.</li>
+<li><strong><a href="compatibility/">Compatibility</a></strong> — a precise list of what works today.</li>
 </ul>
-<p>More sections (a compatibility table and a generated API reference) will follow.</p>
+<p>A generated API reference will follow.</p>
 <div class="admonition note">
 <p class="admonition-title">Early development</p>
-<p>TurboPython is under active development. Most of Python's statically
-compilable syntax works, but expect gaps in the standard library and rough
-edges. The <a href="https://tpy-lang.org/">landing page</a> has runnable examples.</p>
+<p>TurboPython is under active development. Most of the core language works,
+but the standard library has gaps and rough edges remain. The <a href="https://tpy-lang.org/">landing page</a> has runnable examples.</p>
 </div>
 
 
@@ -322,6 +746,8 @@ edges. The <a href="https://tpy-lang.org/">landing page</a> has runnable example
             </div>
           
           
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
 <script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
         </div>
         
@@ -338,6 +764,10 @@ edges. The <a href="https://tpy-lang.org/">landing page</a> has runnable example
   <div class="md-footer-meta md-typeset">
     <div class="md-footer-meta__inner md-grid">
       <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      These docs describe <span class="tpy-version">TurboPython 0.5.0.dev0</span> (v0.4.0-131-g97ffc74ca).
+    </div>
   
   
     Made with
@@ -360,7 +790,7 @@ edges. The <a href="https://tpy-lang.org/">landing page</a> has runnable example
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": ".", "features": ["navigation.sections", "navigation.top", "navigation.tracking", "toc.follow", "search.suggest", "search.highlight", "content.code.copy"], "search": "assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": ".", "features": ["navigation.indexes", "navigation.expand", "navigation.top", "navigation.tracking", "toc.follow", "search.suggest", "search.highlight", "content.code.copy", "content.tabs.link"], "search": "assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
       <script src="assets/javascripts/bundle.79ae519e.min.js"></script>

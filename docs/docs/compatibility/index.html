@@ -1,0 +1,1257 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="TurboPython documentation -- writing TurboPython, and what works today.">
+      
+      
+      
+        <link rel="canonical" href="https://tpy-lang.org/docs/compatibility/">
+      
+      
+        <link rel="prev" href="../guide/beyond/">
+      
+      
+      
+        
+      
+      
+      <link rel="icon" href="../assets/favicon.svg">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+    <title>Compatibility - TurboPython</title>
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+    
+    
+      <link rel="stylesheet" href="../stylesheets/extra.css">
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#compatibility" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+        <aside class="md-banner">
+          <div class="md-banner__inner md-grid md-typeset">
+            
+            These docs describe TurboPython <strong>0.5.0.dev0</strong>, a pre-release of the upcoming 0.5.0.
+          </div>
+          
+        </aside>
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="/" title="TurboPython" class="md-header__button md-logo" aria-label="TurboPython" data-md-component="logo">
+      
+  <img src="../assets/logo.svg" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            TurboPython
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Compatibility
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+    
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+    
+      <div class="md-header__source">
+        <div class="md-source">
+          <div class="md-source__repository">
+            TurboPython 0.5.0.dev0
+            
+              <ul class="md-source__facts">
+                <li class="md-source__fact md-source__fact--version">v0.4.0-131-g97ffc74ca</li>
+              </ul>
+            
+          </div>
+        </div>
+      </div>
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="/" title="TurboPython" class="md-nav__button md-logo" aria-label="TurboPython" data-md-component="logo">
+      
+  <img src="../assets/logo.svg" alt="logo">
+
+    </a>
+    TurboPython
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../getting-started/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Getting started
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../guide/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Guide
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_3" id="__nav_3_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Guide
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../guide/differences/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    How TPy differs
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../guide/types/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Types
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../guide/functions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Functions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../guide/ownership/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Ownership
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../guide/data-modeling/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Data modeling
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../guide/control-flow/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Control flow
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../guide/efficiency/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Efficiency
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../guide/building/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Building
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../guide/cpp-rust/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Coming from C++/Rust
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../guide/beyond/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Beyond the core
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Compatibility
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Compatibility
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#language-features" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Language features
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Language features">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#works" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Works
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#partial" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Partial
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#not-yet" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Not yet
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#standard-library" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Standard library
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#language-features" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Language features
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Language features">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#works" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Works
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#partial" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Partial
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#not-yet" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Not yet
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#standard-library" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Standard library
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="compatibility">Compatibility<a class="headerlink" href="#compatibility" title="Permanent link">&para;</a></h1>
+<div class="admonition warning">
+<p class="admonition-title">Review pending</p>
+<p>This page has not yet been reviewed by the maintainer.</p>
+</div>
+<p>This page tracks what works today -- exactly for language features, at
+module level for the standard library.</p>
+<p><strong>Status as of TurboPython 0.5.0.dev0, 2026-07-08.</strong></p>
+<h2 id="language-features">Language features<a class="headerlink" href="#language-features" title="Permanent link">&para;</a></h2>
+<h3 id="works">Works<a class="headerlink" href="#works" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Feature</th>
+<th>Note</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Functions: defaults, keyword arguments, annotated <code>*args</code></td>
+<td><a href="../guide/functions/">Functions</a></td>
+</tr>
+<tr>
+<td>First-class functions and closures</td>
+<td>functions return functions; <code>Callable[...]</code> types</td>
+</tr>
+<tr>
+<td>Lambdas</td>
+<td>e.g. as <code>sorted</code> keys</td>
+</tr>
+<tr>
+<td>Classes: declared fields, methods, <code>@property</code>, <code>@staticmethod</code>, class-level defaults</td>
+<td><a href="../guide/data-modeling/">Data modeling</a></td>
+</tr>
+<tr>
+<td><code>@dataclass</code></td>
+<td>generates the constructor</td>
+</tr>
+<tr>
+<td>Dunder methods: <code>__str__</code>, <code>__eq__</code>, <code>__hash__</code>, <code>__del__</code></td>
+<td><code>__del__</code> runs deterministically when the owner frees the object</td>
+</tr>
+<tr>
+<td>Operator overloading</td>
+<td><code>__add__</code> and friends; fresh results return <code>Own[T]</code>, per the normal rule</td>
+</tr>
+<tr>
+<td>Objects as set elements and dict keys</td>
+<td>with <code>__eq__</code> + <code>__hash__</code></td>
+</tr>
+<tr>
+<td>Inheritance with <code>super()</code>, including multiple inheritance</td>
+<td>dispatch is static -- differs from CPython; the compiler warns on every hiding override</td>
+</tr>
+<tr>
+<td>Structural protocols</td>
+<td>static; <code>@dynamic</code> for runtime dispatch</td>
+</tr>
+<tr>
+<td>Unions <code>A \| B</code> + <code>match</code></td>
+<td>guards, <code>case _</code>, <code>isinstance</code>; every path must return</td>
+</tr>
+<tr>
+<td>Generators and generator expressions</td>
+<td><code>-&gt; Iterator[T]</code> annotation required</td>
+</tr>
+<tr>
+<td>Hand-written iterators</td>
+<td><code>StopIteration</code> compiled away, no throw cost</td>
+</tr>
+<tr>
+<td>Comprehensions (list, dict, set)</td>
+<td></td>
+</tr>
+<tr>
+<td>Context managers</td>
+<td>custom <code>__enter__</code>/<code>__exit__</code> work</td>
+</tr>
+<tr>
+<td>Exceptions</td>
+<td>hierarchies, base-class catch, bare re-raise, <code>finally</code></td>
+</tr>
+<tr>
+<td><code>assert</code></td>
+<td>narrows optionals; kept in <code>-O</code> builds (no CPython <code>-O</code> stripping)</td>
+</tr>
+<tr>
+<td><code>bytes</code> literals</td>
+<td></td>
+</tr>
+<tr>
+<td>User generics</td>
+<td>PEP 695 syntax (<code>def f[T](...)</code>); compiled once per concrete type</td>
+</tr>
+<tr>
+<td>Top-level code</td>
+<td>works; <code>main()</code> is only a convention</td>
+</tr>
+<tr>
+<td>Module globals</td>
+<td>reference types are assigned once at module scope, by design</td>
+</tr>
+<tr>
+<td>Threads</td>
+<td><code>tpy.thread.spawn</code>/<code>join</code>, <code>Send</code> checked at spawn; no GIL</td>
+</tr>
+<tr>
+<td>Shared ownership</td>
+<td><code>Rc</code>, thread-safe <code>Arc</code>, <code>Weak</code></td>
+</tr>
+<tr>
+<td>CPython extensions</td>
+<td><code># tpy: ext_module</code> + <code>@export</code></td>
+</tr>
+</tbody>
+</table>
+<h3 id="partial">Partial<a class="headerlink" href="#partial" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Feature</th>
+<th>Current boundary</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>asyncio</code></td>
+<td>single-threaded executor; <code>run</code>, <code>create_task</code>, <code>sleep</code>, and plain <code>await</code> work (<a href="../guide/beyond/">Beyond the core</a> has the details)</td>
+</tr>
+<tr>
+<td><code>**kwargs</code></td>
+<td>only the typed form (<code>Unpack[TypedDict]</code>); plain <code>**kwargs: T</code> is rejected</td>
+</tr>
+<tr>
+<td>f-strings</td>
+<td>scalars format; a list or dict cannot be formatted directly</td>
+</tr>
+<tr>
+<td><code>except</code> clauses</td>
+<td>one exception type per clause; <code>except (A, B)</code> is rejected</td>
+</tr>
+<tr>
+<td><code>print(e)</code> on exceptions</td>
+<td>prints the object, not the message; <code>str(e)</code> and f-strings return the message</td>
+</tr>
+<tr>
+<td>Union elements in containers</td>
+<td>matching on elements of <code>list[A \| B]</code> works; passing an element to a union-typed <em>parameter</em> fails in the C++ build today</td>
+</tr>
+<tr>
+<td>Protocol types in containers</td>
+<td><code>list[SomeProtocol]</code> is rejected</td>
+</tr>
+<tr>
+<td><code>sorted</code></td>
+<td>elements must be <code>Comparable</code>; tuples containing lists are rejected</td>
+</tr>
+<tr>
+<td><code>sum</code></td>
+<td>cannot yet accept a read-only list, so it cannot be called where data is read-only (e.g. inside a <code>@property</code>)</td>
+</tr>
+<tr>
+<td>Fixed-width <code>*args</code></td>
+<td><code>Int32</code> varargs work; <code>Float64</code> varargs reject augmented assignment in the loop body</td>
+</tr>
+</tbody>
+</table>
+<h3 id="not-yet">Not yet<a class="headerlink" href="#not-yet" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Feature</th>
+<th>Status</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Third-party packages (<code>pip install</code> imports)</td>
+<td>modules must be written in or ported to TurboPython</td>
+</tr>
+<tr>
+<td>User-defined decorators</td>
+<td><code>@my_decorator</code> on a function is rejected (<code>Unknown decorator</code>)</td>
+</tr>
+<tr>
+<td><code>yield from</code></td>
+<td>rejected with a clear message</td>
+</tr>
+<tr>
+<td><code>@noalloc</code> enforcement</td>
+<td>the decorator parses; the no-allocation check is not implemented</td>
+</tr>
+<tr>
+<td><code>pyproject.toml</code> integration</td>
+<td>planned; configuration is command-line flags</td>
+</tr>
+<tr>
+<td>Race detection through <code>Arc</code></td>
+<td>the compiler does not yet detect data races through <code>Arc</code> clones; <code>Atomic[T]</code> covers counters, and a <code>Mutex</code> type does not exist</td>
+</tr>
+<tr>
+<td>User-facing macros</td>
+<td>the mechanism exists internally only</td>
+</tr>
+<tr>
+<td><code>@native</code> C++ binding documentation</td>
+<td>usable but undocumented; the API may change</td>
+</tr>
+</tbody>
+</table>
+<h2 id="standard-library">Standard library<a class="headerlink" href="#standard-library" title="Permanent link">&para;</a></h2>
+<p>A bundled subset ships with the compiler. Statuses: <strong>bundled</strong> -- the module
+imports against the pinned build and covers a useful subset of the CPython
+API, not the whole surface; <strong>bundled, partial</strong> -- large known gaps, listed
+where the guide covers the module; <strong>bundled, early</strong> -- new code, expect
+movement.</p>
+<table>
+<thead>
+<tr>
+<th>Module</th>
+<th>Status</th>
+<th>Note</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>math</code></td>
+<td>bundled</td>
+<td>constants and common functions</td>
+</tr>
+<tr>
+<td><code>json</code></td>
+<td>bundled</td>
+<td>encode/decode</td>
+</tr>
+<tr>
+<td><code>re</code></td>
+<td>bundled</td>
+<td>pattern matching</td>
+</tr>
+<tr>
+<td><code>datetime</code>, <code>time</code>, <code>zoneinfo</code></td>
+<td>bundled</td>
+<td>dates, times, time zones</td>
+</tr>
+<tr>
+<td><code>os</code>, <code>io</code>, <code>sys</code></td>
+<td>bundled</td>
+<td>files, paths, environment basics</td>
+</tr>
+<tr>
+<td><code>collections</code>, <code>itertools</code>, <code>functools</code></td>
+<td>bundled</td>
+<td>core helpers</td>
+</tr>
+<tr>
+<td><code>bisect</code>, <code>heapq</code></td>
+<td>bundled</td>
+<td>sorted-list and heap algorithms</td>
+</tr>
+<tr>
+<td><code>dataclasses</code>, <code>enum</code>, <code>typing</code></td>
+<td>bundled</td>
+<td></td>
+</tr>
+<tr>
+<td><code>argparse</code></td>
+<td>bundled</td>
+<td>command-line parsing</td>
+</tr>
+<tr>
+<td><code>csv</code>, <code>base64</code>, <code>struct</code>, <code>hashlib</code></td>
+<td>bundled</td>
+<td>data formats and hashing</td>
+</tr>
+<tr>
+<td><code>random</code></td>
+<td>bundled</td>
+<td></td>
+</tr>
+<tr>
+<td><code>asyncio</code></td>
+<td>bundled, partial</td>
+<td>see the language table above</td>
+</tr>
+<tr>
+<td><code>socket</code>, <code>ssl</code>, <code>http</code>, <code>urllib</code></td>
+<td>bundled, early</td>
+<td>server-side TLS since 0.5.0.dev</td>
+</tr>
+<tr>
+<td><code>errno</code>, <code>signal</code></td>
+<td>bundled</td>
+<td>process signals and error codes</td>
+</tr>
+<tr>
+<td><code>tplib.requests</code></td>
+<td>bundled, early</td>
+<td>HTTP client, TurboPython-native</td>
+</tr>
+</tbody>
+</table>
+<p>Notable absences: <code>pathlib</code>,
+<code>logging</code>, <code>subprocess</code>, <code>threading</code> (TurboPython has
+<a href="../guide/beyond/">its own threads</a>), <code>multiprocessing</code>, <code>pickle</code>, <code>sqlite3</code>,
+<code>unittest</code>, <code>contextlib</code>, <code>copy</code> (TurboPython has its own
+<a href="../guide/ownership/"><code>copy()</code></a>), <code>abc</code>, <code>string</code>, <code>textwrap</code>, <code>glob</code>,
+<code>shutil</code>, <code>tempfile</code>, <code>uuid</code>, <code>secrets</code>.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      These docs describe <span class="tpy-version">TurboPython 0.5.0.dev0</span> (v0.4.0-131-g97ffc74ca).
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.indexes", "navigation.expand", "navigation.top", "navigation.tracking", "toc.follow", "search.suggest", "search.highlight", "content.code.copy", "content.tabs.link"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+    
+  </body>
+</html>

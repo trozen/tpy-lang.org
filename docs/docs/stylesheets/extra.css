@@ -45,6 +45,43 @@
 .md-content__inner { max-width: 44rem; margin-left:auto; margin-right:auto; }
 .md-content__inner > :first-child { margin-top: 1.2rem; }
 
+/* Material gives all of config.copyright the brighter --light tone. Let the
+   sentence around the version recede to match "Made with ...", and keep only
+   the version itself at the regular tone (hooks/version.py wraps it). */
+.md-copyright__highlight {
+  color: var(--md-footer-fg-color--lighter);
+}
+.md-copyright__highlight .tpy-version {
+  color: var(--md-footer-fg-color--light);
+}
+
+/* The header version block (overrides/partials/header.html) carries no icon,
+   so reclaim the room md-source reserves for one. padding-left is set
+   unconditionally, while the -2rem pull-back that normally cancels it only
+   applies via `.md-source__icon + .md-source__repository`; without this the
+   text sits indented against empty space. Equal specificity to the theme's
+   `[dir=ltr] .md-source__repository`, and extra.css loads last, so it wins. */
+.md-header__source .md-source__repository {
+  margin-left: 0;
+  padding-left: 0;
+  max-width: 100%;
+}
+
+/* Pre-release banner (the announce block in overrides/main.html): a quiet strip
+   above the header. Sans, since .md-banner__inner carries .md-typeset. */
+.md-banner {
+  background-color: #141821;
+  color: var(--md-default-fg-color--light);
+  border-bottom: 1px solid #222a3a;
+}
+.md-banner .md-banner__inner {
+  font-family: system-ui,-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;
+  font-size: .66rem;
+  text-align: center;
+  margin: .45rem auto;
+}
+.md-banner strong { color: #ffbf8a; font-weight: 600; }
+
 /* Header to match the landing page: dark translucent + blur, no shadow. */
 .md-header {
   background-color: rgba(12,15,23,.85);
@@ -85,3 +122,17 @@
 /* Links: subtle underline rather than full color blocks. */
 .md-typeset a { text-decoration: none; }
 .md-typeset a:hover { text-decoration: underline; }
+
+/* External links (marked up manually with { target="_blank" rel="noopener" },
+   see CLAUDE.md): a small open-in-new icon after the link text. */
+.md-typeset a[target="_blank"]::after {
+  content: "";
+  display: inline-block;
+  width: .6em;
+  height: .6em;
+  margin-left: .2em;
+  vertical-align: -.02em;
+  background-color: currentColor;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M19 19H5V5h7V3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z'/%3E%3C/svg%3E") no-repeat center / contain;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M19 19H5V5h7V3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z'/%3E%3C/svg%3E") no-repeat center / contain;
+}

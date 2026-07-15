@@ -18,27 +18,53 @@ theme:
   palette:
     scheme: slate          # dark; colors set in stylesheets/extra.css
   features:
-    - navigation.sections
+    - navigation.indexes   # a section's index.md becomes its clickable header
+    - navigation.expand    # sections start expanded
     - navigation.top
     - navigation.tracking
     - toc.follow
     - search.suggest
     - search.highlight
     - content.code.copy
+    - content.tabs.link   # picking uv/pip in one tab group switches all groups
 
 extra_css:
   - stylesheets/extra.css
 
+extra:
+  homepage: /   # header logo leads to the main site (root-relative: works locally too)
+  # tpy_version / tpy_release / tpy_prerelease are set by hooks/version.py.
+  # Not `version:` -- Material claims that key for its mike version selector.
+
+hooks:
+  - hooks/version.py   # reads the tpy version out of the vendor/tpy submodule
+
 nav:
   - Home: index.md
-  - Guide: guide.md
+  - Getting started: getting-started.md
+  - Guide:
+      - guide/index.md     # section index -- "Guide" itself links here
+      - How TPy differs: guide/differences.md
+      - Types: guide/types.md
+      - Functions: guide/functions.md
+      - Ownership: guide/ownership.md
+      - Data modeling: guide/data-modeling.md
+      - Control flow: guide/control-flow.md
+      - Efficiency: guide/efficiency.md
+      - Building: guide/building.md
+      - Coming from C++/Rust: guide/cpp-rust.md
+      - Beyond the core: guide/beyond.md
+  - Compatibility: compatibility.md
 
 markdown_extensions:
   - admonition
+  - attr_list             # external links: { target="_blank" rel="noopener" }, see CLAUDE.md
   - toc:
       permalink: true
   - pymdownx.highlight:
       anchor_linenums: true
   - pymdownx.superfences
   - pymdownx.inlinehilite
+  - pymdownx.tabbed:
+      alternate_style: true
   - tables

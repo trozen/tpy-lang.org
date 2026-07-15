@@ -1,0 +1,1084 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="TurboPython documentation -- writing TurboPython, and what works today.">
+      
+      
+      
+        <link rel="canonical" href="https://tpy-lang.org/docs/guide/building/">
+      
+      
+        <link rel="prev" href="../efficiency/">
+      
+      
+        <link rel="next" href="../cpp-rust/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/favicon.svg">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+    <title>Building - TurboPython</title>
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+    
+    
+      <link rel="stylesheet" href="../../stylesheets/extra.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#building-running" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+        <aside class="md-banner">
+          <div class="md-banner__inner md-grid md-typeset">
+            
+            These docs describe TurboPython <strong>0.5.0.dev0</strong>, a pre-release of the upcoming 0.5.0.
+          </div>
+          
+        </aside>
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="/" title="TurboPython" class="md-header__button md-logo" aria-label="TurboPython" data-md-component="logo">
+      
+  <img src="../../assets/logo.svg" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            TurboPython
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Building
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+    
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+    
+      <div class="md-header__source">
+        <div class="md-source">
+          <div class="md-source__repository">
+            TurboPython 0.5.0.dev0
+            
+              <ul class="md-source__facts">
+                <li class="md-source__fact md-source__fact--version">v0.4.0-131-g97ffc74ca</li>
+              </ul>
+            
+          </div>
+        </div>
+      </div>
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="/" title="TurboPython" class="md-nav__button md-logo" aria-label="TurboPython" data-md-component="logo">
+      
+  <img src="../../assets/logo.svg" alt="logo">
+
+    </a>
+    TurboPython
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../getting-started/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Getting started
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Guide
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_3" id="__nav_3_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Guide
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../differences/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    How TPy differs
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../types/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Types
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../functions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Functions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ownership/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Ownership
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../data-modeling/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Data modeling
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../control-flow/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Control flow
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../efficiency/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Efficiency
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Building
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Building
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#run-a-program" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Run a program
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#run-the-repl-and-one-liners" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Run the REPL and one-liners
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#build-a-standalone-binary" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Build a standalone binary
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#check-without-building-read-the-c" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Check without building; read the C++
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#build-a-cpython-extension" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Build a CPython extension
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#a-project-is-a-directory-of-modules" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        A project is a directory of modules
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#toolchain-notes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Toolchain notes
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../cpp-rust/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Coming from C++/Rust
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../beyond/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Beyond the core
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../compatibility/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Compatibility
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#run-a-program" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Run a program
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#run-the-repl-and-one-liners" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Run the REPL and one-liners
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#build-a-standalone-binary" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Build a standalone binary
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#check-without-building-read-the-c" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Check without building; read the C++
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#build-a-cpython-extension" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Build a CPython extension
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#a-project-is-a-directory-of-modules" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        A project is a directory of modules
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#toolchain-notes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Toolchain notes
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="building-running">Building &amp; running<a class="headerlink" href="#building-running" title="Permanent link">&para;</a></h1>
+<div class="admonition warning">
+<p class="admonition-title">Review pending</p>
+<p>This page has not yet been reviewed by the maintainer.</p>
+</div>
+<p>The <code>tpy</code> command compiles a program and runs it. The <code>tpyc</code> command compiles
+without running. Both take ordinary <code>.py</code> files.</p>
+<h2 id="run-a-program">Run a program<a class="headerlink" href="#run-a-program" title="Permanent link">&para;</a></h2>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="gp">$ </span>tpy<span class="w"> </span>program.py
+</code></pre></div>
+<p>The program is type-checked, compiled to C++, built, and run. The first build
+compiles the runtime and is slow; later builds reuse compiled C++ from
+earlier builds and take seconds.</p>
+<h2 id="run-the-repl-and-one-liners">Run the REPL and one-liners<a class="headerlink" href="#run-the-repl-and-one-liners" title="Permanent link">&para;</a></h2>
+<p>Running <code>tpy</code> with no arguments starts an interactive REPL (<code>-i</code>/<code>--repl</code>
+forces it). One-liners run with <code>-c</code>:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="gp">$ </span>tpy<span class="w"> </span>-c<span class="w"> </span><span class="s1">&#39;print(2 + 3)&#39;</span>
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="go">5</span>
+</code></pre></div>
+<h2 id="build-a-standalone-binary">Build a standalone binary<a class="headerlink" href="#build-a-standalone-binary" title="Permanent link">&para;</a></h2>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="gp">$ </span>tpy<span class="w"> </span>-b<span class="w"> </span>-o<span class="w"> </span>build<span class="w"> </span>program.py
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="go">Built: build/debug/program</span>
+<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="gp">$ </span>./build/debug/program
+</code></pre></div>
+<p>The binary is named after the source file and lands in <code>debug/</code> by default.
+That build is unoptimized and meant for development. The build to ship and to
+measure is <code>-O</code> (or
+<code>--release</code>):</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="gp">$ </span>tpy<span class="w"> </span>-O<span class="w"> </span>-b<span class="w"> </span>-o<span class="w"> </span>build<span class="w"> </span>program.py
+<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="go">Built: build/release/program</span>
+</code></pre></div>
+<p>The result needs no Python installation. It links only the standard system
+libraries (the C++ runtime and libc), so it runs on any Linux with the same
+or newer system libraries. Building happens on the platform the binary
+targets. Binaries are small. A trivial release build is about 250 KB.</p>
+<h2 id="check-without-building-read-the-c">Check without building; read the C++<a class="headerlink" href="#check-without-building-read-the-c" title="Permanent link">&para;</a></h2>
+<p>The <code>tpyc</code> command runs the front end only -- parsing, type checking,
+ownership analysis, C++ generation -- and skips the native build. It is the
+fast way to check a change:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="gp">$ </span>tpyc<span class="w"> </span>-o<span class="w"> </span>build<span class="w"> </span>program.py
+</code></pre></div>
+<p>The output directory receives the generated C++ project. <code>--dump-code</code> prints
+the generated C++ instead, which shows directly whether a loop stayed
+fixed-width, where a copy happens, and what a class compiles to:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="gp">$ </span>tpyc<span class="w"> </span>--dump-code<span class="w"> </span>program.py
+</code></pre></div>
+<p>Adding <code>-x</code> to a <code>-b</code> build runs the result immediately after building.</p>
+<h2 id="build-a-cpython-extension">Build a CPython extension<a class="headerlink" href="#build-a-cpython-extension" title="Permanent link">&para;</a></h2>
+<p>A module marked <code># tpy: ext_module</code> compiles into a regular CPython extension.
+Functions marked <code>@export</code> become the module's public API:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="c1"># tpy: ext_module</span>
+<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="kn">from</span><span class="w"> </span><span class="nn">tpy.extern</span><span class="w"> </span><span class="kn">import</span> <span class="n">export</span>
+<a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>
+<a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a><span class="nd">@export</span>
+<a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a><span class="k">def</span><span class="w"> </span><span class="nf">triple</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a>    <span class="k">return</span> <span class="n">x</span> <span class="o">*</span> <span class="mi">3</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="gp">$ </span>tpyc<span class="w"> </span>-b<span class="w"> </span>-o<span class="w"> </span>build<span class="w"> </span>fastmod.py
+<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="go">Built extension: build/debug/fastmod.so</span>
+<a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a><span class="gp">$ </span>cp<span class="w"> </span>build/debug/fastmod.so<span class="w"> </span>.
+<a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a><span class="gp">$ </span>python3<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;import fastmod; print(fastmod.triple(14))&quot;</span>
+<a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a><span class="go">42</span>
+</code></pre></div>
+<p>The module is imported under the <code>.so</code> name, which matches the source file.
+Arguments and results convert to their Python counterparts at the boundary,
+and a mismatched argument raises an ordinary <code>TypeError</code> on the Python side.
+<a href="../../compatibility/">Compatibility</a> tracks which boundary types are
+supported.</p>
+<p>This supports gradual migration: the application stays in CPython while the
+hot module moves to TurboPython.</p>
+<h2 id="a-project-is-a-directory-of-modules">A project is a directory of modules<a class="headerlink" href="#a-project-is-a-directory-of-modules" title="Permanent link">&para;</a></h2>
+<p>There is no project file yet (<a href="#toolchain-notes">Planned</a>, below). A program
+is its entry file plus everything it imports. Local modules and packages next
+to the entry file resolve as in Python, and all of it is compiled together:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>app.py          # the entry file:  tpy app.py
+<a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>helpers.py      # import helpers
+<a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a>pkg/
+<a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a>    __init__.py
+<a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a>    scale.py    # from pkg.scale import to_f
+</code></pre></div>
+<p>Module-level constants are declared <code>Final</code>. The compiler suggests it for an
+ALL_CAPS name whose type <code>Final</code> can wrap:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Final</span>
+<a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a><span class="kn">from</span><span class="w"> </span><span class="nn">tpy</span><span class="w"> </span><span class="kn">import</span> <span class="n">Float64</span>
+<a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a>
+<a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a><span class="n">FACTOR</span><span class="p">:</span> <span class="n">Final</span><span class="p">[</span><span class="n">Float64</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.8</span>
+</code></pre></div>
+<h2 id="toolchain-notes">Toolchain notes<a class="headerlink" href="#toolchain-notes" title="Permanent link">&para;</a></h2>
+<p>The build uses the system C++ compiler, and <code>--cxx</code> selects a different one.
+C++23 support is required, so GCC 13 or newer, or Clang 19 or newer, works;
+<code>g++ --version</code> reports the installed version. The build also uses <code>ccache</code>
+when available, precompiled headers (<code>--no-pch</code> turns them off), and parallel
+compilation (<code>-j N</code>).</p>
+<div class="admonition info">
+<p class="admonition-title">Planned</p>
+<p><code>pyproject.toml</code> integration -- project-level configuration, dependencies,
+and build settings -- does not exist yet. Configuration is currently
+command-line flags only.</p>
+</div>
+<p>The remaining pages are orientation: <a href="../cpp-rust/">Coming from C++/Rust</a> and
+<a href="../beyond/">Beyond the core</a>.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      These docs describe <span class="tpy-version">TurboPython 0.5.0.dev0</span> (v0.4.0-131-g97ffc74ca).
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.indexes", "navigation.expand", "navigation.top", "navigation.tracking", "toc.follow", "search.suggest", "search.highlight", "content.code.copy", "content.tabs.link"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+    
+  </body>
+</html>

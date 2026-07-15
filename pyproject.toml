@@ -1,0 +1,14 @@
+# Dev tooling for this repo (snippet tests + docs site). Not a package.
+# Everything runs through `uv run` (or the Makefile targets), which creates
+# .venv from this file on first use.
+[project]
+name = "tpy-lang-org"
+version = "0"
+requires-python = ">=3.10"
+dependencies = [
+    "pytest",
+    "mkdocs-material",
+]
+
+[tool.uv]
+package = false

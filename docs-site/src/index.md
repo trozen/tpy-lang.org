@@ -1,15 +1,18 @@
 # TurboPython documentation
 
-TurboPython is Python's syntax over a static type and ownership model, compiled
-through C++ to a native binary. These docs cover how to write it and what works
-today.
+TurboPython is a programming language and a compiler based on Python. It
+keeps Python's familiar syntax and adds a few extensions that let a program
+be statically compiled into a fast native binary. These docs cover how to
+write TurboPython and what works today.
 
-- **[Guide](guide.md)** — the Python-to-TurboPython delta, the ownership model,
-  and idiomatic patterns. The place to start.
+- **[Getting started](getting-started.md)** — installation, a first program,
+  and a ten-minute tour of the language.
+- **[Guide](guide/index.md)** — what changes coming from Python, the
+  ownership model, and idiomatic patterns.
+- **[Compatibility](compatibility.md)** — a precise list of what works today.
 
-More sections (a compatibility table and a generated API reference) will follow.
+A generated API reference will follow.
 
 !!! note "Early development"
-    TurboPython is under active development. Most of Python's statically
-    compilable syntax works, but expect gaps in the standard library and rough
-    edges. The [landing page](https://tpy-lang.org/) has runnable examples.
+    TurboPython is under active development. Most of the core language works,
+    but the standard library has gaps and rough edges remain. The [landing page](https://tpy-lang.org/) has runnable examples.

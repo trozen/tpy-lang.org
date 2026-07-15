@@ -1,0 +1,1069 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="TurboPython documentation -- writing TurboPython, and what works today.">
+      
+      
+      
+        <link rel="canonical" href="https://tpy-lang.org/docs/guide/control-flow/">
+      
+      
+        <link rel="prev" href="../data-modeling/">
+      
+      
+        <link rel="next" href="../efficiency/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/favicon.svg">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+    <title>Control flow - TurboPython</title>
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+    
+    
+      <link rel="stylesheet" href="../../stylesheets/extra.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#control-flow-none-errors" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+        <aside class="md-banner">
+          <div class="md-banner__inner md-grid md-typeset">
+            
+            These docs describe TurboPython <strong>0.5.0.dev0</strong>, a pre-release of the upcoming 0.5.0.
+          </div>
+          
+        </aside>
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="/" title="TurboPython" class="md-header__button md-logo" aria-label="TurboPython" data-md-component="logo">
+      
+  <img src="../../assets/logo.svg" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            TurboPython
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Control flow
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+    
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+    
+      <div class="md-header__source">
+        <div class="md-source">
+          <div class="md-source__repository">
+            TurboPython 0.5.0.dev0
+            
+              <ul class="md-source__facts">
+                <li class="md-source__fact md-source__fact--version">v0.4.0-131-g97ffc74ca</li>
+              </ul>
+            
+          </div>
+        </div>
+      </div>
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="/" title="TurboPython" class="md-nav__button md-logo" aria-label="TurboPython" data-md-component="logo">
+      
+  <img src="../../assets/logo.svg" alt="logo">
+
+    </a>
+    TurboPython
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../getting-started/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Getting started
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Guide
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_3" id="__nav_3_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Guide
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../differences/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    How TPy differs
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../types/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Types
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../functions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Functions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ownership/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Ownership
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../data-modeling/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Data modeling
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Control flow
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Control flow
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#narrowing-away-none" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Narrowing away None
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#exceptions-work-like-python" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Exceptions work like Python
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#an-iterator-is-two-methods" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        An iterator is two methods
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#in-practice" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        In practice
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../efficiency/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Efficiency
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../building/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Building
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../cpp-rust/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Coming from C++/Rust
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../beyond/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Beyond the core
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../compatibility/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Compatibility
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#narrowing-away-none" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Narrowing away None
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#exceptions-work-like-python" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Exceptions work like Python
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#an-iterator-is-two-methods" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        An iterator is two methods
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#in-practice" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        In practice
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="control-flow-none-errors">Control flow, None &amp; errors<a class="headerlink" href="#control-flow-none-errors" title="Permanent link">&para;</a></h1>
+<div class="admonition warning">
+<p class="admonition-title">Review pending</p>
+<p>This page has not yet been reviewed by the maintainer.</p>
+</div>
+<p>Branching and looping are ordinary Python: <code>if</code>/<code>elif</code>/<code>else</code>, <code>for</code>, <code>while</code>,
+<code>break</code>, <code>continue</code>, and <code>with</code> all work unchanged. This page covers the three
+places where control flow meets the type system: narrowing away <code>None</code>,
+exceptions, and writing an iterator.</p>
+<!-- tpy: prelude -->
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">tpy</span><span class="w"> </span><span class="kn">import</span> <span class="n">Own</span><span class="p">,</span> <span class="n">Float64</span>
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="k">class</span><span class="w"> </span><span class="nc">Reading</span><span class="p">:</span>
+<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>    <span class="n">sensor</span><span class="p">:</span> <span class="nb">str</span>
+<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>    <span class="n">values</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Float64</span><span class="p">]</span>
+<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sensor</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">values</span><span class="p">:</span> <span class="n">Own</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">Float64</span><span class="p">]]):</span>
+<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">sensor</span> <span class="o">=</span> <span class="n">sensor</span>
+<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">values</span> <span class="o">=</span> <span class="n">values</span>
+</code></pre></div>
+<h2 id="narrowing-away-none">Narrowing away <code>None</code><a class="headerlink" href="#narrowing-away-none" title="Permanent link">&para;</a></h2>
+<p>A value of type <code>T | None</code> cannot be used as a plain <code>T</code>; the compiler warns
+and inserts a runtime check (<a href="../differences/">the map</a> shows the warning). A
+check on the value <em>narrows</em> it: inside the checked branch, the type is <code>T</code>
+and the warning is gone. <code>is None</code> and <code>is not None</code> comparisons, truth-value
+checks (<code>if r:</code>), early returns, and <code>assert</code> all narrow:</p>
+<!-- tpy: cont run -->
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="k">def</span><span class="w"> </span><span class="nf">label</span><span class="p">(</span><span class="n">r</span><span class="p">:</span> <span class="n">Reading</span> <span class="o">|</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>    <span class="k">if</span> <span class="n">r</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>        <span class="k">return</span> <span class="s2">&quot;no reading&quot;</span>
+<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>    <span class="k">return</span> <span class="n">r</span><span class="o">.</span><span class="n">sensor</span>              <span class="c1"># r is Reading here</span>
+<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>
+<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="k">def</span><span class="w"> </span><span class="nf">sensor_of</span><span class="p">(</span><span class="n">r</span><span class="p">:</span> <span class="n">Reading</span> <span class="o">|</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a>    <span class="k">assert</span> <span class="n">r</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>         <span class="c1"># narrows too</span>
+<a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a>    <span class="k">return</span> <span class="n">r</span><span class="o">.</span><span class="n">sensor</span>
+<a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a>
+<a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a><span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">():</span>
+<a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a>    <span class="nb">print</span><span class="p">(</span><span class="n">label</span><span class="p">(</span><span class="kc">None</span><span class="p">))</span>                             <span class="c1"># no reading</span>
+<a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a>    <span class="nb">print</span><span class="p">(</span><span class="n">label</span><span class="p">(</span><span class="n">Reading</span><span class="p">(</span><span class="s2">&quot;boiler-3&quot;</span><span class="p">,</span> <span class="p">[</span><span class="mf">20.5</span><span class="p">])))</span>      <span class="c1"># boiler-3</span>
+<a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a>    <span class="nb">print</span><span class="p">(</span><span class="n">sensor_of</span><span class="p">(</span><span class="n">Reading</span><span class="p">(</span><span class="s2">&quot;boiler-7&quot;</span><span class="p">,</span> <span class="p">[</span><span class="mf">19.0</span><span class="p">])))</span>  <span class="c1"># boiler-7</span>
+<a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a>
+<a id="__codelineno-1-15" name="__codelineno-1-15" href="#__codelineno-1-15"></a><span class="n">main</span><span class="p">()</span>
+</code></pre></div>
+<p>The rule is to narrow once, close to where the <code>None</code> can appear, and to pass
+plain <code>T</code> onward. Functions that take <code>T | None</code> make every caller
+repeat the check.</p>
+<p>A failed <code>assert</code> raises an <code>AssertionError</code>, catchable like any exception;
+uncaught, it stops the program. Optimized builds keep asserts -- there is no
+CPython <code>-O</code> stripping.</p>
+<h2 id="exceptions-work-like-python">Exceptions work like Python<a class="headerlink" href="#exceptions-work-like-python" title="Permanent link">&para;</a></h2>
+<p><code>raise</code>, <code>try</code>/<code>except</code>/<code>finally</code>, exception classes, and <code>except ... as e</code>
+all behave as in Python. An exception class is an ordinary class deriving from
+<code>Exception</code>:</p>
+<!-- tpy: run -->
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="k">class</span><span class="w"> </span><span class="nc">ParseError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>    <span class="k">pass</span>
+<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>
+<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="k">def</span><span class="w"> </span><span class="nf">parse</span><span class="p">(</span><span class="n">text</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">text</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+<a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a>        <span class="k">raise</span> <span class="n">ParseError</span><span class="p">(</span><span class="s2">&quot;empty input&quot;</span><span class="p">)</span>
+<a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a>    <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+<a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a>
+<a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a><span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">():</span>
+<a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a>    <span class="k">try</span><span class="p">:</span>
+<a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a>        <span class="nb">print</span><span class="p">(</span><span class="n">parse</span><span class="p">(</span><span class="s2">&quot;42&quot;</span><span class="p">))</span>       <span class="c1"># 42</span>
+<a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a>    <span class="k">finally</span><span class="p">:</span>
+<a id="__codelineno-2-13" name="__codelineno-2-13" href="#__codelineno-2-13"></a>        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;always runs&quot;</span><span class="p">)</span>
+<a id="__codelineno-2-14" name="__codelineno-2-14" href="#__codelineno-2-14"></a>    <span class="k">try</span><span class="p">:</span>
+<a id="__codelineno-2-15" name="__codelineno-2-15" href="#__codelineno-2-15"></a>        <span class="n">parse</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+<a id="__codelineno-2-16" name="__codelineno-2-16" href="#__codelineno-2-16"></a>    <span class="k">except</span> <span class="n">ParseError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+<a id="__codelineno-2-17" name="__codelineno-2-17" href="#__codelineno-2-17"></a>        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;bad:&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>    <span class="c1"># bad: empty input</span>
+<a id="__codelineno-2-18" name="__codelineno-2-18" href="#__codelineno-2-18"></a>
+<a id="__codelineno-2-19" name="__codelineno-2-19" href="#__codelineno-2-19"></a><span class="n">main</span><span class="p">()</span>
+</code></pre></div>
+<p><code>except</code> on a base class catches derived exceptions, and a bare <code>raise</code>
+re-raises the active one. Catching several types in one clause
+(<code>except (A, B)</code>) is not supported today; the compiler rejects it.
+<a href="../../compatibility/">Compatibility</a> tracks the status.</p>
+<p>An ordinary <code>raise</code> compiles to a C++ exception. A <code>try</code> block costs nothing
+while nothing is raised; actually raising is comparatively expensive.
+Exceptions are the right shape for failures, not for hot-path control flow --
+which is why <code>__next__</code> gets special treatment below.</p>
+<div class="admonition warning">
+<p class="admonition-title">Silent difference from CPython</p>
+<p>For a user-defined exception class, <code>print(e)</code> prints the exception
+object rather than its message, and no diagnostic flags this today.
+Built-in exceptions print the message, matching CPython. <code>str(e)</code> and
+f-string formatting (<code>f"failed: {e}"</code>) return the message on both
+runtimes, as in the example above.</p>
+</div>
+<p>Exceptions are for failures the program can handle. They are distinct from
+<em>panics</em> -- integer overflow, a failed narrowing conversion -- which stop the
+program and cannot be caught (<a href="../types/">the types page</a> covers them).</p>
+<h2 id="an-iterator-is-two-methods">An iterator is two methods<a class="headerlink" href="#an-iterator-is-two-methods" title="Permanent link">&para;</a></h2>
+<p>A custom iterator is written exactly as in Python: <code>__iter__</code> returns the
+iterator, <code>__next__</code> returns the next value or raises <code>StopIteration</code>. The
+same class runs unchanged under CPython:</p>
+<!-- tpy: run -->
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">tpy</span><span class="w"> </span><span class="kn">import</span> <span class="n">Int32</span>
+<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>
+<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="k">class</span><span class="w"> </span><span class="nc">Countdown</span><span class="p">:</span>
+<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>    <span class="n">n</span><span class="p">:</span> <span class="n">Int32</span>
+<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="p">:</span> <span class="n">Int32</span><span class="p">):</span>
+<a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">n</span> <span class="o">=</span> <span class="n">n</span>
+<a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;Countdown&quot;</span><span class="p">:</span>
+<a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a>        <span class="k">return</span> <span class="bp">self</span>
+<a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__next__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Int32</span><span class="p">:</span>
+<a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a>        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">n</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+<a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a>            <span class="k">raise</span> <span class="ne">StopIteration</span>
+<a id="__codelineno-3-12" name="__codelineno-3-12" href="#__codelineno-3-12"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">n</span> <span class="o">-=</span> <span class="mi">1</span>
+<a id="__codelineno-3-13" name="__codelineno-3-13" href="#__codelineno-3-13"></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">n</span> <span class="o">+</span> <span class="mi">1</span>
+<a id="__codelineno-3-14" name="__codelineno-3-14" href="#__codelineno-3-14"></a>
+<a id="__codelineno-3-15" name="__codelineno-3-15" href="#__codelineno-3-15"></a><span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">():</span>
+<a id="__codelineno-3-16" name="__codelineno-3-16" href="#__codelineno-3-16"></a>    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">Countdown</span><span class="p">(</span><span class="mi">3</span><span class="p">):</span>
+<a id="__codelineno-3-17" name="__codelineno-3-17" href="#__codelineno-3-17"></a>        <span class="nb">print</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>                 <span class="c1"># 3 2 1</span>
+<a id="__codelineno-3-18" name="__codelineno-3-18" href="#__codelineno-3-18"></a>
+<a id="__codelineno-3-19" name="__codelineno-3-19" href="#__codelineno-3-19"></a><span class="n">main</span><span class="p">()</span>
+</code></pre></div>
+<p>The <code>raise StopIteration</code> costs nothing at runtime. The compiler rewrites
+every <code>__next__</code> so that the end of iteration is signaled without throwing
+(the <code>@error_return</code> rewrite, applied automatically;
+<a href="../efficiency/">Writing efficient TPy</a> covers the rare explicit form). Generator functions
+(<code>yield</code>, annotated <code>-&gt; Iterator[T]</code>) are the shorter way to write the same
+thing, as shown on <a href="../differences/">the map</a>.</p>
+<h2 id="in-practice">In practice<a class="headerlink" href="#in-practice" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>The situation</th>
+<th>The tool</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>A value may be absent</td>
+<td><code>T \| None</code>; narrow once, where the <code>None</code> can appear</td>
+</tr>
+<tr>
+<td>A failure the program can handle</td>
+<td><code>raise</code> an exception class; <code>try</code>/<code>except</code> as in Python</td>
+</tr>
+<tr>
+<td>An unrecoverable violation (overflow, bad narrowing)</td>
+<td>nothing -- a panic stops the program, by design</td>
+</tr>
+<tr>
+<td>Custom iteration</td>
+<td><code>__iter__</code> + <code>__next__</code> + <code>raise StopIteration</code>, no runtime cost</td>
+</tr>
+</tbody>
+</table>
+<p>The next page consolidates all of this into performance guidance:
+<a href="../efficiency/">Writing efficient TPy</a>.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      These docs describe <span class="tpy-version">TurboPython 0.5.0.dev0</span> (v0.4.0-131-g97ffc74ca).
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.indexes", "navigation.expand", "navigation.top", "navigation.tracking", "toc.follow", "search.suggest", "search.highlight", "content.code.copy", "content.tabs.link"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+    
+  </body>
+</html>

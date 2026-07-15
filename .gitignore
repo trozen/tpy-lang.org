@@ -7,3 +7,12 @@ __tpyc__/
 
 # OS cruft
 .DS_Store
+/.gitr
+/.ccsbx
+
+# uv-managed dev environment (created by `make`/`uv run`)
+/.venv/
+/uv.lock
+
+# make site preview staging (never committed)
+/.site-preview/

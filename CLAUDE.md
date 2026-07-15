@@ -51,6 +51,17 @@ it unprompted.
   `ORDER`. Each opens with a 1-2 line comment saying what it shows.
 - Keep lines <= ~57 chars (the code window width; longer lines scroll).
 
+## Docs site (`docs-site/`) conventions
+
+- **Prose register lives in `docs-site/SCOPE.md` (Voice).** Connected
+  explanatory prose; no aphorism lead-ins, telegraphic fragments, cliches, or
+  author-facing meta. Follow it for every docs edit.
+- **External links open in a new tab, marked manually per link** (deliberately
+  no JS/plugin for this): `[uv](https://...){ target="_blank" rel="noopener" }`
+  -- `attr_list` is enabled for exactly this. `extra.css` adds the open-in-new
+  icon to any `a[target="_blank"]` automatically. Links within tpy-lang.org
+  (e.g. docs -> landing page) stay in the same tab: no attributes.
+
 ## Placeholder links
 
 - Links to pages that don't exist yet carry class `soon` and pop a "coming soon"
