@@ -533,10 +533,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#classes-are-records-with-methods" class="md-nav__link">
+  <a href="#classes" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Classes are records with methods
+        Classes
       
     </span>
   </a>
@@ -544,10 +544,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#method-calls-bind-at-compile-time" class="md-nav__link">
+  <a href="#inheritance-and-dispatch" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Method calls bind at compile time
+        Inheritance and dispatch
       
     </span>
   </a>
@@ -555,10 +555,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#protocols-are-structural" class="md-nav__link">
+  <a href="#protocols" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Protocols are structural
+        Protocols
       
     </span>
   </a>
@@ -566,10 +566,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#containers-hold-the-records" class="md-nav__link">
+  <a href="#containers" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Containers hold the records
+        Containers
       
     </span>
   </a>
@@ -577,10 +577,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#unions-model-the-alternatives" class="md-nav__link">
+  <a href="#tuples" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Unions model the alternatives
+        Tuples
       
     </span>
   </a>
@@ -588,10 +588,21 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#in-practice" class="md-nav__link">
+  <a href="#unions" class="md-nav__link">
     <span class="md-ellipsis">
       
-        In practice
+        Unions
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#dataclasses" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Dataclasses
       
     </span>
   </a>
@@ -698,14 +709,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../cpp-rust/" class="md-nav__link">
+      <a href="../beyond/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Coming from C++/Rust
+    Beyond the core
   
 
     
@@ -726,14 +737,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../beyond/" class="md-nav__link">
+      <a href="../cpp-rust/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Beyond the core
+    Coming from C++/Rust
   
 
     
@@ -808,10 +819,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#classes-are-records-with-methods" class="md-nav__link">
+  <a href="#classes" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Classes are records with methods
+        Classes
       
     </span>
   </a>
@@ -819,10 +830,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#method-calls-bind-at-compile-time" class="md-nav__link">
+  <a href="#inheritance-and-dispatch" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Method calls bind at compile time
+        Inheritance and dispatch
       
     </span>
   </a>
@@ -830,10 +841,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#protocols-are-structural" class="md-nav__link">
+  <a href="#protocols" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Protocols are structural
+        Protocols
       
     </span>
   </a>
@@ -841,10 +852,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#containers-hold-the-records" class="md-nav__link">
+  <a href="#containers" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Containers hold the records
+        Containers
       
     </span>
   </a>
@@ -852,10 +863,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#unions-model-the-alternatives" class="md-nav__link">
+  <a href="#tuples" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Unions model the alternatives
+        Tuples
       
     </span>
   </a>
@@ -863,10 +874,21 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#in-practice" class="md-nav__link">
+  <a href="#unions" class="md-nav__link">
     <span class="md-ellipsis">
       
-        In practice
+        Unions
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#dataclasses" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Dataclasses
       
     </span>
   </a>
@@ -891,38 +913,33 @@
 
 
 <h1 id="data-modeling">Data modeling<a class="headerlink" href="#data-modeling" title="Permanent link">&para;</a></h1>
-<div class="admonition warning">
-<p class="admonition-title">Review pending</p>
-<p>This page has not yet been reviewed by the maintainer.</p>
-</div>
-<p>Programs model data with three tools. Classes describe records with behavior.
-Containers hold collections of them. Unions describe a value that is exactly
-one of several alternatives. All three are written as in Python. The largest
-departure from Python is that method calls bind at compile time.</p>
-<h2 id="classes-are-records-with-methods">Classes are records with methods<a class="headerlink" href="#classes-are-records-with-methods" title="Permanent link">&para;</a></h2>
-<p>Fields are declared as annotations and form a fixed set
-(<a href="../differences/">the map</a> shows the diagnostic for an undeclared field).
-Methods are ordinary Python methods; <code>self</code> is a borrowed parameter, as
-<a href="../functions/">the functions page</a> explains. Dunder methods are ordinary
-methods too: <code>__str__</code> drives <code>print</code> and f-strings, <code>__eq__</code> drives <code>==</code>.
-Class-level field defaults, <code>@property</code>, and <code>@staticmethod</code> work, and
-<code>@dataclass</code> generates the constructor as in Python.</p>
+<p>TurboPython programs model data with the same building blocks as Python.
+Classes describe records with behavior, containers hold collections, tuples
+group a fixed set of values, and unions describe a value that is one of several
+alternatives. All are written as in Python, and the largest departure is that
+method calls bind at compile time.</p>
+<h2 id="classes">Classes<a class="headerlink" href="#classes" title="Permanent link">&para;</a></h2>
+<p>Fields are declared as annotations and form a fixed set. Methods are written as
+in Python, and <code>self</code> is a borrowed parameter
+(<a href="../functions/">Functions and API boundaries</a> covers borrowing). Dunder methods
+work too — <code>__str__</code> drives <code>print</code> and f-strings, and <code>__eq__</code> drives <code>==</code>.
+Class-level field defaults, <code>@property</code>, and <code>@staticmethod</code> all work.</p>
 <p>The <code>Reading</code> example from the earlier pages, extended to a full class:</p>
 <!-- tpy: prelude -->
-<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">tpy</span><span class="w"> </span><span class="kn">import</span> <span class="n">Own</span><span class="p">,</span> <span class="n">Float64</span><span class="p">,</span> <span class="n">Int32</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">tpy</span><span class="w"> </span><span class="kn">import</span> <span class="n">Own</span><span class="p">,</span> <span class="n">Int32</span>
 <a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>
 <a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="k">class</span><span class="w"> </span><span class="nc">Reading</span><span class="p">:</span>
 <a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>    <span class="n">sensor</span><span class="p">:</span> <span class="nb">str</span>
-<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>    <span class="n">values</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Float64</span><span class="p">]</span>
+<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>    <span class="n">values</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span>
 <a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>
-<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sensor</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">values</span><span class="p">:</span> <span class="n">Own</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">Float64</span><span class="p">]]):</span>
+<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sensor</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">values</span><span class="p">:</span> <span class="n">Own</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">]]):</span>
 <a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">sensor</span> <span class="o">=</span> <span class="n">sensor</span>
 <a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">values</span> <span class="o">=</span> <span class="n">values</span>
 <a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>
-<a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">add</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">v</span><span class="p">:</span> <span class="n">Float64</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">add</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">v</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
 <a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a>
-<a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">mean</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Float64</span><span class="p">:</span>
+<a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">mean</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
 <a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a>        <span class="k">return</span> <span class="nb">sum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">values</span><span class="p">)</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
 <a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a>
 <a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a>    <span class="nd">@property</span>
@@ -941,14 +958,7 @@ Class-level field defaults, <code>@property</code>, and <code>@staticmethod</cod
 <a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>
 <a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="n">main</span><span class="p">()</span>
 </code></pre></div>
-<p>A property getter receives <code>self</code> read-only.</p>
-<div class="admonition info">
-<p class="admonition-title">Limited today</p>
-<p><code>mean</code> stays an ordinary method here: <code>sum</code> cannot yet accept a read-only
-list, so it cannot be called from a property.
-<a href="../../compatibility/">Compatibility</a> tracks this gap.</p>
-</div>
-<h2 id="method-calls-bind-at-compile-time">Method calls bind at compile time<a class="headerlink" href="#method-calls-bind-at-compile-time" title="Permanent link">&para;</a></h2>
+<h2 id="inheritance-and-dispatch">Inheritance and dispatch<a class="headerlink" href="#inheritance-and-dispatch" title="Permanent link">&para;</a></h2>
 <p>Inheritance works, but overriding does not dispatch dynamically. A call
 through a base-typed reference calls the base method, and the compiler warns
 about every override that would behave differently under CPython:</p>
@@ -972,7 +982,7 @@ about every override that would behave differently under CPython:</p>
 <div class="admonition warning">
 <p class="admonition-title">Differs from CPython</p>
 <p>In CPython, calling <code>sound()</code> on a <code>Dog</code> held in an <code>Animal</code>-typed
-variable runs <code>Dog.sound</code> -- dispatch is dynamic. In TurboPython the call
+variable runs <code>Dog.sound</code> — dispatch is dynamic. In TurboPython the call
 binds at compile time to <code>Animal.sound</code>. The compiler flags every such
 override with the <code>hides ... differs from Python's dynamic dispatch</code>
 warning shown above. The fix is a <code>@dynamic</code> protocol, which restores
@@ -982,9 +992,10 @@ runtime dispatch where a design needs it (<a href="../beyond/">Beyond the core</
 protocol when several types share behavior, a union when a value is one of a
 fixed set of alternatives. In both, the data stays on the concrete classes;
 the protocol or union carries only the choice.</p>
-<h2 id="protocols-are-structural">Protocols are structural<a class="headerlink" href="#protocols-are-structural" title="Permanent link">&para;</a></h2>
-<p>A protocol declares a shape. Any class with matching methods satisfies it --
-no inheritance, no registration:</p>
+<h2 id="protocols">Protocols<a class="headerlink" href="#protocols" title="Permanent link">&para;</a></h2>
+<p>A protocol is a named interface — a set of method signatures with no bodies.
+Any class whose methods match satisfies the protocol automatically, with no
+inheritance and no registration. Conformance is checked at compile time:</p>
 <!-- tpy: run -->
 <div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Protocol</span>
 <a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>
@@ -1006,126 +1017,173 @@ no inheritance, no registration:</p>
 <a id="__codelineno-4-18" name="__codelineno-4-18" href="#__codelineno-4-18"></a>
 <a id="__codelineno-4-19" name="__codelineno-4-19" href="#__codelineno-4-19"></a><span class="n">main</span><span class="p">()</span>
 </code></pre></div>
-<p>The match between class and protocol is checked at compile time.</p>
-<h2 id="containers-hold-the-records">Containers hold the records<a class="headerlink" href="#containers-hold-the-records" title="Permanent link">&para;</a></h2>
-<p><code>list</code>, <code>dict</code>, <code>set</code>, and <code>tuple</code> work as in Python and nest freely. A dict
-keeps insertion order, as in Python. A container owns its elements
+<p>By default a protocol is resolved statically. Each call site is compiled
+against the concrete type it receives, at no runtime cost. A protocol marked
+<code>@dynamic</code> (from <code>tpy</code>) instead dispatches through a vtable, so a single
+reference can hold different implementers chosen at runtime, the way
+inheritance does in Python. <a href="../beyond/">Beyond the core</a> covers <code>@dynamic</code>
+protocols.</p>
+<h2 id="containers">Containers<a class="headerlink" href="#containers" title="Permanent link">&para;</a></h2>
+<p><code>list</code>, <code>dict</code>, and <code>set</code> work as in Python and nest freely. A dict keeps
+insertion order, as in Python. A container owns its elements
 (<a href="../ownership/">Ownership and references</a>).</p>
 <!-- tpy: run -->
-<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">tpy</span><span class="w"> </span><span class="kn">import</span> <span class="n">Float64</span>
-<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>
-<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">():</span>
-<a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a>    <span class="n">by_sensor</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="n">Float64</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{}</span>
-<a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a>    <span class="n">by_sensor</span><span class="p">[</span><span class="s2">&quot;boiler-3&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mf">20.5</span><span class="p">,</span> <span class="mf">21.0</span><span class="p">]</span>
-<a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a>    <span class="n">by_sensor</span><span class="p">[</span><span class="s2">&quot;boiler-7&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mf">19.0</span><span class="p">]</span>
-<a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a>    <span class="k">if</span> <span class="s2">&quot;boiler-3&quot;</span> <span class="ow">in</span> <span class="n">by_sensor</span><span class="p">:</span>
-<a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a>        <span class="n">by_sensor</span><span class="p">[</span><span class="s2">&quot;boiler-3&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mf">21.7</span><span class="p">)</span>
-<a id="__codelineno-5-9" name="__codelineno-5-9" href="#__codelineno-5-9"></a>    <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">by_sensor</span><span class="p">:</span>            <span class="c1"># insertion order, as in Python</span>
-<a id="__codelineno-5-10" name="__codelineno-5-10" href="#__codelineno-5-10"></a>        <span class="nb">print</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">by_sensor</span><span class="p">[</span><span class="n">name</span><span class="p">]))</span>
-<a id="__codelineno-5-11" name="__codelineno-5-11" href="#__codelineno-5-11"></a>    <span class="n">seen</span><span class="p">:</span> <span class="nb">set</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
-<a id="__codelineno-5-12" name="__codelineno-5-12" href="#__codelineno-5-12"></a>    <span class="n">seen</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s2">&quot;boiler-3&quot;</span><span class="p">)</span>
-<a id="__codelineno-5-13" name="__codelineno-5-13" href="#__codelineno-5-13"></a>    <span class="n">seen</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s2">&quot;boiler-3&quot;</span><span class="p">)</span>
-<a id="__codelineno-5-14" name="__codelineno-5-14" href="#__codelineno-5-14"></a>    <span class="nb">print</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">seen</span><span class="p">))</span>                  <span class="c1"># 1</span>
-<a id="__codelineno-5-15" name="__codelineno-5-15" href="#__codelineno-5-15"></a>    <span class="n">pair</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Float64</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;mean&quot;</span><span class="p">,</span> <span class="mf">20.9</span><span class="p">)</span>
-<a id="__codelineno-5-16" name="__codelineno-5-16" href="#__codelineno-5-16"></a>    <span class="n">label</span><span class="p">,</span> <span class="n">value</span> <span class="o">=</span> <span class="n">pair</span>               <span class="c1"># tuples unpack as usual</span>
-<a id="__codelineno-5-17" name="__codelineno-5-17" href="#__codelineno-5-17"></a>    <span class="nb">print</span><span class="p">(</span><span class="n">label</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
-<a id="__codelineno-5-18" name="__codelineno-5-18" href="#__codelineno-5-18"></a>
-<a id="__codelineno-5-19" name="__codelineno-5-19" href="#__codelineno-5-19"></a><span class="n">main</span><span class="p">()</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">():</span>
+<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>    <span class="n">by_sensor</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{}</span>
+<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>    <span class="n">by_sensor</span><span class="p">[</span><span class="s2">&quot;boiler-3&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mf">20.5</span><span class="p">,</span> <span class="mf">21.0</span><span class="p">]</span>
+<a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a>    <span class="n">by_sensor</span><span class="p">[</span><span class="s2">&quot;boiler-7&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mf">19.0</span><span class="p">]</span>
+<a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a>    <span class="k">if</span> <span class="s2">&quot;boiler-3&quot;</span> <span class="ow">in</span> <span class="n">by_sensor</span><span class="p">:</span>
+<a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a>        <span class="n">by_sensor</span><span class="p">[</span><span class="s2">&quot;boiler-3&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mf">21.7</span><span class="p">)</span>
+<a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a>    <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">by_sensor</span><span class="p">:</span>            <span class="c1"># insertion order, as in Python</span>
+<a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a>        <span class="nb">print</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">by_sensor</span><span class="p">[</span><span class="n">name</span><span class="p">]))</span>
+<a id="__codelineno-5-9" name="__codelineno-5-9" href="#__codelineno-5-9"></a>    <span class="n">seen</span><span class="p">:</span> <span class="nb">set</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+<a id="__codelineno-5-10" name="__codelineno-5-10" href="#__codelineno-5-10"></a>    <span class="n">seen</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s2">&quot;boiler-3&quot;</span><span class="p">)</span>
+<a id="__codelineno-5-11" name="__codelineno-5-11" href="#__codelineno-5-11"></a>    <span class="n">seen</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s2">&quot;boiler-3&quot;</span><span class="p">)</span>
+<a id="__codelineno-5-12" name="__codelineno-5-12" href="#__codelineno-5-12"></a>    <span class="nb">print</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">seen</span><span class="p">))</span>                  <span class="c1"># 1</span>
+<a id="__codelineno-5-13" name="__codelineno-5-13" href="#__codelineno-5-13"></a>
+<a id="__codelineno-5-14" name="__codelineno-5-14" href="#__codelineno-5-14"></a><span class="n">main</span><span class="p">()</span>
 </code></pre></div>
 <p>Sorting accepts Python's key functions, including lambdas:</p>
 <!-- tpy: run -->
-<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">tpy</span><span class="w"> </span><span class="kn">import</span> <span class="n">Float64</span>
-<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>
-<a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a><span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">():</span>
-<a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a>    <span class="n">xs</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Float64</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mf">3.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">]</span>
-<a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a>    <span class="nb">print</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">xs</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">v</span><span class="p">:</span> <span class="o">-</span><span class="n">v</span><span class="p">))</span>   <span class="c1"># [3.0, 2.0, 1.0]</span>
-<a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a>
-<a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a><span class="n">main</span><span class="p">()</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">():</span>
+<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>    <span class="n">xs</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mf">3.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">]</span>
+<a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>    <span class="nb">print</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">xs</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">v</span><span class="p">:</span> <span class="o">-</span><span class="n">v</span><span class="p">))</span>   <span class="c1"># [3.0, 2.0, 1.0]</span>
+<a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a>
+<a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a><span class="n">main</span><span class="p">()</span>
 </code></pre></div>
-<h2 id="unions-model-the-alternatives">Unions model the alternatives<a class="headerlink" href="#unions-model-the-alternatives" title="Permanent link">&para;</a></h2>
-<p>A union's members are ordinary classes; a fieldless member needs no
-<code>__init__</code> at all. For plain absence, <code>T | None</code> is enough
-(<a href="../types/">the types page</a>); a marker class is the better member when the
-alternative means something of its own, or will grow fields later.</p>
-<p>A <code>match</code> statement branches on the union, binds fields in the pattern, and
-takes guards. A <code>match</code> that misses a member cannot fall through silently.
-With a declared return type, every path must return, and a guarded <code>case</code> does
-not count as covering its member. The bare <code>case Sample():</code> below is therefore
-required.</p>
+<h2 id="tuples">Tuples<a class="headerlink" href="#tuples" title="Permanent link">&para;</a></h2>
+<p>A tuple groups a fixed number of values, each of its own type, and behaves as
+in Python. Elements are reached by a constant index or by unpacking, and tuples
+compare element by element. A tuple of hashable values also works as a
+dictionary key.</p>
+<!-- tpy: run -->
+<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">():</span>
+<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>    <span class="n">pair</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;mean&quot;</span><span class="p">,</span> <span class="mf">20.9</span><span class="p">)</span>
+<a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a>    <span class="n">label</span><span class="p">,</span> <span class="n">value</span> <span class="o">=</span> <span class="n">pair</span>                <span class="c1"># unpack</span>
+<a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a>    <span class="nb">print</span><span class="p">(</span><span class="n">label</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>                <span class="c1"># mean 20.9</span>
+<a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a>    <span class="nb">print</span><span class="p">(</span><span class="n">pair</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>                     <span class="c1"># index with a constant</span>
+<a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a>    <span class="nb">print</span><span class="p">((</span><span class="s2">&quot;a&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> <span class="o">==</span> <span class="p">(</span><span class="s2">&quot;a&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>        <span class="c1"># True -- element-wise comparison</span>
+<a id="__codelineno-7-7" name="__codelineno-7-7" href="#__codelineno-7-7"></a>    <span class="n">seen</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">{(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">):</span> <span class="s2">&quot;cell&quot;</span><span class="p">}</span>
+<a id="__codelineno-7-8" name="__codelineno-7-8" href="#__codelineno-7-8"></a>    <span class="nb">print</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span> <span class="ow">in</span> <span class="n">seen</span><span class="p">)</span>              <span class="c1"># True -- a tuple works as a dict key</span>
+<a id="__codelineno-7-9" name="__codelineno-7-9" href="#__codelineno-7-9"></a>
+<a id="__codelineno-7-10" name="__codelineno-7-10" href="#__codelineno-7-10"></a><span class="n">main</span><span class="p">()</span>
+</code></pre></div>
+<p>Each element keeps the passing semantics it would have on its own. A value-type
+element is copied; a reference-type element is held by reference, the same way
+a standalone parameter or return of that type would be. Wrapping a value in a
+tuple slot therefore does not change how it is passed: a function whose return
+type goes from <code>Reading</code> to <code>tuple[Reading, bool]</code> still returns the <code>Reading</code>
+by reference. <a href="../ownership/">Ownership and references</a> covers the rules the
+elements follow.</p>
+<h2 id="unions">Unions<a class="headerlink" href="#unions" title="Permanent link">&para;</a></h2>
+<p>A union describes a value that is exactly one of several classes, written
+<code>A | B</code>. A <code>match</code> statement branches on the member a value holds and binds its
+fields in the pattern:</p>
+<!-- tpy: run -->
+<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="k">class</span><span class="w"> </span><span class="nc">Circle</span><span class="p">:</span>
+<a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>    <span class="n">radius</span><span class="p">:</span> <span class="nb">float</span>
+<a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">radius</span><span class="p">:</span> <span class="nb">float</span><span class="p">):</span>
+<a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">radius</span> <span class="o">=</span> <span class="n">radius</span>
+<a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a>
+<a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a><span class="k">class</span><span class="w"> </span><span class="nc">Square</span><span class="p">:</span>
+<a id="__codelineno-8-7" name="__codelineno-8-7" href="#__codelineno-8-7"></a>    <span class="n">side</span><span class="p">:</span> <span class="nb">float</span>
+<a id="__codelineno-8-8" name="__codelineno-8-8" href="#__codelineno-8-8"></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">side</span><span class="p">:</span> <span class="nb">float</span><span class="p">):</span>
+<a id="__codelineno-8-9" name="__codelineno-8-9" href="#__codelineno-8-9"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">side</span> <span class="o">=</span> <span class="n">side</span>
+<a id="__codelineno-8-10" name="__codelineno-8-10" href="#__codelineno-8-10"></a>
+<a id="__codelineno-8-11" name="__codelineno-8-11" href="#__codelineno-8-11"></a><span class="k">def</span><span class="w"> </span><span class="nf">area</span><span class="p">(</span><span class="n">shape</span><span class="p">:</span> <span class="n">Circle</span> <span class="o">|</span> <span class="n">Square</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<a id="__codelineno-8-12" name="__codelineno-8-12" href="#__codelineno-8-12"></a>    <span class="k">match</span> <span class="n">shape</span><span class="p">:</span>
+<a id="__codelineno-8-13" name="__codelineno-8-13" href="#__codelineno-8-13"></a>        <span class="k">case</span> <span class="n">Circle</span><span class="p">(</span><span class="n">radius</span><span class="o">=</span><span class="n">r</span><span class="p">):</span>
+<a id="__codelineno-8-14" name="__codelineno-8-14" href="#__codelineno-8-14"></a>            <span class="k">return</span> <span class="mf">3.14159</span> <span class="o">*</span> <span class="n">r</span> <span class="o">*</span> <span class="n">r</span>
+<a id="__codelineno-8-15" name="__codelineno-8-15" href="#__codelineno-8-15"></a>        <span class="k">case</span> <span class="n">Square</span><span class="p">(</span><span class="n">side</span><span class="o">=</span><span class="n">s</span><span class="p">):</span>
+<a id="__codelineno-8-16" name="__codelineno-8-16" href="#__codelineno-8-16"></a>            <span class="k">return</span> <span class="n">s</span> <span class="o">*</span> <span class="n">s</span>
+<a id="__codelineno-8-17" name="__codelineno-8-17" href="#__codelineno-8-17"></a>
+<a id="__codelineno-8-18" name="__codelineno-8-18" href="#__codelineno-8-18"></a><span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">():</span>
+<a id="__codelineno-8-19" name="__codelineno-8-19" href="#__codelineno-8-19"></a>    <span class="nb">print</span><span class="p">(</span><span class="n">area</span><span class="p">(</span><span class="n">Circle</span><span class="p">(</span><span class="mf">1.0</span><span class="p">)))</span>    <span class="c1"># 3.14159</span>
+<a id="__codelineno-8-20" name="__codelineno-8-20" href="#__codelineno-8-20"></a>    <span class="nb">print</span><span class="p">(</span><span class="n">area</span><span class="p">(</span><span class="n">Square</span><span class="p">(</span><span class="mf">2.0</span><span class="p">)))</span>    <span class="c1"># 4.0</span>
+<a id="__codelineno-8-21" name="__codelineno-8-21" href="#__codelineno-8-21"></a>
+<a id="__codelineno-8-22" name="__codelineno-8-22" href="#__codelineno-8-22"></a><span class="n">main</span><span class="p">()</span>
+</code></pre></div>
+<p>A union used in more than one place can be named with a <code>type</code> alias, written
+<code>type Shape = Circle | Square</code>, and the name then stands for the union anywhere
+a type is expected.</p>
+<p>A <code>match</code> that misses a member cannot fall through silently. With a declared
+return type, every path must return, and a guarded <code>case</code> does not count as
+covering its member, so the bare <code>case Sample():</code> below is required:</p>
 <!-- tpy: prelude run -->
-<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">tpy</span><span class="w"> </span><span class="kn">import</span> <span class="n">Float64</span>
-<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>
-<a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a><span class="k">class</span><span class="w"> </span><span class="nc">Sample</span><span class="p">:</span>
-<a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a>    <span class="n">value</span><span class="p">:</span> <span class="n">Float64</span>
-<a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Float64</span><span class="p">):</span>
-<a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">value</span>
-<a id="__codelineno-7-7" name="__codelineno-7-7" href="#__codelineno-7-7"></a>
-<a id="__codelineno-7-8" name="__codelineno-7-8" href="#__codelineno-7-8"></a><span class="k">class</span><span class="w"> </span><span class="nc">Gap</span><span class="p">:</span>
-<a id="__codelineno-7-9" name="__codelineno-7-9" href="#__codelineno-7-9"></a>    <span class="k">pass</span>
-<a id="__codelineno-7-10" name="__codelineno-7-10" href="#__codelineno-7-10"></a>
-<a id="__codelineno-7-11" name="__codelineno-7-11" href="#__codelineno-7-11"></a><span class="k">def</span><span class="w"> </span><span class="nf">describe</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">Sample</span> <span class="o">|</span> <span class="n">Gap</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<a id="__codelineno-7-12" name="__codelineno-7-12" href="#__codelineno-7-12"></a>    <span class="k">match</span> <span class="n">x</span><span class="p">:</span>
-<a id="__codelineno-7-13" name="__codelineno-7-13" href="#__codelineno-7-13"></a>        <span class="k">case</span> <span class="n">Sample</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="n">v</span><span class="p">)</span> <span class="k">if</span> <span class="n">v</span> <span class="o">&gt;</span> <span class="mf">21.0</span><span class="p">:</span>
-<a id="__codelineno-7-14" name="__codelineno-7-14" href="#__codelineno-7-14"></a>            <span class="k">return</span> <span class="s2">&quot;high&quot;</span>
-<a id="__codelineno-7-15" name="__codelineno-7-15" href="#__codelineno-7-15"></a>        <span class="k">case</span> <span class="n">Sample</span><span class="p">():</span>
-<a id="__codelineno-7-16" name="__codelineno-7-16" href="#__codelineno-7-16"></a>            <span class="k">return</span> <span class="s2">&quot;normal&quot;</span>
-<a id="__codelineno-7-17" name="__codelineno-7-17" href="#__codelineno-7-17"></a>        <span class="k">case</span> <span class="n">Gap</span><span class="p">():</span>
-<a id="__codelineno-7-18" name="__codelineno-7-18" href="#__codelineno-7-18"></a>            <span class="k">return</span> <span class="s2">&quot;missing&quot;</span>
-<a id="__codelineno-7-19" name="__codelineno-7-19" href="#__codelineno-7-19"></a>
-<a id="__codelineno-7-20" name="__codelineno-7-20" href="#__codelineno-7-20"></a><span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">():</span>
-<a id="__codelineno-7-21" name="__codelineno-7-21" href="#__codelineno-7-21"></a>    <span class="nb">print</span><span class="p">(</span><span class="n">describe</span><span class="p">(</span><span class="n">Sample</span><span class="p">(</span><span class="mf">21.5</span><span class="p">)))</span>   <span class="c1"># high</span>
-<a id="__codelineno-7-22" name="__codelineno-7-22" href="#__codelineno-7-22"></a>    <span class="nb">print</span><span class="p">(</span><span class="n">describe</span><span class="p">(</span><span class="n">Sample</span><span class="p">(</span><span class="mf">20.0</span><span class="p">)))</span>   <span class="c1"># normal</span>
-<a id="__codelineno-7-23" name="__codelineno-7-23" href="#__codelineno-7-23"></a>    <span class="nb">print</span><span class="p">(</span><span class="n">describe</span><span class="p">(</span><span class="n">Gap</span><span class="p">()))</span>          <span class="c1"># missing</span>
-<a id="__codelineno-7-24" name="__codelineno-7-24" href="#__codelineno-7-24"></a>
-<a id="__codelineno-7-25" name="__codelineno-7-25" href="#__codelineno-7-25"></a><span class="n">main</span><span class="p">()</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="k">class</span><span class="w"> </span><span class="nc">Sample</span><span class="p">:</span>
+<a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>    <span class="n">value</span><span class="p">:</span> <span class="nb">float</span>
+<a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">float</span><span class="p">):</span>
+<a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">value</span>
+<a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a>
+<a id="__codelineno-9-6" name="__codelineno-9-6" href="#__codelineno-9-6"></a><span class="k">class</span><span class="w"> </span><span class="nc">Gap</span><span class="p">:</span>
+<a id="__codelineno-9-7" name="__codelineno-9-7" href="#__codelineno-9-7"></a>    <span class="n">reason</span><span class="p">:</span> <span class="nb">str</span>
+<a id="__codelineno-9-8" name="__codelineno-9-8" href="#__codelineno-9-8"></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reason</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<a id="__codelineno-9-9" name="__codelineno-9-9" href="#__codelineno-9-9"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">reason</span> <span class="o">=</span> <span class="n">reason</span>
+<a id="__codelineno-9-10" name="__codelineno-9-10" href="#__codelineno-9-10"></a>
+<a id="__codelineno-9-11" name="__codelineno-9-11" href="#__codelineno-9-11"></a><span class="k">def</span><span class="w"> </span><span class="nf">describe</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">Sample</span> <span class="o">|</span> <span class="n">Gap</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<a id="__codelineno-9-12" name="__codelineno-9-12" href="#__codelineno-9-12"></a>    <span class="k">match</span> <span class="n">x</span><span class="p">:</span>
+<a id="__codelineno-9-13" name="__codelineno-9-13" href="#__codelineno-9-13"></a>        <span class="k">case</span> <span class="n">Sample</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="n">v</span><span class="p">)</span> <span class="k">if</span> <span class="n">v</span> <span class="o">&gt;</span> <span class="mf">21.0</span><span class="p">:</span>
+<a id="__codelineno-9-14" name="__codelineno-9-14" href="#__codelineno-9-14"></a>            <span class="k">return</span> <span class="s2">&quot;high&quot;</span>
+<a id="__codelineno-9-15" name="__codelineno-9-15" href="#__codelineno-9-15"></a>        <span class="k">case</span> <span class="n">Sample</span><span class="p">():</span>
+<a id="__codelineno-9-16" name="__codelineno-9-16" href="#__codelineno-9-16"></a>            <span class="k">return</span> <span class="s2">&quot;normal&quot;</span>
+<a id="__codelineno-9-17" name="__codelineno-9-17" href="#__codelineno-9-17"></a>        <span class="k">case</span> <span class="n">Gap</span><span class="p">(</span><span class="n">reason</span><span class="o">=</span><span class="n">r</span><span class="p">):</span>
+<a id="__codelineno-9-18" name="__codelineno-9-18" href="#__codelineno-9-18"></a>            <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;missing: </span><span class="si">{</span><span class="n">r</span><span class="si">}</span><span class="s2">&quot;</span>
+<a id="__codelineno-9-19" name="__codelineno-9-19" href="#__codelineno-9-19"></a>
+<a id="__codelineno-9-20" name="__codelineno-9-20" href="#__codelineno-9-20"></a><span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">():</span>
+<a id="__codelineno-9-21" name="__codelineno-9-21" href="#__codelineno-9-21"></a>    <span class="nb">print</span><span class="p">(</span><span class="n">describe</span><span class="p">(</span><span class="n">Sample</span><span class="p">(</span><span class="mf">21.5</span><span class="p">)))</span>            <span class="c1"># high</span>
+<a id="__codelineno-9-22" name="__codelineno-9-22" href="#__codelineno-9-22"></a>    <span class="nb">print</span><span class="p">(</span><span class="n">describe</span><span class="p">(</span><span class="n">Sample</span><span class="p">(</span><span class="mf">20.0</span><span class="p">)))</span>            <span class="c1"># normal</span>
+<a id="__codelineno-9-23" name="__codelineno-9-23" href="#__codelineno-9-23"></a>    <span class="nb">print</span><span class="p">(</span><span class="n">describe</span><span class="p">(</span><span class="n">Gap</span><span class="p">(</span><span class="s2">&quot;sensor offline&quot;</span><span class="p">)))</span>   <span class="c1"># missing: sensor offline</span>
+<a id="__codelineno-9-24" name="__codelineno-9-24" href="#__codelineno-9-24"></a>
+<a id="__codelineno-9-25" name="__codelineno-9-25" href="#__codelineno-9-25"></a><span class="n">main</span><span class="p">()</span>
 </code></pre></div>
 <p>A union stores in containers like any other value, and <code>case _:</code> is a valid
 catch-all pattern:</p>
 <!-- tpy: cont run -->
-<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">():</span>
-<a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>    <span class="n">stream</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Sample</span> <span class="o">|</span> <span class="n">Gap</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">Sample</span><span class="p">(</span><span class="mf">20.5</span><span class="p">),</span> <span class="n">Gap</span><span class="p">(),</span> <span class="n">Sample</span><span class="p">(</span><span class="mf">21.5</span><span class="p">)]</span>
-<a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a>    <span class="n">good</span> <span class="o">=</span> <span class="mi">0</span>
-<a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a>    <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">stream</span><span class="p">:</span>
-<a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a>        <span class="k">match</span> <span class="n">x</span><span class="p">:</span>
-<a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a>            <span class="k">case</span> <span class="n">Sample</span><span class="p">():</span>
-<a id="__codelineno-8-7" name="__codelineno-8-7" href="#__codelineno-8-7"></a>                <span class="n">good</span> <span class="o">+=</span> <span class="mi">1</span>
-<a id="__codelineno-8-8" name="__codelineno-8-8" href="#__codelineno-8-8"></a>            <span class="k">case</span><span class="w"> </span><span class="k">_</span><span class="p">:</span>
-<a id="__codelineno-8-9" name="__codelineno-8-9" href="#__codelineno-8-9"></a>                <span class="k">pass</span>
-<a id="__codelineno-8-10" name="__codelineno-8-10" href="#__codelineno-8-10"></a>    <span class="nb">print</span><span class="p">(</span><span class="n">good</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">stream</span><span class="p">))</span>   <span class="c1"># 2 3</span>
-<a id="__codelineno-8-11" name="__codelineno-8-11" href="#__codelineno-8-11"></a>
-<a id="__codelineno-8-12" name="__codelineno-8-12" href="#__codelineno-8-12"></a><span class="n">main</span><span class="p">()</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">():</span>
+<a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a>    <span class="n">stream</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Sample</span> <span class="o">|</span> <span class="n">Gap</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">Sample</span><span class="p">(</span><span class="mf">20.5</span><span class="p">),</span> <span class="n">Gap</span><span class="p">(</span><span class="s2">&quot;offline&quot;</span><span class="p">),</span> <span class="n">Sample</span><span class="p">(</span><span class="mf">21.5</span><span class="p">)]</span>
+<a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a>    <span class="n">good</span> <span class="o">=</span> <span class="mi">0</span>
+<a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a>    <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">stream</span><span class="p">:</span>
+<a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a>        <span class="k">match</span> <span class="n">x</span><span class="p">:</span>
+<a id="__codelineno-10-6" name="__codelineno-10-6" href="#__codelineno-10-6"></a>            <span class="k">case</span> <span class="n">Sample</span><span class="p">():</span>
+<a id="__codelineno-10-7" name="__codelineno-10-7" href="#__codelineno-10-7"></a>                <span class="n">good</span> <span class="o">+=</span> <span class="mi">1</span>
+<a id="__codelineno-10-8" name="__codelineno-10-8" href="#__codelineno-10-8"></a>            <span class="k">case</span><span class="w"> </span><span class="k">_</span><span class="p">:</span>
+<a id="__codelineno-10-9" name="__codelineno-10-9" href="#__codelineno-10-9"></a>                <span class="k">pass</span>
+<a id="__codelineno-10-10" name="__codelineno-10-10" href="#__codelineno-10-10"></a>    <span class="nb">print</span><span class="p">(</span><span class="n">good</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">stream</span><span class="p">))</span>   <span class="c1"># 2 3</span>
+<a id="__codelineno-10-11" name="__codelineno-10-11" href="#__codelineno-10-11"></a>
+<a id="__codelineno-10-12" name="__codelineno-10-12" href="#__codelineno-10-12"></a><span class="n">main</span><span class="p">()</span>
 </code></pre></div>
-<p>A single check also works, since <code>isinstance(x, Sample)</code> is valid on a union value.
+<p>For a one-off test, <code>isinstance(x, Sample)</code> is also valid on a union value.
 Unions with <code>match</code> replace <code>isinstance</code> chains, and often replace a whole
 inheritance hierarchy.</p>
-<h2 id="in-practice">In practice<a class="headerlink" href="#in-practice" title="Permanent link">&para;</a></h2>
-<table>
-<thead>
-<tr>
-<th>The data is...</th>
-<th>Model it as</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>A record with behavior</td>
-<td>a class</td>
-</tr>
-<tr>
-<td>One of a fixed set of alternatives</td>
-<td>a union, branched on with <code>match</code></td>
-</tr>
-<tr>
-<td>Shared behavior across unrelated types</td>
-<td>a protocol</td>
-</tr>
-<tr>
-<td>A collection of records</td>
-<td>a container -- it owns its elements</td>
-</tr>
-</tbody>
-</table>
-<p>How programs branch and fail -- <code>None</code> narrowing, <code>try</code>/<code>except</code>, iterators --
+<h2 id="dataclasses">Dataclasses<a class="headerlink" href="#dataclasses" title="Permanent link">&para;</a></h2>
+<p><code>@dataclass</code> writes the methods a plain class spells out by hand. It is a
+built-in compile-time macro that generates <code>__init__</code>, <code>__repr__</code>, and <code>__eq__</code>
+from the annotated fields. Passing <code>frozen=True</code> additionally makes instances
+hashable, so they can serve as dict keys or set members. The decorator is
+imported from <code>dataclasses</code>, as in Python.</p>
+<!-- tpy: run -->
+<div class="highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">dataclasses</span><span class="w"> </span><span class="kn">import</span> <span class="n">dataclass</span>
+<a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a>
+<a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a><span class="nd">@dataclass</span>
+<a id="__codelineno-11-4" name="__codelineno-11-4" href="#__codelineno-11-4"></a><span class="k">class</span><span class="w"> </span><span class="nc">Point</span><span class="p">:</span>
+<a id="__codelineno-11-5" name="__codelineno-11-5" href="#__codelineno-11-5"></a>    <span class="n">x</span><span class="p">:</span> <span class="nb">float</span>
+<a id="__codelineno-11-6" name="__codelineno-11-6" href="#__codelineno-11-6"></a>    <span class="n">y</span><span class="p">:</span> <span class="nb">float</span>
+<a id="__codelineno-11-7" name="__codelineno-11-7" href="#__codelineno-11-7"></a>
+<a id="__codelineno-11-8" name="__codelineno-11-8" href="#__codelineno-11-8"></a><span class="nd">@dataclass</span><span class="p">(</span><span class="n">frozen</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<a id="__codelineno-11-9" name="__codelineno-11-9" href="#__codelineno-11-9"></a><span class="k">class</span><span class="w"> </span><span class="nc">Cell</span><span class="p">:</span>
+<a id="__codelineno-11-10" name="__codelineno-11-10" href="#__codelineno-11-10"></a>    <span class="n">row</span><span class="p">:</span> <span class="nb">int</span>
+<a id="__codelineno-11-11" name="__codelineno-11-11" href="#__codelineno-11-11"></a>    <span class="n">col</span><span class="p">:</span> <span class="nb">int</span>
+<a id="__codelineno-11-12" name="__codelineno-11-12" href="#__codelineno-11-12"></a>
+<a id="__codelineno-11-13" name="__codelineno-11-13" href="#__codelineno-11-13"></a><span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">():</span>
+<a id="__codelineno-11-14" name="__codelineno-11-14" href="#__codelineno-11-14"></a>    <span class="n">p</span> <span class="o">=</span> <span class="n">Point</span><span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">)</span>
+<a id="__codelineno-11-15" name="__codelineno-11-15" href="#__codelineno-11-15"></a>    <span class="nb">print</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>                        <span class="c1"># Point(x=1.0, y=2.0)</span>
+<a id="__codelineno-11-16" name="__codelineno-11-16" href="#__codelineno-11-16"></a>    <span class="nb">print</span><span class="p">(</span><span class="n">p</span> <span class="o">==</span> <span class="n">Point</span><span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">))</span>     <span class="c1"># True</span>
+<a id="__codelineno-11-17" name="__codelineno-11-17" href="#__codelineno-11-17"></a>    <span class="n">grid</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="n">Cell</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="n">Cell</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">):</span> <span class="s2">&quot;origin&quot;</span><span class="p">}</span>
+<a id="__codelineno-11-18" name="__codelineno-11-18" href="#__codelineno-11-18"></a>    <span class="nb">print</span><span class="p">(</span><span class="n">grid</span><span class="p">[</span><span class="n">Cell</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)])</span>         <span class="c1"># origin -- frozen is hashable</span>
+<a id="__codelineno-11-19" name="__codelineno-11-19" href="#__codelineno-11-19"></a>
+<a id="__codelineno-11-20" name="__codelineno-11-20" href="#__codelineno-11-20"></a><span class="n">main</span><span class="p">()</span>
+</code></pre></div>
+<p>How programs branch and fail — <code>None</code> narrowing, <code>try</code>/<code>except</code>, iterators —
 is the next page: <a href="../control-flow/">Control flow, None &amp; errors</a>.</p>
 
 

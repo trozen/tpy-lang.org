@@ -16,7 +16,7 @@
         <link rel="prev" href="../efficiency/">
       
       
-        <link rel="next" href="../cpp-rust/">
+        <link rel="next" href="../beyond/">
       
       
         
@@ -650,13 +650,30 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#check-without-building-read-the-c" class="md-nav__link">
+  <a href="#emit-and-integrate-c" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Check without building; read the C++
+        Emit and integrate C++
       
     </span>
   </a>
+  
+    <nav class="md-nav" aria-label="Emit and integrate C++">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#integrate-with-a-cmake-build" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Integrate with a CMake build
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -672,10 +689,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#a-project-is-a-directory-of-modules" class="md-nav__link">
+  <a href="#compile-a-multi-module-program" class="md-nav__link">
     <span class="md-ellipsis">
       
-        A project is a directory of modules
+        Compile a multi-module program
       
     </span>
   </a>
@@ -709,14 +726,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../cpp-rust/" class="md-nav__link">
+      <a href="../beyond/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Coming from C++/Rust
+    Beyond the core
   
 
     
@@ -737,14 +754,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../beyond/" class="md-nav__link">
+      <a href="../cpp-rust/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Beyond the core
+    Coming from C++/Rust
   
 
     
@@ -852,13 +869,30 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#check-without-building-read-the-c" class="md-nav__link">
+  <a href="#emit-and-integrate-c" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Check without building; read the C++
+        Emit and integrate C++
       
     </span>
   </a>
+  
+    <nav class="md-nav" aria-label="Emit and integrate C++">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#integrate-with-a-cmake-build" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Integrate with a CMake build
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -874,10 +908,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#a-project-is-a-directory-of-modules" class="md-nav__link">
+  <a href="#compile-a-multi-module-program" class="md-nav__link">
     <span class="md-ellipsis">
       
-        A project is a directory of modules
+        Compile a multi-module program
       
     </span>
   </a>
@@ -913,12 +947,9 @@
 
 
 <h1 id="building-running">Building &amp; running<a class="headerlink" href="#building-running" title="Permanent link">&para;</a></h1>
-<div class="admonition warning">
-<p class="admonition-title">Review pending</p>
-<p>This page has not yet been reviewed by the maintainer.</p>
-</div>
-<p>The <code>tpy</code> command compiles a program and runs it. The <code>tpyc</code> command compiles
-without running. Both take ordinary <code>.py</code> files.</p>
+<p>A TurboPython program is compiled to a native binary before it runs. The <code>tpy</code>
+command compiles a program and runs it, while <code>tpyc</code> compiles without running.
+Both take ordinary <code>.py</code> files.</p>
 <h2 id="run-a-program">Run a program<a class="headerlink" href="#run-a-program" title="Permanent link">&para;</a></h2>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="gp">$ </span>tpy<span class="w"> </span>program.py
 </code></pre></div>
@@ -944,60 +975,72 @@ measure is <code>-O</code> (or
 <a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="go">Built: build/release/program</span>
 </code></pre></div>
 <p>The result needs no Python installation. It links only the standard system
-libraries (the C++ runtime and libc), so it runs on any Linux with the same
-or newer system libraries. Building happens on the platform the binary
-targets. Binaries are small. A trivial release build is about 250 KB.</p>
-<h2 id="check-without-building-read-the-c">Check without building; read the C++<a class="headerlink" href="#check-without-building-read-the-c" title="Permanent link">&para;</a></h2>
-<p>The <code>tpyc</code> command runs the front end only -- parsing, type checking,
-ownership analysis, C++ generation -- and skips the native build. It is the
-fast way to check a change:</p>
+libraries (the C++ runtime and libc), so it runs on other machines of the
+same platform with compatible system libraries. Building happens on the
+platform the binary targets; Linux and macOS are supported.</p>
+<p>Adding <code>-x</code> to a <code>-b</code> build runs the result immediately after building.</p>
+<h2 id="emit-and-integrate-c">Emit and integrate C++<a class="headerlink" href="#emit-and-integrate-c" title="Permanent link">&para;</a></h2>
+<p>By default the <code>tpyc</code> command emits a C++ project and skips the native build:</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="gp">$ </span>tpyc<span class="w"> </span>-o<span class="w"> </span>build<span class="w"> </span>program.py
 </code></pre></div>
-<p>The output directory receives the generated C++ project. <code>--dump-code</code> prints
-the generated C++ instead, which shows directly whether a loop stayed
-fixed-width, where a copy happens, and what a class compiles to:</p>
+<p>The generated <code>.hpp</code> and <code>.cpp</code> files land in a <code>program.d/</code> directory under
+the output path, so this run writes <code>build/program.d/</code>. Omitting <code>-o</code> writes
+to <code>__tpyc__/</code> next to the source instead.</p>
+<p>Skipping the native build also makes <code>tpyc</code> the fast way to check a change. The
+front end still parses, type-checks, and runs ownership analysis, so type and
+ownership errors surface without waiting for the C++ compiler.</p>
+<p>The <code>--dump-code</code> flag prints the generated C++ to stdout instead of writing a
+project. It shows directly whether a loop stayed fixed-width, where a copy
+happens, and what a class compiles to:</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="gp">$ </span>tpyc<span class="w"> </span>--dump-code<span class="w"> </span>program.py
 </code></pre></div>
-<p>Adding <code>-x</code> to a <code>-b</code> build runs the result immediately after building.</p>
+<h3 id="integrate-with-a-cmake-build">Integrate with a CMake build<a class="headerlink" href="#integrate-with-a-cmake-build" title="Permanent link">&para;</a></h3>
+<p>Each project carries a <code>sources.cmake</code> that defines the generated sources, the
+include directories, the link libraries, and the required C++ standard. A CMake
+target consumes them directly:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="nb">include</span><span class="p">(</span><span class="s">build/program.d/sources.cmake</span><span class="p">)</span>
+<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="nb">add_executable</span><span class="p">(</span><span class="s">app</span><span class="w"> </span><span class="o">${</span><span class="nv">TPYC_SOURCES</span><span class="o">}</span><span class="p">)</span>
+<a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a><span class="nb">target_include_directories</span><span class="p">(</span><span class="s">app</span><span class="w"> </span><span class="s">PRIVATE</span><span class="w"> </span><span class="o">${</span><span class="nv">TPYC_INCLUDE_DIRS</span><span class="o">}</span><span class="p">)</span>
+<a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a><span class="nb">target_link_libraries</span><span class="p">(</span><span class="s">app</span><span class="w"> </span><span class="s">PRIVATE</span><span class="w"> </span><span class="o">${</span><span class="nv">TPYC_LIBRARIES</span><span class="o">}</span><span class="p">)</span>
+<a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a><span class="nb">set_target_properties</span><span class="p">(</span><span class="s">app</span><span class="w"> </span><span class="s">PROPERTIES</span><span class="w"> </span><span class="s">CXX_STANDARD</span><span class="w"> </span><span class="o">${</span><span class="nv">TPYC_CXX_STANDARD</span><span class="o">}</span><span class="p">)</span>
+</code></pre></div>
+<p>The <code>--no-main</code> flag omits the generated <code>main()</code> so the compiled code links
+into an existing C++ program rather than running on its own. The runtime
+headers are bundled into the output directory by default, which keeps the
+project self-contained and safe to commit or copy to another machine. The
+<code>--no-bundle-runtime</code> flag skips that copy.</p>
 <h2 id="build-a-cpython-extension">Build a CPython extension<a class="headerlink" href="#build-a-cpython-extension" title="Permanent link">&para;</a></h2>
 <p>A module marked <code># tpy: ext_module</code> compiles into a regular CPython extension.
 Functions marked <code>@export</code> become the module's public API:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="c1"># tpy: ext_module</span>
-<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="kn">from</span><span class="w"> </span><span class="nn">tpy.extern</span><span class="w"> </span><span class="kn">import</span> <span class="n">export</span>
-<a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>
-<a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a><span class="nd">@export</span>
-<a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a><span class="k">def</span><span class="w"> </span><span class="nf">triple</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-<a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a>    <span class="k">return</span> <span class="n">x</span> <span class="o">*</span> <span class="mi">3</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="c1"># tpy: ext_module</span>
+<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="kn">from</span><span class="w"> </span><span class="nn">tpy.extern</span><span class="w"> </span><span class="kn">import</span> <span class="n">export</span>
+<a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a>
+<a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a><span class="nd">@export</span>
+<a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a><span class="k">def</span><span class="w"> </span><span class="nf">triple</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a>    <span class="k">return</span> <span class="n">x</span> <span class="o">*</span> <span class="mi">3</span>
 </code></pre></div>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="gp">$ </span>tpyc<span class="w"> </span>-b<span class="w"> </span>-o<span class="w"> </span>build<span class="w"> </span>fastmod.py
-<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="go">Built extension: build/debug/fastmod.so</span>
-<a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a><span class="gp">$ </span>cp<span class="w"> </span>build/debug/fastmod.so<span class="w"> </span>.
-<a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a><span class="gp">$ </span>python3<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;import fastmod; print(fastmod.triple(14))&quot;</span>
-<a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a><span class="go">42</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="gp">$ </span>tpyc<span class="w"> </span>-b<span class="w"> </span>-o<span class="w"> </span>build<span class="w"> </span>fastmod.py
+<a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a><span class="go">Built extension: build/debug/fastmod.so</span>
+<a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a><span class="gp">$ </span>cp<span class="w"> </span>build/debug/fastmod.so<span class="w"> </span>.
+<a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a><span class="gp">$ </span>python3<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;import fastmod; print(fastmod.triple(14))&quot;</span>
+<a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a><span class="go">42</span>
 </code></pre></div>
 <p>The module is imported under the <code>.so</code> name, which matches the source file.
 Arguments and results convert to their Python counterparts at the boundary,
 and a mismatched argument raises an ordinary <code>TypeError</code> on the Python side.
 <a href="../../compatibility/">Compatibility</a> tracks which boundary types are
 supported.</p>
-<p>This supports gradual migration: the application stays in CPython while the
+<p>This supports gradual migration. The application stays in CPython while the
 hot module moves to TurboPython.</p>
-<h2 id="a-project-is-a-directory-of-modules">A project is a directory of modules<a class="headerlink" href="#a-project-is-a-directory-of-modules" title="Permanent link">&para;</a></h2>
+<h2 id="compile-a-multi-module-program">Compile a multi-module program<a class="headerlink" href="#compile-a-multi-module-program" title="Permanent link">&para;</a></h2>
 <p>There is no project file yet (<a href="#toolchain-notes">Planned</a>, below). A program
 is its entry file plus everything it imports. Local modules and packages next
 to the entry file resolve as in Python, and all of it is compiled together:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>app.py          # the entry file:  tpy app.py
-<a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>helpers.py      # import helpers
-<a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a>pkg/
-<a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a>    __init__.py
-<a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a>    scale.py    # from pkg.scale import to_f
-</code></pre></div>
-<p>Module-level constants are declared <code>Final</code>. The compiler suggests it for an
-ALL_CAPS name whose type <code>Final</code> can wrap:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Final</span>
-<a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a><span class="kn">from</span><span class="w"> </span><span class="nn">tpy</span><span class="w"> </span><span class="kn">import</span> <span class="n">Float64</span>
-<a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a>
-<a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a><span class="n">FACTOR</span><span class="p">:</span> <span class="n">Final</span><span class="p">[</span><span class="n">Float64</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.8</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>app.py          # the entry file:  tpy app.py
+<a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>helpers.py      # import helpers
+<a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a>pkg/
+<a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a>    __init__.py
+<a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a>    scale.py    # from pkg.scale import to_f
 </code></pre></div>
 <h2 id="toolchain-notes">Toolchain notes<a class="headerlink" href="#toolchain-notes" title="Permanent link">&para;</a></h2>
 <p>The build uses the system C++ compiler, and <code>--cxx</code> selects a different one.
@@ -1007,12 +1050,12 @@ when available, precompiled headers (<code>--no-pch</code> turns them off), and 
 compilation (<code>-j N</code>).</p>
 <div class="admonition info">
 <p class="admonition-title">Planned</p>
-<p><code>pyproject.toml</code> integration -- project-level configuration, dependencies,
-and build settings -- does not exist yet. Configuration is currently
+<p><code>pyproject.toml</code> integration — project-level configuration, dependencies,
+and build settings — does not exist yet. Configuration is currently
 command-line flags only.</p>
 </div>
-<p>The remaining pages are orientation: <a href="../cpp-rust/">Coming from C++/Rust</a> and
-<a href="../beyond/">Beyond the core</a>.</p>
+<p>The remaining pages are orientation: <a href="../beyond/">Beyond the core</a> and
+<a href="../cpp-rust/">Coming from C++/Rust</a>.</p>
 
 
 

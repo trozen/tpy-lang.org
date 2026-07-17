@@ -52,13 +52,20 @@ nav:
       - Control flow: guide/control-flow.md
       - Efficiency: guide/efficiency.md
       - Building: guide/building.md
-      - Coming from C++/Rust: guide/cpp-rust.md
       - Beyond the core: guide/beyond.md
+      - Coming from C++/Rust: guide/cpp-rust.md
   - Compatibility: compatibility.md
 
 markdown_extensions:
   - admonition
   - attr_list             # external links: { target="_blank" rel="noopener" }, see CLAUDE.md
+  # `--` in prose renders as an em-dash; code spans/blocks are left untouched.
+  # Dashes only -- quotes/ellipses stay literal so nothing else is rewritten.
+  - smarty:
+      smart_quotes: false
+      smart_ellipses: false
+      substitutions:
+        ndash: "—"
   - toc:
       permalink: true
   - pymdownx.highlight:

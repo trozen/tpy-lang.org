@@ -1,32 +1,115 @@
 # Control flow, None & errors
 
-!!! warning "Review pending"
-    This page has not yet been reviewed by the maintainer.
+Branching, looping, and iteration in TurboPython are ordinary Python. This page
+starts with the everyday constructs, comprehensions, and pattern matching, then
+turns to the parts that carry TurboPython-specific rules: narrowing away
+`None`, exceptions and panics, and writing iterators and generators.
 
-Branching and looping are ordinary Python: `if`/`elif`/`else`, `for`, `while`,
-`break`, `continue`, and `with` all work unchanged. This page covers the three
-places where control flow meets the type system: narrowing away `None`,
-exceptions, and writing an iterator.
+## Loops and conditionals
 
-<!-- tpy: prelude -->
+`if`/`elif`/`else`, `for`, `while`, `break`, `continue`, and `range` behave as
+in Python:
+
+<!-- tpy: run -->
 ```python
-from tpy import Own, Float64
+def main():
+    total = 0
+    for i in range(10):
+        if i == 5:
+            break            # stop at 5
+        if i % 2 == 1:
+            continue         # skip odds
+        total += i
+    print(total)             # 0 + 2 + 4 = 6
 
-class Reading:
-    sensor: str
-    values: list[Float64]
-    def __init__(self, sensor: str, values: Own[list[Float64]]):
-        self.sensor = sensor
-        self.values = values
+    n = 20
+    while n > 1:
+        n //= 2
+    print(n)                 # 1
+
+main()
 ```
+
+A conditional expression such as `"odd" if n % 2 == 1 else "even"` works as in
+Python. Context managers work as well: `with` drives both built-in resources
+such as open files and any class that defines `__enter__` and `__exit__`.
+
+## Comprehensions
+
+List, set, and dict comprehensions and generator expressions all work as in
+Python:
+
+<!-- tpy: run -->
+```python
+def main():
+    squares = [x * x for x in range(5)]
+    evens = {x for x in range(10) if x % 2 == 0}
+    index = {x: x * x for x in range(4)}
+    total = sum(x * x for x in range(5))    # generator expression
+    print(squares)           # [0, 1, 4, 9, 16]
+    print(len(evens))        # 5
+    print(index[3])          # 9
+    print(total)             # 30
+
+main()
+```
+
+## Pattern matching
+
+`match` branches on the shape of a value, an alternative to a chain of
+`if`/`elif`. It handles primitive values with literal and OR patterns and an
+optional guard, and a final `case _` catches the rest:
+
+<!-- tpy: run -->
+```python
+def classify(n: int) -> str:
+    match n:
+        case 0:
+            return "zero"
+        case 1 | 2 | 3:          # OR pattern
+            return "small"
+        case _ if n < 0:         # guard
+            return "negative"
+        case _:                  # wildcard
+            return "anything else"
+
+def main():
+    print(classify(0))     # zero
+    print(classify(2))     # small
+    print(classify(-5))    # negative
+    print(classify(99))    # anything else
+
+main()
+```
+
+`match` also destructures classes, binding the fields a pattern names
+(`case Circle(radius=r)`), and branches on the members of a union, where the
+compiler checks that every member is covered. [Data modeling](data-modeling.md)
+shows both forms. A pattern can bind the whole value with `as`, as in
+`case Circle() as c`.
+
+Sequence, tuple, and mapping patterns (`case [a, b]`, `case {"k": v}`) are not
+available yet.
 
 ## Narrowing away `None`
 
 A value of type `T | None` cannot be used as a plain `T`; the compiler warns
-and inserts a runtime check ([the map](differences.md) shows the warning). A
-check on the value *narrows* it: inside the checked branch, the type is `T`
-and the warning is gone. `is None` and `is not None` comparisons, truth-value
-checks (`if r:`), early returns, and `assert` all narrow:
+and inserts a runtime check. A check on the value *narrows* it, so inside the
+checked branch the type is `T` and the warning is gone. `is None` and
+`is not None` comparisons, truth-value checks (`if r:`), early returns, and
+`assert` all narrow:
+
+<!-- tpy: prelude -->
+```python
+from tpy import Own
+
+class Reading:
+    sensor: str
+    values: list[float]
+    def __init__(self, sensor: str, values: Own[list[float]]):
+        self.sensor = sensor
+        self.values = values
+```
 
 <!-- tpy: cont run -->
 ```python
@@ -55,7 +138,7 @@ A failed `assert` raises an `AssertionError`, catchable like any exception;
 uncaught, it stops the program. Optimized builds keep asserts -- there is no
 CPython `-O` stripping.
 
-## Exceptions work like Python
+## Exceptions
 
 `raise`, `try`/`except`/`finally`, exception classes, and `except ... as e`
 all behave as in Python. An exception class is an ordinary class deriving from
@@ -85,14 +168,11 @@ main()
 ```
 
 `except` on a base class catches derived exceptions, and a bare `raise`
-re-raises the active one. Catching several types in one clause
-(`except (A, B)`) is not supported today; the compiler rejects it.
-[Compatibility](../compatibility.md) tracks the status.
+re-raises the active one.
 
-An ordinary `raise` compiles to a C++ exception. A `try` block costs nothing
-while nothing is raised; actually raising is comparatively expensive.
-Exceptions are the right shape for failures, not for hot-path control flow --
-which is why `__next__` gets special treatment below.
+A `try` block costs nothing while nothing is raised; actually raising is
+comparatively expensive. Exceptions are the right shape for failures, not for
+hot-path control flow -- which is why `__next__` gets special treatment below.
 
 !!! warning "Silent difference from CPython"
     For a user-defined exception class, `print(e)` prints the exception
@@ -105,7 +185,7 @@ Exceptions are for failures the program can handle. They are distinct from
 *panics* -- integer overflow, a failed narrowing conversion -- which stop the
 program and cannot be caught ([the types page](types.md) covers them).
 
-## An iterator is two methods
+## Iterators
 
 A custom iterator is written exactly as in Python: `__iter__` returns the
 iterator, `__next__` returns the next value or raises `StopIteration`. The
@@ -134,21 +214,29 @@ def main():
 main()
 ```
 
-The `raise StopIteration` costs nothing at runtime. The compiler rewrites
-every `__next__` so that the end of iteration is signaled without throwing
-(the `@error_return` rewrite, applied automatically;
-[Writing efficient TPy](efficiency.md) covers the rare explicit form). Generator functions
-(`yield`, annotated `-> Iterator[T]`) are the shorter way to write the same
-thing, as shown on [the map](differences.md).
+The `raise StopIteration` costs nothing at runtime; ending iteration is
+signaled without actually throwing. [Writing efficient TPy](efficiency.md)
+covers the `@error_return` mechanism behind this and its explicit form.
 
-## In practice
+## Generators
 
-| The situation | The tool |
-|---|---|
-| A value may be absent | `T \| None`; narrow once, where the `None` can appear |
-| A failure the program can handle | `raise` an exception class; `try`/`except` as in Python |
-| An unrecoverable violation (overflow, bad narrowing) | nothing -- a panic stops the program, by design |
-| Custom iteration | `__iter__` + `__next__` + `raise StopIteration`, no runtime cost |
+A generator function uses `yield` and is annotated `-> Iterator[T]`. It is the
+concise form of the iterator above, with no explicit `__next__`:
+
+<!-- tpy: run -->
+```python
+from typing import Iterator
+
+def squares(n: int) -> Iterator[int]:
+    for i in range(n):
+        yield i * i
+
+def main():
+    for s in squares(4):
+        print(s)             # 0 1 4 9
+
+main()
+```
 
 The next page consolidates all of this into performance guidance:
 [Writing efficient TPy](efficiency.md).

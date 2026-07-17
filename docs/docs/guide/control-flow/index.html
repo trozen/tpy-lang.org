@@ -561,6 +561,39 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#loops-and-conditionals" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Loops and conditionals
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#comprehensions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Comprehensions
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#pattern-matching" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Pattern matching
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#narrowing-away-none" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -572,10 +605,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#exceptions-work-like-python" class="md-nav__link">
+  <a href="#exceptions" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Exceptions work like Python
+        Exceptions
       
     </span>
   </a>
@@ -583,10 +616,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#an-iterator-is-two-methods" class="md-nav__link">
+  <a href="#iterators" class="md-nav__link">
     <span class="md-ellipsis">
       
-        An iterator is two methods
+        Iterators
       
     </span>
   </a>
@@ -594,10 +627,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#in-practice" class="md-nav__link">
+  <a href="#generators" class="md-nav__link">
     <span class="md-ellipsis">
       
-        In practice
+        Generators
       
     </span>
   </a>
@@ -676,14 +709,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../cpp-rust/" class="md-nav__link">
+      <a href="../beyond/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Coming from C++/Rust
+    Beyond the core
   
 
     
@@ -704,14 +737,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../beyond/" class="md-nav__link">
+      <a href="../cpp-rust/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Beyond the core
+    Coming from C++/Rust
   
 
     
@@ -786,6 +819,39 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#loops-and-conditionals" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Loops and conditionals
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#comprehensions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Comprehensions
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#pattern-matching" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Pattern matching
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#narrowing-away-none" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -797,10 +863,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#exceptions-work-like-python" class="md-nav__link">
+  <a href="#exceptions" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Exceptions work like Python
+        Exceptions
       
     </span>
   </a>
@@ -808,10 +874,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#an-iterator-is-two-methods" class="md-nav__link">
+  <a href="#iterators" class="md-nav__link">
     <span class="md-ellipsis">
       
-        An iterator is two methods
+        Iterators
       
     </span>
   </a>
@@ -819,10 +885,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#in-practice" class="md-nav__link">
+  <a href="#generators" class="md-nav__link">
     <span class="md-ellipsis">
       
-        In practice
+        Generators
       
     </span>
   </a>
@@ -847,86 +913,150 @@
 
 
 <h1 id="control-flow-none-errors">Control flow, None &amp; errors<a class="headerlink" href="#control-flow-none-errors" title="Permanent link">&para;</a></h1>
-<div class="admonition warning">
-<p class="admonition-title">Review pending</p>
-<p>This page has not yet been reviewed by the maintainer.</p>
-</div>
-<p>Branching and looping are ordinary Python: <code>if</code>/<code>elif</code>/<code>else</code>, <code>for</code>, <code>while</code>,
-<code>break</code>, <code>continue</code>, and <code>with</code> all work unchanged. This page covers the three
-places where control flow meets the type system: narrowing away <code>None</code>,
-exceptions, and writing an iterator.</p>
-<!-- tpy: prelude -->
-<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">tpy</span><span class="w"> </span><span class="kn">import</span> <span class="n">Own</span><span class="p">,</span> <span class="n">Float64</span>
-<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>
-<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="k">class</span><span class="w"> </span><span class="nc">Reading</span><span class="p">:</span>
-<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>    <span class="n">sensor</span><span class="p">:</span> <span class="nb">str</span>
-<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>    <span class="n">values</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Float64</span><span class="p">]</span>
-<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sensor</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">values</span><span class="p">:</span> <span class="n">Own</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">Float64</span><span class="p">]]):</span>
-<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">sensor</span> <span class="o">=</span> <span class="n">sensor</span>
-<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">values</span> <span class="o">=</span> <span class="n">values</span>
+<p>Branching, looping, and iteration in TurboPython are ordinary Python. This page
+starts with the everyday constructs, comprehensions, and pattern matching, then
+turns to the parts that carry TurboPython-specific rules: narrowing away
+<code>None</code>, exceptions and panics, and writing iterators and generators.</p>
+<h2 id="loops-and-conditionals">Loops and conditionals<a class="headerlink" href="#loops-and-conditionals" title="Permanent link">&para;</a></h2>
+<p><code>if</code>/<code>elif</code>/<code>else</code>, <code>for</code>, <code>while</code>, <code>break</code>, <code>continue</code>, and <code>range</code> behave as
+in Python:</p>
+<!-- tpy: run -->
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">():</span>
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>    <span class="n">total</span> <span class="o">=</span> <span class="mi">0</span>
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">):</span>
+<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>        <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="mi">5</span><span class="p">:</span>
+<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>            <span class="k">break</span>            <span class="c1"># stop at 5</span>
+<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>        <span class="k">if</span> <span class="n">i</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>            <span class="k">continue</span>         <span class="c1"># skip odds</span>
+<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>        <span class="n">total</span> <span class="o">+=</span> <span class="n">i</span>
+<a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>    <span class="nb">print</span><span class="p">(</span><span class="n">total</span><span class="p">)</span>             <span class="c1"># 0 + 2 + 4 = 6</span>
+<a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>
+<a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>    <span class="n">n</span> <span class="o">=</span> <span class="mi">20</span>
+<a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>    <span class="k">while</span> <span class="n">n</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+<a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a>        <span class="n">n</span> <span class="o">//=</span> <span class="mi">2</span>
+<a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a>    <span class="nb">print</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>                 <span class="c1"># 1</span>
+<a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a>
+<a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a><span class="n">main</span><span class="p">()</span>
 </code></pre></div>
+<p>A conditional expression such as <code>"odd" if n % 2 == 1 else "even"</code> works as in
+Python. Context managers work as well: <code>with</code> drives both built-in resources
+such as open files and any class that defines <code>__enter__</code> and <code>__exit__</code>.</p>
+<h2 id="comprehensions">Comprehensions<a class="headerlink" href="#comprehensions" title="Permanent link">&para;</a></h2>
+<p>List, set, and dict comprehensions and generator expressions all work as in
+Python:</p>
+<!-- tpy: run -->
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">():</span>
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>    <span class="n">squares</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span> <span class="o">*</span> <span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">5</span><span class="p">)]</span>
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>    <span class="n">evens</span> <span class="o">=</span> <span class="p">{</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span> <span class="k">if</span> <span class="n">x</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">0</span><span class="p">}</span>
+<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>    <span class="n">index</span> <span class="o">=</span> <span class="p">{</span><span class="n">x</span><span class="p">:</span> <span class="n">x</span> <span class="o">*</span> <span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">4</span><span class="p">)}</span>
+<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>    <span class="n">total</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">x</span> <span class="o">*</span> <span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">5</span><span class="p">))</span>    <span class="c1"># generator expression</span>
+<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>    <span class="nb">print</span><span class="p">(</span><span class="n">squares</span><span class="p">)</span>           <span class="c1"># [0, 1, 4, 9, 16]</span>
+<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a>    <span class="nb">print</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">evens</span><span class="p">))</span>        <span class="c1"># 5</span>
+<a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a>    <span class="nb">print</span><span class="p">(</span><span class="n">index</span><span class="p">[</span><span class="mi">3</span><span class="p">])</span>          <span class="c1"># 9</span>
+<a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a>    <span class="nb">print</span><span class="p">(</span><span class="n">total</span><span class="p">)</span>             <span class="c1"># 30</span>
+<a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a>
+<a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a><span class="n">main</span><span class="p">()</span>
+</code></pre></div>
+<h2 id="pattern-matching">Pattern matching<a class="headerlink" href="#pattern-matching" title="Permanent link">&para;</a></h2>
+<p><code>match</code> branches on the shape of a value, an alternative to a chain of
+<code>if</code>/<code>elif</code>. It handles primitive values with literal and OR patterns and an
+optional guard, and a final <code>case _</code> catches the rest:</p>
+<!-- tpy: run -->
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="k">def</span><span class="w"> </span><span class="nf">classify</span><span class="p">(</span><span class="n">n</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>    <span class="k">match</span> <span class="n">n</span><span class="p">:</span>
+<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>        <span class="k">case</span> <span class="mi">0</span><span class="p">:</span>
+<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>            <span class="k">return</span> <span class="s2">&quot;zero&quot;</span>
+<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>        <span class="k">case</span> <span class="mi">1</span> <span class="o">|</span> <span class="mi">2</span> <span class="o">|</span> <span class="mi">3</span><span class="p">:</span>          <span class="c1"># OR pattern</span>
+<a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a>            <span class="k">return</span> <span class="s2">&quot;small&quot;</span>
+<a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a>        <span class="k">case</span><span class="w"> </span><span class="k">_</span> <span class="k">if</span> <span class="n">n</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>         <span class="c1"># guard</span>
+<a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a>            <span class="k">return</span> <span class="s2">&quot;negative&quot;</span>
+<a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a>        <span class="k">case</span><span class="w"> </span><span class="k">_</span><span class="p">:</span>                  <span class="c1"># wildcard</span>
+<a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a>            <span class="k">return</span> <span class="s2">&quot;anything else&quot;</span>
+<a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a>
+<a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a><span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">():</span>
+<a id="__codelineno-2-13" name="__codelineno-2-13" href="#__codelineno-2-13"></a>    <span class="nb">print</span><span class="p">(</span><span class="n">classify</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span>     <span class="c1"># zero</span>
+<a id="__codelineno-2-14" name="__codelineno-2-14" href="#__codelineno-2-14"></a>    <span class="nb">print</span><span class="p">(</span><span class="n">classify</span><span class="p">(</span><span class="mi">2</span><span class="p">))</span>     <span class="c1"># small</span>
+<a id="__codelineno-2-15" name="__codelineno-2-15" href="#__codelineno-2-15"></a>    <span class="nb">print</span><span class="p">(</span><span class="n">classify</span><span class="p">(</span><span class="o">-</span><span class="mi">5</span><span class="p">))</span>    <span class="c1"># negative</span>
+<a id="__codelineno-2-16" name="__codelineno-2-16" href="#__codelineno-2-16"></a>    <span class="nb">print</span><span class="p">(</span><span class="n">classify</span><span class="p">(</span><span class="mi">99</span><span class="p">))</span>    <span class="c1"># anything else</span>
+<a id="__codelineno-2-17" name="__codelineno-2-17" href="#__codelineno-2-17"></a>
+<a id="__codelineno-2-18" name="__codelineno-2-18" href="#__codelineno-2-18"></a><span class="n">main</span><span class="p">()</span>
+</code></pre></div>
+<p><code>match</code> also destructures classes, binding the fields a pattern names
+(<code>case Circle(radius=r)</code>), and branches on the members of a union, where the
+compiler checks that every member is covered. <a href="../data-modeling/">Data modeling</a>
+shows both forms. A pattern can bind the whole value with <code>as</code>, as in
+<code>case Circle() as c</code>.</p>
+<p>Sequence, tuple, and mapping patterns (<code>case [a, b]</code>, <code>case {"k": v}</code>) are not
+available yet.</p>
 <h2 id="narrowing-away-none">Narrowing away <code>None</code><a class="headerlink" href="#narrowing-away-none" title="Permanent link">&para;</a></h2>
 <p>A value of type <code>T | None</code> cannot be used as a plain <code>T</code>; the compiler warns
-and inserts a runtime check (<a href="../differences/">the map</a> shows the warning). A
-check on the value <em>narrows</em> it: inside the checked branch, the type is <code>T</code>
-and the warning is gone. <code>is None</code> and <code>is not None</code> comparisons, truth-value
-checks (<code>if r:</code>), early returns, and <code>assert</code> all narrow:</p>
+and inserts a runtime check. A check on the value <em>narrows</em> it, so inside the
+checked branch the type is <code>T</code> and the warning is gone. <code>is None</code> and
+<code>is not None</code> comparisons, truth-value checks (<code>if r:</code>), early returns, and
+<code>assert</code> all narrow:</p>
+<!-- tpy: prelude -->
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">tpy</span><span class="w"> </span><span class="kn">import</span> <span class="n">Own</span>
+<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>
+<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="k">class</span><span class="w"> </span><span class="nc">Reading</span><span class="p">:</span>
+<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>    <span class="n">sensor</span><span class="p">:</span> <span class="nb">str</span>
+<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a>    <span class="n">values</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span>
+<a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sensor</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">values</span><span class="p">:</span> <span class="n">Own</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">]]):</span>
+<a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">sensor</span> <span class="o">=</span> <span class="n">sensor</span>
+<a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">values</span> <span class="o">=</span> <span class="n">values</span>
+</code></pre></div>
 <!-- tpy: cont run -->
-<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="k">def</span><span class="w"> </span><span class="nf">label</span><span class="p">(</span><span class="n">r</span><span class="p">:</span> <span class="n">Reading</span> <span class="o">|</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>    <span class="k">if</span> <span class="n">r</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>        <span class="k">return</span> <span class="s2">&quot;no reading&quot;</span>
-<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>    <span class="k">return</span> <span class="n">r</span><span class="o">.</span><span class="n">sensor</span>              <span class="c1"># r is Reading here</span>
-<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>
-<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="k">def</span><span class="w"> </span><span class="nf">sensor_of</span><span class="p">(</span><span class="n">r</span><span class="p">:</span> <span class="n">Reading</span> <span class="o">|</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a>    <span class="k">assert</span> <span class="n">r</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>         <span class="c1"># narrows too</span>
-<a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a>    <span class="k">return</span> <span class="n">r</span><span class="o">.</span><span class="n">sensor</span>
-<a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a>
-<a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a><span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">():</span>
-<a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a>    <span class="nb">print</span><span class="p">(</span><span class="n">label</span><span class="p">(</span><span class="kc">None</span><span class="p">))</span>                             <span class="c1"># no reading</span>
-<a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a>    <span class="nb">print</span><span class="p">(</span><span class="n">label</span><span class="p">(</span><span class="n">Reading</span><span class="p">(</span><span class="s2">&quot;boiler-3&quot;</span><span class="p">,</span> <span class="p">[</span><span class="mf">20.5</span><span class="p">])))</span>      <span class="c1"># boiler-3</span>
-<a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a>    <span class="nb">print</span><span class="p">(</span><span class="n">sensor_of</span><span class="p">(</span><span class="n">Reading</span><span class="p">(</span><span class="s2">&quot;boiler-7&quot;</span><span class="p">,</span> <span class="p">[</span><span class="mf">19.0</span><span class="p">])))</span>  <span class="c1"># boiler-7</span>
-<a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a>
-<a id="__codelineno-1-15" name="__codelineno-1-15" href="#__codelineno-1-15"></a><span class="n">main</span><span class="p">()</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="k">def</span><span class="w"> </span><span class="nf">label</span><span class="p">(</span><span class="n">r</span><span class="p">:</span> <span class="n">Reading</span> <span class="o">|</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>    <span class="k">if</span> <span class="n">r</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>        <span class="k">return</span> <span class="s2">&quot;no reading&quot;</span>
+<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a>    <span class="k">return</span> <span class="n">r</span><span class="o">.</span><span class="n">sensor</span>              <span class="c1"># r is Reading here</span>
+<a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a>
+<a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a><span class="k">def</span><span class="w"> </span><span class="nf">sensor_of</span><span class="p">(</span><span class="n">r</span><span class="p">:</span> <span class="n">Reading</span> <span class="o">|</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a>    <span class="k">assert</span> <span class="n">r</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>         <span class="c1"># narrows too</span>
+<a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a>    <span class="k">return</span> <span class="n">r</span><span class="o">.</span><span class="n">sensor</span>
+<a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a>
+<a id="__codelineno-4-10" name="__codelineno-4-10" href="#__codelineno-4-10"></a><span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">():</span>
+<a id="__codelineno-4-11" name="__codelineno-4-11" href="#__codelineno-4-11"></a>    <span class="nb">print</span><span class="p">(</span><span class="n">label</span><span class="p">(</span><span class="kc">None</span><span class="p">))</span>                             <span class="c1"># no reading</span>
+<a id="__codelineno-4-12" name="__codelineno-4-12" href="#__codelineno-4-12"></a>    <span class="nb">print</span><span class="p">(</span><span class="n">label</span><span class="p">(</span><span class="n">Reading</span><span class="p">(</span><span class="s2">&quot;boiler-3&quot;</span><span class="p">,</span> <span class="p">[</span><span class="mf">20.5</span><span class="p">])))</span>      <span class="c1"># boiler-3</span>
+<a id="__codelineno-4-13" name="__codelineno-4-13" href="#__codelineno-4-13"></a>    <span class="nb">print</span><span class="p">(</span><span class="n">sensor_of</span><span class="p">(</span><span class="n">Reading</span><span class="p">(</span><span class="s2">&quot;boiler-7&quot;</span><span class="p">,</span> <span class="p">[</span><span class="mf">19.0</span><span class="p">])))</span>  <span class="c1"># boiler-7</span>
+<a id="__codelineno-4-14" name="__codelineno-4-14" href="#__codelineno-4-14"></a>
+<a id="__codelineno-4-15" name="__codelineno-4-15" href="#__codelineno-4-15"></a><span class="n">main</span><span class="p">()</span>
 </code></pre></div>
 <p>The rule is to narrow once, close to where the <code>None</code> can appear, and to pass
 plain <code>T</code> onward. Functions that take <code>T | None</code> make every caller
 repeat the check.</p>
 <p>A failed <code>assert</code> raises an <code>AssertionError</code>, catchable like any exception;
-uncaught, it stops the program. Optimized builds keep asserts -- there is no
+uncaught, it stops the program. Optimized builds keep asserts — there is no
 CPython <code>-O</code> stripping.</p>
-<h2 id="exceptions-work-like-python">Exceptions work like Python<a class="headerlink" href="#exceptions-work-like-python" title="Permanent link">&para;</a></h2>
+<h2 id="exceptions">Exceptions<a class="headerlink" href="#exceptions" title="Permanent link">&para;</a></h2>
 <p><code>raise</code>, <code>try</code>/<code>except</code>/<code>finally</code>, exception classes, and <code>except ... as e</code>
 all behave as in Python. An exception class is an ordinary class deriving from
 <code>Exception</code>:</p>
 <!-- tpy: run -->
-<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="k">class</span><span class="w"> </span><span class="nc">ParseError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
-<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>    <span class="k">pass</span>
-<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>
-<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="k">def</span><span class="w"> </span><span class="nf">parse</span><span class="p">(</span><span class="n">text</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">text</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-<a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a>        <span class="k">raise</span> <span class="n">ParseError</span><span class="p">(</span><span class="s2">&quot;empty input&quot;</span><span class="p">)</span>
-<a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a>    <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
-<a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a>
-<a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a><span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">():</span>
-<a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a>    <span class="k">try</span><span class="p">:</span>
-<a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a>        <span class="nb">print</span><span class="p">(</span><span class="n">parse</span><span class="p">(</span><span class="s2">&quot;42&quot;</span><span class="p">))</span>       <span class="c1"># 42</span>
-<a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a>    <span class="k">finally</span><span class="p">:</span>
-<a id="__codelineno-2-13" name="__codelineno-2-13" href="#__codelineno-2-13"></a>        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;always runs&quot;</span><span class="p">)</span>
-<a id="__codelineno-2-14" name="__codelineno-2-14" href="#__codelineno-2-14"></a>    <span class="k">try</span><span class="p">:</span>
-<a id="__codelineno-2-15" name="__codelineno-2-15" href="#__codelineno-2-15"></a>        <span class="n">parse</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
-<a id="__codelineno-2-16" name="__codelineno-2-16" href="#__codelineno-2-16"></a>    <span class="k">except</span> <span class="n">ParseError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-<a id="__codelineno-2-17" name="__codelineno-2-17" href="#__codelineno-2-17"></a>        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;bad:&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>    <span class="c1"># bad: empty input</span>
-<a id="__codelineno-2-18" name="__codelineno-2-18" href="#__codelineno-2-18"></a>
-<a id="__codelineno-2-19" name="__codelineno-2-19" href="#__codelineno-2-19"></a><span class="n">main</span><span class="p">()</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="k">class</span><span class="w"> </span><span class="nc">ParseError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>    <span class="k">pass</span>
+<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>
+<a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="k">def</span><span class="w"> </span><span class="nf">parse</span><span class="p">(</span><span class="n">text</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a>    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">text</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+<a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a>        <span class="k">raise</span> <span class="n">ParseError</span><span class="p">(</span><span class="s2">&quot;empty input&quot;</span><span class="p">)</span>
+<a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a>    <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+<a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a>
+<a id="__codelineno-5-9" name="__codelineno-5-9" href="#__codelineno-5-9"></a><span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">():</span>
+<a id="__codelineno-5-10" name="__codelineno-5-10" href="#__codelineno-5-10"></a>    <span class="k">try</span><span class="p">:</span>
+<a id="__codelineno-5-11" name="__codelineno-5-11" href="#__codelineno-5-11"></a>        <span class="nb">print</span><span class="p">(</span><span class="n">parse</span><span class="p">(</span><span class="s2">&quot;42&quot;</span><span class="p">))</span>       <span class="c1"># 42</span>
+<a id="__codelineno-5-12" name="__codelineno-5-12" href="#__codelineno-5-12"></a>    <span class="k">finally</span><span class="p">:</span>
+<a id="__codelineno-5-13" name="__codelineno-5-13" href="#__codelineno-5-13"></a>        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;always runs&quot;</span><span class="p">)</span>
+<a id="__codelineno-5-14" name="__codelineno-5-14" href="#__codelineno-5-14"></a>    <span class="k">try</span><span class="p">:</span>
+<a id="__codelineno-5-15" name="__codelineno-5-15" href="#__codelineno-5-15"></a>        <span class="n">parse</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+<a id="__codelineno-5-16" name="__codelineno-5-16" href="#__codelineno-5-16"></a>    <span class="k">except</span> <span class="n">ParseError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+<a id="__codelineno-5-17" name="__codelineno-5-17" href="#__codelineno-5-17"></a>        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;bad:&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>    <span class="c1"># bad: empty input</span>
+<a id="__codelineno-5-18" name="__codelineno-5-18" href="#__codelineno-5-18"></a>
+<a id="__codelineno-5-19" name="__codelineno-5-19" href="#__codelineno-5-19"></a><span class="n">main</span><span class="p">()</span>
 </code></pre></div>
 <p><code>except</code> on a base class catches derived exceptions, and a bare <code>raise</code>
-re-raises the active one. Catching several types in one clause
-(<code>except (A, B)</code>) is not supported today; the compiler rejects it.
-<a href="../../compatibility/">Compatibility</a> tracks the status.</p>
-<p>An ordinary <code>raise</code> compiles to a C++ exception. A <code>try</code> block costs nothing
-while nothing is raised; actually raising is comparatively expensive.
-Exceptions are the right shape for failures, not for hot-path control flow --
-which is why <code>__next__</code> gets special treatment below.</p>
+re-raises the active one.</p>
+<p>A <code>try</code> block costs nothing while nothing is raised; actually raising is
+comparatively expensive. Exceptions are the right shape for failures, not for
+hot-path control flow — which is why <code>__next__</code> gets special treatment below.</p>
 <div class="admonition warning">
 <p class="admonition-title">Silent difference from CPython</p>
 <p>For a user-defined exception class, <code>print(e)</code> prints the exception
@@ -936,66 +1066,52 @@ f-string formatting (<code>f"failed: {e}"</code>) return the message on both
 runtimes, as in the example above.</p>
 </div>
 <p>Exceptions are for failures the program can handle. They are distinct from
-<em>panics</em> -- integer overflow, a failed narrowing conversion -- which stop the
+<em>panics</em> — integer overflow, a failed narrowing conversion — which stop the
 program and cannot be caught (<a href="../types/">the types page</a> covers them).</p>
-<h2 id="an-iterator-is-two-methods">An iterator is two methods<a class="headerlink" href="#an-iterator-is-two-methods" title="Permanent link">&para;</a></h2>
+<h2 id="iterators">Iterators<a class="headerlink" href="#iterators" title="Permanent link">&para;</a></h2>
 <p>A custom iterator is written exactly as in Python: <code>__iter__</code> returns the
 iterator, <code>__next__</code> returns the next value or raises <code>StopIteration</code>. The
 same class runs unchanged under CPython:</p>
 <!-- tpy: run -->
-<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">tpy</span><span class="w"> </span><span class="kn">import</span> <span class="n">Int32</span>
-<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>
-<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="k">class</span><span class="w"> </span><span class="nc">Countdown</span><span class="p">:</span>
-<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>    <span class="n">n</span><span class="p">:</span> <span class="n">Int32</span>
-<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="p">:</span> <span class="n">Int32</span><span class="p">):</span>
-<a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">n</span> <span class="o">=</span> <span class="n">n</span>
-<a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;Countdown&quot;</span><span class="p">:</span>
-<a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a>        <span class="k">return</span> <span class="bp">self</span>
-<a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__next__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Int32</span><span class="p">:</span>
-<a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a>        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">n</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-<a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a>            <span class="k">raise</span> <span class="ne">StopIteration</span>
-<a id="__codelineno-3-12" name="__codelineno-3-12" href="#__codelineno-3-12"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">n</span> <span class="o">-=</span> <span class="mi">1</span>
-<a id="__codelineno-3-13" name="__codelineno-3-13" href="#__codelineno-3-13"></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">n</span> <span class="o">+</span> <span class="mi">1</span>
-<a id="__codelineno-3-14" name="__codelineno-3-14" href="#__codelineno-3-14"></a>
-<a id="__codelineno-3-15" name="__codelineno-3-15" href="#__codelineno-3-15"></a><span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">():</span>
-<a id="__codelineno-3-16" name="__codelineno-3-16" href="#__codelineno-3-16"></a>    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">Countdown</span><span class="p">(</span><span class="mi">3</span><span class="p">):</span>
-<a id="__codelineno-3-17" name="__codelineno-3-17" href="#__codelineno-3-17"></a>        <span class="nb">print</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>                 <span class="c1"># 3 2 1</span>
-<a id="__codelineno-3-18" name="__codelineno-3-18" href="#__codelineno-3-18"></a>
-<a id="__codelineno-3-19" name="__codelineno-3-19" href="#__codelineno-3-19"></a><span class="n">main</span><span class="p">()</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">tpy</span><span class="w"> </span><span class="kn">import</span> <span class="n">Int32</span>
+<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>
+<a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a><span class="k">class</span><span class="w"> </span><span class="nc">Countdown</span><span class="p">:</span>
+<a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a>    <span class="n">n</span><span class="p">:</span> <span class="n">Int32</span>
+<a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="p">:</span> <span class="n">Int32</span><span class="p">):</span>
+<a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">n</span> <span class="o">=</span> <span class="n">n</span>
+<a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;Countdown&quot;</span><span class="p">:</span>
+<a id="__codelineno-6-8" name="__codelineno-6-8" href="#__codelineno-6-8"></a>        <span class="k">return</span> <span class="bp">self</span>
+<a id="__codelineno-6-9" name="__codelineno-6-9" href="#__codelineno-6-9"></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__next__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Int32</span><span class="p">:</span>
+<a id="__codelineno-6-10" name="__codelineno-6-10" href="#__codelineno-6-10"></a>        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">n</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+<a id="__codelineno-6-11" name="__codelineno-6-11" href="#__codelineno-6-11"></a>            <span class="k">raise</span> <span class="ne">StopIteration</span>
+<a id="__codelineno-6-12" name="__codelineno-6-12" href="#__codelineno-6-12"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">n</span> <span class="o">-=</span> <span class="mi">1</span>
+<a id="__codelineno-6-13" name="__codelineno-6-13" href="#__codelineno-6-13"></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">n</span> <span class="o">+</span> <span class="mi">1</span>
+<a id="__codelineno-6-14" name="__codelineno-6-14" href="#__codelineno-6-14"></a>
+<a id="__codelineno-6-15" name="__codelineno-6-15" href="#__codelineno-6-15"></a><span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">():</span>
+<a id="__codelineno-6-16" name="__codelineno-6-16" href="#__codelineno-6-16"></a>    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">Countdown</span><span class="p">(</span><span class="mi">3</span><span class="p">):</span>
+<a id="__codelineno-6-17" name="__codelineno-6-17" href="#__codelineno-6-17"></a>        <span class="nb">print</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>                 <span class="c1"># 3 2 1</span>
+<a id="__codelineno-6-18" name="__codelineno-6-18" href="#__codelineno-6-18"></a>
+<a id="__codelineno-6-19" name="__codelineno-6-19" href="#__codelineno-6-19"></a><span class="n">main</span><span class="p">()</span>
 </code></pre></div>
-<p>The <code>raise StopIteration</code> costs nothing at runtime. The compiler rewrites
-every <code>__next__</code> so that the end of iteration is signaled without throwing
-(the <code>@error_return</code> rewrite, applied automatically;
-<a href="../efficiency/">Writing efficient TPy</a> covers the rare explicit form). Generator functions
-(<code>yield</code>, annotated <code>-&gt; Iterator[T]</code>) are the shorter way to write the same
-thing, as shown on <a href="../differences/">the map</a>.</p>
-<h2 id="in-practice">In practice<a class="headerlink" href="#in-practice" title="Permanent link">&para;</a></h2>
-<table>
-<thead>
-<tr>
-<th>The situation</th>
-<th>The tool</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>A value may be absent</td>
-<td><code>T \| None</code>; narrow once, where the <code>None</code> can appear</td>
-</tr>
-<tr>
-<td>A failure the program can handle</td>
-<td><code>raise</code> an exception class; <code>try</code>/<code>except</code> as in Python</td>
-</tr>
-<tr>
-<td>An unrecoverable violation (overflow, bad narrowing)</td>
-<td>nothing -- a panic stops the program, by design</td>
-</tr>
-<tr>
-<td>Custom iteration</td>
-<td><code>__iter__</code> + <code>__next__</code> + <code>raise StopIteration</code>, no runtime cost</td>
-</tr>
-</tbody>
-</table>
+<p>The <code>raise StopIteration</code> costs nothing at runtime; ending iteration is
+signaled without actually throwing. <a href="../efficiency/">Writing efficient TPy</a>
+covers the <code>@error_return</code> mechanism behind this and its explicit form.</p>
+<h2 id="generators">Generators<a class="headerlink" href="#generators" title="Permanent link">&para;</a></h2>
+<p>A generator function uses <code>yield</code> and is annotated <code>-&gt; Iterator[T]</code>. It is the
+concise form of the iterator above, with no explicit <code>__next__</code>:</p>
+<!-- tpy: run -->
+<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Iterator</span>
+<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>
+<a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a><span class="k">def</span><span class="w"> </span><span class="nf">squares</span><span class="p">(</span><span class="n">n</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterator</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
+<a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a>    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+<a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a>        <span class="k">yield</span> <span class="n">i</span> <span class="o">*</span> <span class="n">i</span>
+<a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a>
+<a id="__codelineno-7-7" name="__codelineno-7-7" href="#__codelineno-7-7"></a><span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">():</span>
+<a id="__codelineno-7-8" name="__codelineno-7-8" href="#__codelineno-7-8"></a>    <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">squares</span><span class="p">(</span><span class="mi">4</span><span class="p">):</span>
+<a id="__codelineno-7-9" name="__codelineno-7-9" href="#__codelineno-7-9"></a>        <span class="nb">print</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>             <span class="c1"># 0 1 4 9</span>
+<a id="__codelineno-7-10" name="__codelineno-7-10" href="#__codelineno-7-10"></a>
+<a id="__codelineno-7-11" name="__codelineno-7-11" href="#__codelineno-7-11"></a><span class="n">main</span><span class="p">()</span>
+</code></pre></div>
 <p>The next page consolidates all of this into performance guidance:
 <a href="../efficiency/">Writing efficient TPy</a>.</p>
 

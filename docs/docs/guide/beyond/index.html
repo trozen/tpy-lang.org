@@ -13,10 +13,10 @@
         <link rel="canonical" href="https://tpy-lang.org/docs/guide/beyond/">
       
       
-        <link rel="prev" href="../cpp-rust/">
+        <link rel="prev" href="../building/">
       
       
-        <link rel="next" href="../../compatibility/">
+        <link rel="next" href="../cpp-rust/">
       
       
         
@@ -582,34 +582,6 @@
                 
   
   
-  
-  
-    <li class="md-nav__item">
-      <a href="../cpp-rust/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Coming from C++/Rust
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
     
   
   
@@ -706,10 +678,32 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#first-class-functions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        First-class functions
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#protocols-and-dynamic-dispatch" class="md-nav__link">
     <span class="md-ellipsis">
       
         Protocols and dynamic dispatch
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#enums" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Enums
       
     </span>
   </a>
@@ -753,6 +747,34 @@
   
 </nav>
       
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../cpp-rust/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Coming from C++/Rust
+  
+
+    
+  </span>
+  
+  
+
+      </a>
     </li>
   
 
@@ -852,10 +874,32 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#first-class-functions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        First-class functions
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#protocols-and-dynamic-dispatch" class="md-nav__link">
     <span class="md-ellipsis">
       
         Protocols and dynamic dispatch
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#enums" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Enums
       
     </span>
   </a>
@@ -913,15 +957,11 @@
 
 
 <h1 id="beyond-the-core">Beyond the core<a class="headerlink" href="#beyond-the-core" title="Permanent link">&para;</a></h1>
-<div class="admonition warning">
-<p class="admonition-title">Review pending</p>
-<p>This page has not yet been reviewed by the maintainer.</p>
-</div>
 <p>The guide so far is the core language: the type system, ownership, data
 modeling, control flow, and the build. This page is a short survey of
-everything else -- what exists today, how mature it is, and where the guide
-covers it. <a href="../../compatibility/">Compatibility</a> is the single source of
-truth for exact status.</p>
+everything else — what exists today and how mature it is.
+<a href="../../compatibility/">Compatibility</a> is the single source of truth for exact
+status.</p>
 <h2 id="async">Async<a class="headerlink" href="#async" title="Permanent link">&para;</a></h2>
 <p>Coroutines (<code>async def</code>), <code>await</code>, tasks, and <code>asyncio</code>-style entry points
 compile and run:</p>
@@ -974,14 +1014,22 @@ to send across threads (<code>Send</code>):</p>
 is still partial; <a href="../../compatibility/">Compatibility</a> tracks what works today.</p>
 <h2 id="generators-and-iterators">Generators and iterators<a class="headerlink" href="#generators-and-iterators" title="Permanent link">&para;</a></h2>
 <p>Generator functions, generator expressions, and hand-written iterators work.
-<a href="../differences/">The map</a> covers generators, and
-<a href="../control-flow/">Control flow</a> covers iterators (and why <code>StopIteration</code>
-costs nothing). The one exception is <code>yield from</code>, which is not supported yet;
-the compiler rejects it with a diagnostic.</p>
+The one exception is <code>yield from</code>, which is not supported yet; the compiler
+rejects it with a diagnostic.</p>
+<h2 id="first-class-functions">First-class functions<a class="headerlink" href="#first-class-functions" title="Permanent link">&para;</a></h2>
+<p>Functions are values. A function can be passed by name, a <code>lambda</code> bound
+wherever a callable is expected, and a nested <code>def</code> can close over the
+enclosing frame's locals — <code>nonlocal</code> makes a captured local mutable.</p>
+<p>Two callable types mark the trade-off. <code>Fn[[A], R]</code> is a zero-cost callback
+for a parameter, inlined like a C++ template with no allocation or
+indirection. <code>Callable[[A], R]</code> is a type-erased callable — a
+<code>std::function</code> — that can also live in a field, a return, or a container,
+where the concrete function is not known until runtime. A <code>lambda</code> infers its
+parameter types from the type the context expects.</p>
 <h2 id="protocols-and-dynamic-dispatch">Protocols and dynamic dispatch<a class="headerlink" href="#protocols-and-dynamic-dispatch" title="Permanent link">&para;</a></h2>
 <p>Structural protocols work and are static by default
 (<a href="../data-modeling/">Data modeling</a>). <code>@dynamic</code> opts a protocol into runtime
-dispatch -- the compiler's own suggested fix wherever an override would have
+dispatch — the compiler's own suggested fix wherever an override would have
 dispatched dynamically under CPython.</p>
 <div class="admonition info">
 <p class="admonition-title">Limited today</p>
@@ -989,24 +1037,31 @@ dispatched dynamically under CPython.</p>
 rejected), which limits the classic heterogeneous-collection pattern.
 <a href="../../compatibility/">Compatibility</a> tracks this.</p>
 </div>
+<h2 id="enums">Enums<a class="headerlink" href="#enums" title="Permanent link">&para;</a></h2>
+<p><code>enum.Enum</code> and <code>IntEnum</code> work, with <code>auto()</code> values, <code>.name</code> and <code>.value</code>,
+identity and equality comparison, iteration over the members, and value or
+name lookup (<code>Color(0)</code>, <code>Color["red"]</code>). A <code>match</code> can branch on enum
+members, and an enum compiles to a C++ <code>enum class</code>.</p>
 <h2 id="network-processes-and-the-wider-stdlib">Network, processes, and the wider stdlib<a class="headerlink" href="#network-processes-and-the-wider-stdlib" title="Permanent link">&para;</a></h2>
-<p>An HTTP client exists in early form (<code>tplib.requests</code>), and server-side TLS
-works. <code>subprocess</code> and <code>multiprocessing</code> do not exist. For a
-services stack, the missing pieces are still large;
+<p>An HTTP client exists in early form (<code>tplib.requests</code>), and TLS works for both
+HTTPS clients and servers. <code>subprocess</code> and <code>multiprocessing</code> do not exist.
+For a services stack, the missing pieces are still large;
 <a href="../../compatibility/">Compatibility</a> is the place to check before planning a
 port.</p>
 <h2 id="native-interop">Native interop<a class="headerlink" href="#native-interop" title="Permanent link">&para;</a></h2>
-<p>Two directions exist. A TurboPython module compiles into a CPython extension
-(<code># tpy: ext_module</code>, <a href="../building/">Building</a>). And existing C++ binds into
-TurboPython with <code>@native</code>, mapping a class or function onto a C++ type or
-call -- the standard library itself is built this way. <code>@native</code> is usable
-but undocumented; the API may change.</p>
+<p>Native interop runs in two directions. A TurboPython module compiles into a
+CPython extension (<code># tpy: ext_module</code>, <a href="../building/">Building</a>). Existing C++
+binds into TurboPython with <code>@native</code>, mapping a class or function onto a C++
+type or call — the standard library itself is built this way. <code>@native</code> is
+usable but undocumented; the API may change.</p>
 <h2 id="macros">Macros<a class="headerlink" href="#macros" title="Permanent link">&para;</a></h2>
-<p>A compile-time macro mechanism exists inside the compiler -- several built-in
+<p>A compile-time macro mechanism exists inside the compiler — several built-in
 decorators are implemented as compile-time macros. A user-facing macro system
 is not documented or supported yet. <a href="../../compatibility/">Compatibility</a>
 records its status.</p>
-<p>This closes the guide. <a href="../../getting-started/">Getting started</a> and
+<p>This closes the core guide. For readers coming from a systems language,
+<a href="../cpp-rust/">Coming from C++/Rust</a> maps the language onto C++ and Rust terms.
+<a href="../../getting-started/">Getting started</a> and
 <a href="../../compatibility/">Compatibility</a> cover the practical side, and
 <a href="../differences/">the map</a> gives the overview again at any time.</p>
 

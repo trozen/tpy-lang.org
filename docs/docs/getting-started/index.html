@@ -343,6 +343,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#coding-with-an-ai-agent" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Coding with an AI agent
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#where-next" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -676,14 +687,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../guide/cpp-rust/" class="md-nav__link">
+      <a href="../guide/beyond/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Coming from C++/Rust
+    Beyond the core
   
 
     
@@ -704,14 +715,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../guide/beyond/" class="md-nav__link">
+      <a href="../guide/cpp-rust/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Beyond the core
+    Coming from C++/Rust
   
 
     
@@ -819,6 +830,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#coding-with-an-ai-agent" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Coding with an AI agent
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#where-next" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -869,7 +891,7 @@ or pip:</p>
 </div>
 </div>
 </div>
-<p>Compilation needs a C++23 compiler: g++ 13 or newer, clang++ 18 or newer, or
+<p>Compilation needs a C++23 compiler: g++ 13 or newer, clang++ 19 or newer, or
 zig. An installed system compiler is detected automatically. If no suitable
 compiler is present, the <code>[bundled]</code> extra installs zig together with the
 package and needs no other setup:</p>
@@ -899,7 +921,7 @@ package and needs no other setup:</p>
 <a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="go">hello from tpy</span>
 </code></pre></div>
 <p>A <code>main()</code> function is only a convention; top-level statements work as
-well. The first run compiles the runtime and is slow -- a few minutes
+well. The first run compiles the runtime and is slow — a few minutes
 at most, with progress shown. Later runs reuse compiled C++ from earlier
 builds and take seconds.</p>
 <p>The package installs two commands: <code>tpy</code> compiles and runs a program in one
@@ -981,13 +1003,38 @@ warning that makes it visible, is the core of the ownership model. A copy is
 not the only possible outcome either: when the appended object is not used
 again, it is moved into the list instead of copied.
 <a href="../guide/ownership/">Ownership and references</a> teaches the whole model.</p>
+<h2 id="coding-with-an-ai-agent">Coding with an AI agent<a class="headerlink" href="#coding-with-an-ai-agent" title="Permanent link">&para;</a></h2>
+<p>TurboPython source is valid Python, so coding agents such as Claude Code,
+Cursor, and Copilot work without a plugin. What they miss is where
+TurboPython departs from Python: the ownership model, the fixed-width types,
+and the parts of the standard library that are not yet available. The
+<code>tpy --install-agent-docs</code> command writes that knowledge into a project.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="gp">$ </span>tpy<span class="w"> </span>--install-agent-docs<span class="w"> </span>docs
+</code></pre></div>
+<p>The command writes four reference files into the given directory:</p>
+<ul>
+<li><code>TPY_FOR_AGENTS.md</code> — a short Python-to-TurboPython bootstrap covering the
+  delta from Python, the ownership rules, and the idiomatic patterns.</li>
+<li><code>TPY_LANGUAGE_FEATURES.md</code> — the full language reference. Only the sections
+  marked <strong>Working</strong> are usable today.</li>
+<li><code>TPY_STDLIB_ROADMAP.md</code> — the standard library coverage, listing what is
+  available and what is still missing.</li>
+<li><code>TPY_API_REFERENCE.md</code> — the exact callable API surface, with signatures
+  and methods.</li>
+</ul>
+<p>The API reference is generated from the installed package, so it matches
+exactly what the current version can call. Re-running the command after an
+upgrade refreshes all four files.</p>
+<p>The command also prints a short snippet. Adding that snippet to the project's
+<code>AGENTS.md</code> or <code>CLAUDE.md</code> points the agent at the four files so it reads them
+before writing TurboPython code.</p>
 <h2 id="where-next">Where next<a class="headerlink" href="#where-next" title="Permanent link">&para;</a></h2>
 <ul>
-<li><a href="../guide/differences/">How TurboPython differs from Python</a> -- a one-page
+<li><a href="../guide/differences/">How TurboPython differs from Python</a> — a one-page
   map of the differences from Python.</li>
-<li><a href="../guide/ownership/">Ownership and references</a> -- the model behind the
+<li><a href="../guide/ownership/">Ownership and references</a> — the model behind the
   warning above.</li>
-<li><a href="../compatibility/">Compatibility</a> -- a precise list of what works today.</li>
+<li><a href="../compatibility/">Compatibility</a> — a precise list of what works today.</li>
 </ul>
 
 

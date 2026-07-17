@@ -1,86 +1,137 @@
 # Coming from C++/Rust
 
-!!! warning "Review pending"
-    This page has not yet been reviewed by the maintainer.
+TurboPython targets the same kind of efficient, compiled native code as C++
+and Rust, but with ergonomics much closer to Python. It lets a Python
+developer write efficient native software in Python's own syntax and model,
+without switching to a systems language.
 
-This page maps TurboPython onto C++ and Rust vocabulary. It is for readers
-who know those languages; Python readers can skip it.
+This page maps TurboPython's constructs to the C++ and Rust terms they
+correspond to. It assumes familiarity with one of those languages; Python
+readers can skip it.
 
-TurboPython is not Rust borrow-checking and not raw C++. Storage is single-owner, as in Rust: fields, container elements, and
-globals own their values. Access is Python-like aliasing: locals and
-parameters are unchecked references, freely copied and freely aliased, as in
-C++. The compiler checks *escape*, not aliasing. A reference cannot be returned or
-stored beyond its owner's lifetime. A move is only taken when no live alias
-remains; otherwise the store falls back to a deep copy and a warning. Mutating
-a container while an element borrow is live draws a warning
-(`'append' may invalidate references`). There is no
-aliasing-XOR-mutation rule to satisfy, and no lifetime annotations anywhere.
+In TurboPython, every object has exactly one owner. Durable storage owns what
+it holds: a field owns its value, a container owns its elements, a global owns
+its object. Local variables and parameters own nothing -- they refer to
+objects the way names do in Python, and several of them can refer to the same
+object at once.
+
+The compiler does not restrict this aliasing the way Rust's borrow checker
+does. There are no lifetime annotations, and no rule against aliasing a value
+while it can still be mutated. The one thing it checks is escape: a reference
+must not outlive its owner, so a function cannot return or store a reference to
+something that will be freed once the call ends.
 
 ## The mapping
 
 | TurboPython | C++ | Rust |
 |---|---|---|
-| plain `T` parameter | `T&` (or `const T&`, inferred) | `&T`/`&mut T`, unchecked |
-| plain `T` return | `T&` | `&T` |
-| `Own[T]` | `T&&` in practice; a `unique_ptr`-style handoff | by-value `T` |
+| `T` parameter | `const T&` / `T&` | `&T` / `&mut T` |
+| `T` return | `T&` | `&T` |
+| `Own[T]` parameter | `T&&` | `T` (moved) |
+| `Own[T]` return | `T` | `T` (moved) |
 | `readonly[T]` | `const T&` | `&T` |
-| `Ptr[T]` | `T*` | raw pointer |
-| `copy()` | explicit copy construction | `.clone()` |
-| `@nocopy` class | deleted copy constructor | a type without `Clone` |
-| `A \| B` | `std::variant` | an `enum` |
-| `match` on a union | a branch on the tag | `match` |
-| `str` | `std::string` or `std::string_view`; the compiler decides per use | `Cow<str>`-like |
-| `String` | owned `std::string` | `String` |
+| `Ptr[T]` | `T*` | `*mut T` |
+| `Span[T]` | `std::span<T>` | `&mut [T]` |
+| `Span[readonly[T]]` | `std::span<const T>` | `&[T]` |
+| `copy()` | copy constructor | `.clone()` |
+| `@nocopy` | deleted copy ctor | no `Clone` |
+| `A \| B` | `std::variant` | `enum` |
+| `T \| None` | `std::optional<T>` | `Option<T>` |
+| `match` | tag dispatch | `match` |
+| `int` | `BigInt` (arbitrary precision) | `num-bigint` |
+| `Int32` / `Int64` | `int32_t` / `int64_t` | `i32` / `i64` |
+| `str` | `std::string_view` / `std::string` | `Cow<str>` |
+| `String` | `std::string` | `String` |
 | `StrView` | `std::string_view` | `&str` |
-| a class | a plain `struct`, stored inline in containers | a `struct` |
-| `raise` / `except` | C++ exceptions | no analog: unchecked exceptions |
-| a panic | `std::exit(1)` after printing `TurboPython panic: <msg>` | `panic!` without `catch_unwind` |
-| `Rc` / `Arc` / `Weak` (opt-in) | like `shared_ptr` + `weak_ptr` | `Rc` / `Arc` / `Weak` |
-| `Send` (thread spawn bound) | -- | `Send` |
+| class | `struct` | `struct` |
+| `raise` / `except` | exceptions | (no analog) |
+| panic | `std::exit(1)` | `panic!` |
+| `Rc` / `Arc` | `shared_ptr` / `weak_ptr` | `Rc` / `Arc` |
+| `Send` | -- | `Send` |
 
-## Surprises for C++/Rust readers
+## Behavior worth knowing
 
-**Plain returns are reference returns.** For a reference type, `def f() -> T`
-returns `T&`, not a value (value types return by value); only `Own[T]` returns
-an owned reference-type value. Returning a *reference-type* local through a
-plain return type is the compile error that teaches this
+**Plain returns.** A function that returns a reference type by plain `-> T`
+hands back a reference (`T&`), not a copy; the caller borrows the result. Value
+types return by value. To return an owned reference-type value, annotate the
+return `Own[T]`. Returning a reference-type local by plain `T` is rejected,
+because that reference would dangle once the frame is gone
 ([Ownership](ownership.md)).
 
-**Implicit copies exist, and they warn.** Where C++ would silently copy and
-Rust would refuse to compile, TurboPython copies deeply and emits a warning
-naming the spot. `@nocopy` per type turns the warning into an error
+**Moves, not boxes.** `Own[T]` transfers ownership. As a parameter it lowers to
+an rvalue reference (`T&&`), and the caller gives up its value; as a return it
+passes the value straight out. This is Rust's by-value move -- no heap
+allocation, nothing boxed.
+
+**Implicit copies.** When a value is stored into durable storage and the source
+is used again afterward, TurboPython makes a deep copy instead of a move. C++
+would copy silently; Rust would reject the program. TurboPython copies, and
+warns at the spot. Marking the type `@nocopy` turns that warning into an error.
+When the source is not used again, the store is a move and nothing is copied
 ([Efficiency](efficiency.md)).
 
-**Dispatch is static, without `virtual`.** A call through a base-typed
-reference binds at compile time, with a warning on every hiding override.
-Runtime dispatch is an opt-in property of structural protocols (interfaces),
-not of classes ([Data modeling](data-modeling.md)).
+**Borrows and mutation.** Mutating a container while a reference into it is
+still live is allowed, but the compiler warns (`'append' may invalidate
+references`) -- the hazard C++ knows as iterator invalidation, and the one Rust
+prevents outright with `&mut`.
 
-**Destruction is deterministic.** `__del__` runs the moment the owner frees
-the object -- a destructor in the RAII sense, not a garbage-collector
-finalizer.
+**Const-correctness is inferred.** A parameter a function never mutates is
+passed as `const T&` automatically, so the `readonly[T]` annotation is rarely
+needed. This is C++ const-correctness, or Rust's split between `&` and `&mut`,
+without spelling it out ([Functions](functions.md)).
 
-**Generics monomorphize.** `def first[T](xs: list[T]) -> T` (PEP 695 syntax)
-compiles per instantiation, like a template.
+**Arbitrary-precision `int`.** A bare `int` is not a machine word; it is an
+arbitrary-precision integer, the kind C++ and Rust reach for a library to get.
+A value that fits in 63 bits stays inline in a single word, so ordinary-sized
+integers allocate nothing; only larger values move to the heap. The
+fixed-width machine types are `Int32`, `Int64`, and their unsigned siblings,
+which map to `int32_t`/`int64_t` and `i32`/`i64` ([Types](types.md)).
 
-**Exceptions are real C++ exceptions.** The non-throwing path is free; a
-`raise` unwinds. Panics -- overflow, failed narrowing -- are unrecoverable
-process exits, not exceptions ([Control flow](control-flow.md)).
+**No null dereference.** `T | None` is an explicit option type
+(`std::optional<T>` / `Option<T>`). A value that might be `None` must be
+narrowed before its `T` operations are allowed, and the compiler enforces
+that -- there is no null pointer to forget to check
+([Control flow](control-flow.md)).
 
-**The generated code is the code to expect.** A class compiles to a plain
-struct; `list[Float64]` is a contiguous `std::vector<double>`; `Own`
-parameters are rvalue references. `tpyc --dump-code` shows it
-([Building](building.md)).
+**Static dispatch.** Method calls bind at compile time. A call through a
+base-class reference does not dispatch virtually; it calls the static type's
+method, and an override that hides a base method warns. Runtime polymorphism is
+opt-in, through structural protocols (TurboPython's interfaces), not through
+class inheritance ([Data modeling](data-modeling.md)).
+
+**Deterministic destruction.** An object is destroyed when its owner releases
+it, as with C++ RAII or Rust's `Drop`. `__del__` is that destructor: it runs at
+a defined point, not whenever a garbage collector chooses.
+
+**Monomorphized generics.** A generic function or class compiles once per
+concrete type, like a C++ template or a Rust generic. `def first[T](xs:
+list[T]) -> T` (PEP 695 syntax) produces a separate specialization for each `T`
+it is used with.
+
+**Real C++ exceptions.** `raise` and `except` compile to real C++ exceptions:
+the non-throwing path costs nothing, and a `raise` unwinds the stack. The
+`@error_return` decorator instead propagates errors as values, compiling to
+`std::expected` -- Rust's `Result` -- for hot paths. The compiler applies it
+automatically to every `__next__`, so a loop ends on `StopIteration` with no
+exception-throwing cost. Panics are separate -- overflow, a failed narrowing,
+and similar unrecoverable errors print a message and exit the process, like a
+Rust `panic!` with no `catch_unwind` ([Control flow](control-flow.md)).
+
+**Predictable codegen.** A class becomes a plain struct; `list[Float64]`
+becomes a contiguous `std::vector<double>`; an `Own[T]` parameter becomes an
+rvalue reference. `tpyc --dump-code` prints the generated C++, which shows
+exactly what each construct became ([Building](building.md)).
 
 ## Threads follow Rust's model
 
-Thread spawning takes an owned task and enforces `Send` at the boundary;
-threads do not borrow, and the handle joins for the result. There is no GIL.
-Cross-thread sharing goes through `Arc` ([Ownership](ownership.md)), which
-shares without locking and does not enforce race freedom. `Atomic[T]` covers
+Thread spawning takes ownership of the task and enforces `Send` at the
+boundary, as Rust does. Threads do not borrow from the spawning frame, and the
+join handle returns the result. There is no GIL. Sharing data across threads
+goes through `Arc` -- an atomic reference count, like Rust's -- which shares
+without locking and does not by itself prevent data races. `Atomic[T]` covers
 counters and flags. [Compatibility](../compatibility.md) tracks the current
 state of the concurrency primitives.
 
 The thread API and a worked `spawn`/`join` example are on
-[Beyond the core](beyond.md), which tracks the rest of the concurrency
+[Beyond the core](beyond.md), which covers the rest of the concurrency
 support.

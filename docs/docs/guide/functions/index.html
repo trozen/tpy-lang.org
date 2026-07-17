@@ -502,7 +502,7 @@
   <a href="#returning-a-reference-or-a-fresh-object" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Returning: a reference or a fresh object
+        Returning a reference or a fresh object
       
     </span>
   </a>
@@ -521,21 +521,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#absent-results-are-unions" class="md-nav__link">
+  <a href="#optional-results" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Absent results are unions
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#designing-a-small-api" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Designing a small API
+        Optional results
       
     </span>
   </a>
@@ -698,14 +687,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../cpp-rust/" class="md-nav__link">
+      <a href="../beyond/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Coming from C++/Rust
+    Beyond the core
   
 
     
@@ -726,14 +715,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../beyond/" class="md-nav__link">
+      <a href="../cpp-rust/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Beyond the core
+    Coming from C++/Rust
   
 
     
@@ -833,7 +822,7 @@
   <a href="#returning-a-reference-or-a-fresh-object" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Returning: a reference or a fresh object
+        Returning a reference or a fresh object
       
     </span>
   </a>
@@ -852,21 +841,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#absent-results-are-unions" class="md-nav__link">
+  <a href="#optional-results" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Absent results are unions
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#designing-a-small-api" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Designing a small API
+        Optional results
       
     </span>
   </a>
@@ -891,35 +869,33 @@
 
 
 <h1 id="functions-and-api-boundaries">Functions and API boundaries<a class="headerlink" href="#functions-and-api-boundaries" title="Permanent link">&para;</a></h1>
-<div class="admonition warning">
-<p class="admonition-title">Review pending</p>
-<p>This page has not yet been reviewed by the maintainer.</p>
-</div>
-<p>A function signature in TurboPython is a compiled contract. The compiler
-checks every call against it and generates code from it. A signature also
-decides representation at every call, and it is where the ownership model
-becomes visible. A call either copies the argument, mutates it, or keeps it.
-This page covers what a signature promises and how
-to design small, clear APIs. The examples use the <code>Reading</code> class
-from the <a href="../types/">Types page</a>.</p>
+<p>A function signature in TurboPython is a contract the compiler enforces. Where
+Python treats an annotation as a hint the runtime ignores, a TurboPython
+annotation is binding. A function accepts and returns only the types its
+signature allows, and a call that passes anything else does not compile. The
+compiler generates the calling code from that same signature, which also fixes
+how each argument is represented. That is where the ownership model becomes
+visible. A call either copies its argument, mutates it, or keeps it. This page
+covers what a signature promises and how to design small, clear APIs, reusing
+the <code>Reading</code> class from the <a href="../types/">Types page</a>.</p>
 <!-- tpy: prelude -->
-<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">tpy</span><span class="w"> </span><span class="kn">import</span> <span class="n">Own</span><span class="p">,</span> <span class="n">Float64</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">tpy</span><span class="w"> </span><span class="kn">import</span> <span class="n">Own</span>
 <a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>
 <a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="k">class</span><span class="w"> </span><span class="nc">Reading</span><span class="p">:</span>
 <a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>    <span class="n">sensor</span><span class="p">:</span> <span class="nb">str</span>
-<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>    <span class="n">values</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Float64</span><span class="p">]</span>
-<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sensor</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">values</span><span class="p">:</span> <span class="n">Own</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">Float64</span><span class="p">]]):</span>
+<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>    <span class="n">values</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span>
+<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sensor</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">values</span><span class="p">:</span> <span class="n">Own</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">]]):</span>
 <a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">sensor</span> <span class="o">=</span> <span class="n">sensor</span>
 <a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">values</span> <span class="o">=</span> <span class="n">values</span>
 </code></pre></div>
 <h2 id="a-signature-is-a-contract">A signature is a contract<a class="headerlink" href="#a-signature-is-a-contract" title="Permanent link">&para;</a></h2>
 <p>Parameter and return types are mandatory; the compiler rejects an unannotated
-signature (<a href="../differences/">the map</a> shows the diagnostic). Default values,
-keyword arguments, and annotated <code>*args</code> work as in Python:</p>
+signature. Default values, keyword arguments, and annotated <code>*args</code> work as in
+Python:</p>
 <!-- tpy: run -->
-<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">tpy</span><span class="w"> </span><span class="kn">import</span> <span class="n">Float64</span><span class="p">,</span> <span class="n">Int32</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">tpy</span><span class="w"> </span><span class="kn">import</span> <span class="n">Int32</span>
 <a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>
-<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="k">def</span><span class="w"> </span><span class="nf">scale</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">Float64</span><span class="p">,</span> <span class="n">factor</span><span class="p">:</span> <span class="n">Float64</span> <span class="o">=</span> <span class="mf">2.0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Float64</span><span class="p">:</span>
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="k">def</span><span class="w"> </span><span class="nf">scale</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">factor</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">2.0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
 <a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>    <span class="k">return</span> <span class="n">x</span> <span class="o">*</span> <span class="n">factor</span>
 <a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>
 <a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="k">def</span><span class="w"> </span><span class="nf">total</span><span class="p">(</span><span class="o">*</span><span class="n">xs</span><span class="p">:</span> <span class="n">Int32</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Int32</span><span class="p">:</span>
@@ -935,16 +911,14 @@ keyword arguments, and annotated <code>*args</code> work as in Python:</p>
 <a id="__codelineno-1-16" name="__codelineno-1-16" href="#__codelineno-1-16"></a>
 <a id="__codelineno-1-17" name="__codelineno-1-17" href="#__codelineno-1-17"></a><span class="n">main</span><span class="p">()</span>
 </code></pre></div>
-<p>Keyword-argument collection is restricted. A plain <code>**kwargs: T</code> is rejected,
-and the typed form (<code>Unpack[TypedDict]</code>) is required.</p>
 <h2 id="passing-borrows">Passing borrows<a class="headerlink" href="#passing-borrows" title="Permanent link">&para;</a></h2>
 <p>Passing a reference-type object never copies it. The parameter <em>borrows</em> the
-caller's object -- in Python terms, it aliases it: it becomes another name for
+caller's object — in Python terms, it aliases it: it becomes another name for
 the same object. A mutation made inside the function is therefore visible to
 the caller. (<a href="../ownership/">Ownership and references</a>, the next page, defines
 borrowing in full.)</p>
 <!-- tpy: cont run -->
-<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="k">def</span><span class="w"> </span><span class="nf">add_value</span><span class="p">(</span><span class="n">r</span><span class="p">:</span> <span class="n">Reading</span><span class="p">,</span> <span class="n">v</span><span class="p">:</span> <span class="n">Float64</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="k">def</span><span class="w"> </span><span class="nf">add_value</span><span class="p">(</span><span class="n">r</span><span class="p">:</span> <span class="n">Reading</span><span class="p">,</span> <span class="n">v</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>    <span class="n">r</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
 <a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>
 <a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">():</span>
@@ -954,14 +928,11 @@ borrowing in full.)</p>
 <a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a>
 <a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a><span class="n">main</span><span class="p">()</span>
 </code></pre></div>
-<p>When a function does not mutate a parameter, the object is passed read-only,
-still without copying. No annotation is needed. The compiler reads the
-function body and sees that the parameter is never mutated.</p>
-<p>Methods follow the same rules. <code>self</code> is a borrowed parameter. Mutation
-through it is visible to the caller, and the read-only check works the same
-way. Classes have their own page: <a href="../data-modeling/">Data modeling</a>.</p>
+<p>Methods follow the same rules. <code>self</code> is a borrowed parameter, and a mutation
+through it is visible to the caller. Classes have their own page:
+<a href="../data-modeling/">Data modeling</a>.</p>
 <p>Value types (<code>Int32</code>, <code>float</code>, <code>str</code>, ...) are passed as copies. Reassigning
-the parameter changes the copy, never the caller's variable -- observably the
+the parameter changes the copy, never the caller's variable — observably the
 same as Python:</p>
 <!-- tpy: run -->
 <div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">tpy</span><span class="w"> </span><span class="kn">import</span> <span class="n">Int32</span>
@@ -977,11 +948,12 @@ same as Python:</p>
 <a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a>
 <a id="__codelineno-3-12" name="__codelineno-3-12" href="#__codelineno-3-12"></a><span class="n">main</span><span class="p">()</span>
 </code></pre></div>
-<h2 id="returning-a-reference-or-a-fresh-object">Returning: a reference or a fresh object<a class="headerlink" href="#returning-a-reference-or-a-fresh-object" title="Permanent link">&para;</a></h2>
+<h2 id="returning-a-reference-or-a-fresh-object">Returning a reference or a fresh object<a class="headerlink" href="#returning-a-reference-or-a-fresh-object" title="Permanent link">&para;</a></h2>
 <p>For reference types, a plain return type returns a <em>reference</em>. That is the
-right shape when the object outlives the function -- an element of a caller's
-list, a field of a parameter. A freshly built object needs <code>Own[...]</code>: the
-caller takes ownership. (Value types are returned by copy, as always.)</p>
+right shape when the object outlives the function — an element of a caller's
+list, a field of a parameter. A freshly built object needs <code>Own[...]</code>, which
+hands ownership of the object to the caller. (Value types are returned by copy,
+as always.)</p>
 <!-- tpy: prelude -->
 <div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="k">def</span><span class="w"> </span><span class="nf">first</span><span class="p">(</span><span class="n">items</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Reading</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Reading</span><span class="p">:</span>
 <a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>    <span class="k">return</span> <span class="n">items</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>          <span class="c1"># a reference into the caller&#39;s list</span>
@@ -989,10 +961,10 @@ caller takes ownership. (Value types are returned by copy, as always.)</p>
 <a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="k">def</span><span class="w"> </span><span class="nf">load</span><span class="p">(</span><span class="n">sensor</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Own</span><span class="p">[</span><span class="n">Reading</span><span class="p">]:</span>
 <a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a>    <span class="k">return</span> <span class="n">Reading</span><span class="p">(</span><span class="n">sensor</span><span class="p">,</span> <span class="p">[</span><span class="mf">20.5</span><span class="p">,</span> <span class="mf">21.0</span><span class="p">])</span>   <span class="c1"># ownership moves to the caller</span>
 </code></pre></div>
-<p>Returning a local by plain reference is a compile error;
-<a href="../ownership/">Ownership and references</a> shows the diagnostic and the rule.</p>
+<p>Returning a local by plain reference is a compile error, covered by
+<a href="../ownership/">Ownership and references</a>.</p>
 <h2 id="taking-ownership-at-the-boundary">Taking ownership at the boundary<a class="headerlink" href="#taking-ownership-at-the-boundary" title="Permanent link">&para;</a></h2>
-<p>An <code>Own[T]</code> parameter declares that the function keeps the object -- typically
+<p>An <code>Own[T]</code> parameter declares that the function keeps the object — typically
 to store it. <code>Reading</code>'s own constructor does this with its list:
 <code>values: Own[list[Float64]]</code> moves the caller's list into the field.</p>
 <p>At the call site the caller writes nothing extra. An <code>Own</code> return is used like
@@ -1014,9 +986,9 @@ hands the object over with no copy:</p>
 <p>A caller that keeps using the argument afterwards should pass <code>copy(...)</code>;
 otherwise the compiler makes the copy anyway and warns about it. The mechanics
 are on <a href="../ownership/">the ownership page</a>.</p>
-<h2 id="absent-results-are-unions">Absent results are unions<a class="headerlink" href="#absent-results-are-unions" title="Permanent link">&para;</a></h2>
+<h2 id="optional-results">Optional results<a class="headerlink" href="#optional-results" title="Permanent link">&para;</a></h2>
 <p>A function that may find nothing returns <code>T | None</code>, and the caller narrows
-before use, as shown on <a href="../differences/">the map</a>:</p>
+before use:</p>
 <!-- tpy: cont run -->
 <div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="k">def</span><span class="w"> </span><span class="nf">find</span><span class="p">(</span><span class="n">items</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Reading</span><span class="p">],</span> <span class="n">sensor</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Reading</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
 <a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>    <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">items</span><span class="p">:</span>
@@ -1033,43 +1005,9 @@ before use, as shown on <a href="../differences/">the map</a>:</p>
 <a id="__codelineno-6-13" name="__codelineno-6-13" href="#__codelineno-6-13"></a>
 <a id="__codelineno-6-14" name="__codelineno-6-14" href="#__codelineno-6-14"></a><span class="n">main</span><span class="p">()</span>
 </code></pre></div>
-<h2 id="designing-a-small-api">Designing a small API<a class="headerlink" href="#designing-a-small-api" title="Permanent link">&para;</a></h2>
-<p>A signature tells the caller what happens to the argument. Five shapes cover
-almost every function:</p>
-<table>
-<thead>
-<tr>
-<th>The function...</th>
-<th>Signature shape</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>reads data</td>
-<td><code>def mean(r: Reading) -&gt; Float64</code> -- borrowed; the compiler verifies read-only</td>
-</tr>
-<tr>
-<td>modifies in place</td>
-<td><code>def add_value(r: Reading, v: Float64) -&gt; None</code> -- borrowed, mutated</td>
-</tr>
-<tr>
-<td>creates an object</td>
-<td><code>def load(sensor: str) -&gt; Own[Reading]</code> -- ownership to the caller</td>
-</tr>
-<tr>
-<td>keeps its argument</td>
-<td><code>def archive(r: Own[Reading]) -&gt; None</code> -- ownership from the caller</td>
-</tr>
-<tr>
-<td>may find nothing</td>
-<td><code>def find(...) -&gt; Reading \| None</code> -- composes with the shapes above</td>
-</tr>
-</tbody>
-</table>
-<p>The everyday case is a plain <code>T</code> parameter and a plain <code>T</code> or value-type
-return. <code>Own[...]</code> appears exactly where an object crosses into or out of
-long-lived storage. Ownership itself is the next page:
-<a href="../ownership/">Ownership and references</a>.</p>
+<p><code>Own[...]</code> appears only where an object crosses into or out of long-lived
+storage; a plain <code>T</code> parameter and return cover everything else. The next page,
+<a href="../ownership/">Ownership and references</a>, defines the model behind all of this.</p>
 
 
 

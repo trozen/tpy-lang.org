@@ -118,8 +118,9 @@ plus a few constraints at hot boundaries.
    allocations, use views, `@noalloc` / `@nocopy` / `@readonly`, design hot
    functions with clear ownership. Reads as a checklist + synthesis.
 8. **Building & running** -- task-oriented and concise: run a script, inspect
-   generated C++, compile-only, standalone binary, CPython extension, the REPL.
-   `pyproject` support noted as Planned.
+   generated C++, compile-only, standalone binary, CPython extension, CMake
+   integration of the emitted C++, the REPL. `pyproject` support noted as
+   Planned.
 9. **Coming from C++/Rust** -- standalone, skimmable, linked from relevant
    pages. Main message: TPy ownership is not Rust borrow-checking and not raw
    C++; it is Python-like local aliasing with owned durable storage.
@@ -209,7 +210,10 @@ Work **today**, via public flags: run (`tpy foo.py`), REPL, inline snippet
 (`-c`), emit C++ only (`tpyc`), **standalone native binary** (`tpy -b` /
 `tpyc --build`), build-and-run (`-x`), optimized build (`-O`/`--release`),
 **CPython extension `.so`** (`# tpy: ext_module` + `tpyc -b`), `--dump-code`,
-toolchain knobs (`--cxx`, ccache, `--no-pch`, `-j`).
+**CMake integration** of the emitted C++ (a `sources.cmake` is generated
+alongside; `--no-main` links into an existing C++ program; runtime headers
+bundled by default, `--no-bundle-runtime` to skip), toolchain knobs (`--cxx`,
+ccache, `--no-pch`, `-j`).
 
 **Planned** (not in the code): `pyproject.toml` integration / project-level
 config. This is the one true `Planned` callout on the Building page.

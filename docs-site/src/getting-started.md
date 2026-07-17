@@ -27,7 +27,7 @@ or pip:
 
     This installs the `tpy` and `tpyc` commands into the active environment.
 
-Compilation needs a C++23 compiler: g++ 13 or newer, clang++ 18 or newer, or
+Compilation needs a C++23 compiler: g++ 13 or newer, clang++ 19 or newer, or
 zig. An installed system compiler is detected automatically. If no suitable
 compiler is present, the `[bundled]` extra installs zig together with the
 package and needs no other setup:
@@ -164,6 +164,37 @@ warning that makes it visible, is the core of the ownership model. A copy is
 not the only possible outcome either: when the appended object is not used
 again, it is moved into the list instead of copied.
 [Ownership and references](guide/ownership.md) teaches the whole model.
+
+## Coding with an AI agent
+
+TurboPython source is valid Python, so coding agents such as Claude Code,
+Cursor, and Copilot work without a plugin. What they miss is where
+TurboPython departs from Python: the ownership model, the fixed-width types,
+and the parts of the standard library that are not yet available. The
+`tpy --install-agent-docs` command writes that knowledge into a project.
+
+```console
+$ tpy --install-agent-docs docs
+```
+
+The command writes four reference files into the given directory:
+
+- `TPY_FOR_AGENTS.md` -- a short Python-to-TurboPython bootstrap covering the
+  delta from Python, the ownership rules, and the idiomatic patterns.
+- `TPY_LANGUAGE_FEATURES.md` -- the full language reference. Only the sections
+  marked **Working** are usable today.
+- `TPY_STDLIB_ROADMAP.md` -- the standard library coverage, listing what is
+  available and what is still missing.
+- `TPY_API_REFERENCE.md` -- the exact callable API surface, with signatures
+  and methods.
+
+The API reference is generated from the installed package, so it matches
+exactly what the current version can call. Re-running the command after an
+upgrade refreshes all four files.
+
+The command also prints a short snippet. Adding that snippet to the project's
+`AGENTS.md` or `CLAUDE.md` points the agent at the four files so it reads them
+before writing TurboPython code.
 
 ## Where next
 

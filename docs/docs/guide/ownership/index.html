@@ -720,14 +720,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../cpp-rust/" class="md-nav__link">
+      <a href="../beyond/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Coming from C++/Rust
+    Beyond the core
   
 
     
@@ -748,14 +748,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../beyond/" class="md-nav__link">
+      <a href="../cpp-rust/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Beyond the core
+    Coming from C++/Rust
   
 
     
@@ -948,10 +948,10 @@ make this possible.</p>
 <p>First, TurboPython (like C#, Java, Swift, or Rust) separates <strong>value types</strong>
 from <strong>reference types</strong>. Value types are the simple data: <code>int</code> and the
 fixed-width integers, <code>float</code>, <code>bool</code>, <code>str</code>, <code>Char</code>, and tuples of these. A
-value lives directly in its variable and is copied on assignment -- the way
+value lives directly in its variable and is copied on assignment — the way
 numbers already appear to behave in Python. Value types have no lifecycle to
 manage; nothing on this page applies to them.</p>
-<p>Second, every reference-type object -- a class instance, a list, a dict -- has
+<p>Second, every reference-type object — a class instance, a list, a dict — has
 exactly one <strong>owner</strong>, known at compile time, and it lives exactly as long as
 its owner:</p>
 <ul>
@@ -963,7 +963,7 @@ its owner:</p>
   its value; a reference-type global is assigned once, at module scope, and
   cannot be reassigned later.</li>
 <li><strong>Local variables and parameters own nothing.</strong> The frame owns what the
-  call creates; the names only <em>borrow</em> -- in Python terms, they alias: two
+  call creates; the names only <em>borrow</em> — in Python terms, they alias: two
   names can refer to the same object, exactly as in Python.</li>
 </ul>
 <p>One owner with a known lifetime is what replaces the garbage collector. The
@@ -1006,16 +1006,16 @@ this page.</p>
 </code></pre></div>
 <p>Neither <code>a</code> nor <code>b</code> owns anything: both are <em>borrows</em>, names that refer to an
 object owned elsewhere. Reading a field, calling a method, passing the object
-on to another function -- all of it happens through borrows. That is why
+on to another function — all of it happens through borrows. That is why
 everyday TurboPython code looks and behaves exactly like Python, with no copies
 and no annotations.</p>
 <p>Ownership becomes visible at two points only: when an object is <em>returned</em> out
-of the frame that owns it, and when it is <em>stored</em> into durable storage -- a
+of the frame that owns it, and when it is <em>stored</em> into durable storage — a
 container or a field. The next three sections take these in turn.</p>
 <h2 id="a-frame-owns-its-locals">A frame owns its locals<a class="headerlink" href="#a-frame-owns-its-locals" title="Permanent link">&para;</a></h2>
 <p>A local variable lives in the frame of the function that creates it, and is
 freed when that function returns. It therefore cannot be returned by reference
--- the reference would point at freed memory:</p>
+— the reference would point at freed memory:</p>
 <!-- tpy: cont expect-error="Use Own[Reading] to return by value" -->
 <div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="k">def</span><span class="w"> </span><span class="nf">make</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">Reading</span><span class="p">:</span>
 <a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>    <span class="n">r</span> <span class="o">=</span> <span class="n">Reading</span><span class="p">(</span><span class="s2">&quot;boiler-3&quot;</span><span class="p">,</span> <span class="p">[</span><span class="mf">20.5</span><span class="p">])</span>
@@ -1026,7 +1026,7 @@ freed when that function returns. It therefore cannot be returned by reference
 </code></pre></div>
 <p>The diagnostic names a rule the page has not stated yet: a plain <code>Reading</code>
 return type returns a <em>reference</em> to the object, not the object itself. That
-is fine when the object outlives the function -- returning an element of a
+is fine when the object outlives the function — returning an element of a
 caller's list, for example:</p>
 <!-- tpy: cont -->
 <div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="k">def</span><span class="w"> </span><span class="nf">first</span><span class="p">(</span><span class="n">items</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Reading</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Reading</span><span class="p">:</span>
@@ -1048,7 +1048,7 @@ becomes its owner:</p>
 </code></pre></div>
 <h2 id="a-container-owns-its-elements">A container owns its elements<a class="headerlink" href="#a-container-owns-its-elements" title="Permanent link">&para;</a></h2>
 <p>A <code>list</code>, <code>dict</code>, or <code>set</code> stores its elements, not references to them. Most of
-the time this changes nothing -- building a list looks exactly like Python:</p>
+the time this changes nothing — building a list looks exactly like Python:</p>
 <!-- tpy: cont run -->
 <div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">():</span>
 <a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>    <span class="n">items</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Reading</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
@@ -1103,7 +1103,7 @@ everything the object itself owns.</p>
 </code></pre></div>
 <p>Often the copy is avoidable altogether: storing a value the program no longer
 uses costs nothing. How the compiler decides is covered below, under
-<a href="#advanced-move-or-copy">Advanced: move or copy</a> -- everyday code can stop at
+<a href="#advanced-move-or-copy">Advanced: move or copy</a> — everyday code can stop at
 <code>copy()</code>.</p>
 <h2 id="a-field-owns-its-value">A field owns its value<a class="headerlink" href="#a-field-owns-its-value" title="Permanent link">&para;</a></h2>
 <p>A field outlives the call that sets it, so it must own its value rather than
@@ -1122,7 +1122,7 @@ copies it into the field, and the compiler says so:</p>
 <p>This is the same divergence from CPython as the container store above, flagged
 by the same kind of warning.</p>
 <p>For the field to <em>take</em> the caller's object instead of copying it, the
-parameter is declared <code>Own[Reading]</code> -- the same marker <code>Reading</code>'s own
+parameter is declared <code>Own[Reading]</code> — the same marker <code>Reading</code>'s own
 constructor uses to take the caller's list:</p>
 <!-- tpy: prelude -->
 <div class="highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="k">class</span><span class="w"> </span><span class="nc">Cache</span><span class="p">:</span>
@@ -1156,15 +1156,15 @@ does not concern them. For reference types:</p>
 <tbody>
 <tr>
 <td>Passing an object to a function</td>
-<td>plain <code>T</code> -- it is borrowed</td>
+<td>plain <code>T</code> — it is borrowed</td>
 </tr>
 <tr>
 <td>A local that refers to another object</td>
-<td>plain <code>T</code> -- it borrows too</td>
+<td>plain <code>T</code> — it borrows too</td>
 </tr>
 <tr>
 <td>Returning an object owned elsewhere (a field, an element)</td>
-<td>plain <code>T</code> -- a reference</td>
+<td>plain <code>T</code> — a reference</td>
 </tr>
 <tr>
 <td>Returning a freshly built object</td>
@@ -1176,11 +1176,11 @@ does not concern them. For reference types:</p>
 </tr>
 <tr>
 <td>Storing a last-use local, or an unnamed value like <code>Reading(...)</code></td>
-<td>nothing -- it moves (see below)</td>
+<td>nothing — it moves (see below)</td>
 </tr>
 <tr>
 <td>Storing an object that is used again afterwards</td>
-<td><code>copy(...)</code> -- or restructure so it moves</td>
+<td><code>copy(...)</code> — or restructure so it moves</td>
 </tr>
 <tr>
 <td>A parameter the function does not mutate</td>
@@ -1189,7 +1189,7 @@ does not concern them. For reference types:</p>
 </tbody>
 </table>
 <p>Ordinary annotated Python code already follows this table; no extra decisions
-are needed. The markers appear only where ownership actually transfers --
+are needed. The markers appear only where ownership actually transfers —
 returning an object, or storing one.</p>
 <h2 id="advanced-move-or-copy">Advanced: move or copy<a class="headerlink" href="#advanced-move-or-copy" title="Permanent link">&para;</a></h2>
 <p>Everything above is enough for everyday code: plain code borrows, a store
@@ -1211,7 +1211,7 @@ separate copy is made, and there is nothing to warn about:</p>
 <a id="__codelineno-13-7" name="__codelineno-13-7" href="#__codelineno-13-7"></a><span class="n">main</span><span class="p">()</span>
 </code></pre></div>
 <p>Constructing the value in place is the same move in its simplest form. A
-temporary -- an unnamed value like <code>Reading(...)</code> below -- has no other use by
+temporary — an unnamed value like <code>Reading(...)</code> below — has no other use by
 definition, so it always moves and never warns:</p>
 <!-- tpy: cont run -->
 <div class="highlight"><pre><span></span><code><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">():</span>
@@ -1235,9 +1235,9 @@ No name is ever left pointing at a moved-away object:</p>
 <a id="__codelineno-15-8" name="__codelineno-15-8" href="#__codelineno-15-8"></a>
 <a id="__codelineno-15-9" name="__codelineno-15-9" href="#__codelineno-15-9"></a><span class="n">main</span><span class="p">()</span>
 </code></pre></div>
-<p><strong>A copy.</strong> When a move is impossible -- the object is still referred to after
+<p><strong>A copy.</strong> When a move is impossible — the object is still referred to after
 the store, or it belongs to the caller (a parameter is a borrow, and never
-moves) -- the storage receives its own deep copy, and the compiler warns. The
+moves) — the storage receives its own deep copy, and the compiler warns. The
 warning marks exactly where TurboPython and CPython behave differently:
 CPython would have shared the object instead. The wording varies with the
 target (<code>into field</code>, <code>into container</code>, <code>into owned storage</code>), and the fix is
@@ -1248,11 +1248,11 @@ flagged from the other side:</p>
 </code></pre></div>
 <p>Resolving a copy warning, in order of preference:</p>
 <ol>
-<li><strong>Restructure so the store is the last use</strong> -- the copy becomes a move.</li>
-<li><strong>Construct in place</strong> -- a temporary always moves.</li>
-<li><strong>Take <code>Own[T]</code> at the boundary</strong> -- when the caller should give the object
+<li><strong>Restructure so the store is the last use</strong> — the copy becomes a move.</li>
+<li><strong>Construct in place</strong> — a temporary always moves.</li>
+<li><strong>Take <code>Own[T]</code> at the boundary</strong> — when the caller should give the object
    up, as in the <code>Cache</code> example above.</li>
-<li><strong>Accept the copy with <code>copy()</code></strong> -- when both the original and the stored
+<li><strong>Accept the copy with <code>copy()</code></strong> — when both the original and the stored
    value are genuinely needed.</li>
 </ol>
 <h2 id="advanced-explicit-borrows-readonlyt-ptrt">Advanced: explicit borrows (<code>readonly[T]</code>, <code>Ptr[T]</code>)<a class="headerlink" href="#advanced-explicit-borrows-readonlyt-ptrt" title="Permanent link">&para;</a></h2>
@@ -1270,10 +1270,10 @@ through it is a compile error:</p>
 optional reference, or C++ interop). Ordinary code does not use it.</p>
 <div class="admonition note">
 <p class="admonition-title">Coming from C++/Rust</p>
-<p><code>Own[T]</code> is pass or return by value with move semantics -- like handing
+<p><code>Own[T]</code> is pass or return by value with move semantics — like handing
 off a <code>std::unique_ptr&lt;T&gt;</code>, or Rust's by-value <code>T</code>. <code>readonly[T]</code> is
-<code>const T&amp;</code>, and <code>Ptr[T]</code> is a raw <code>T*</code>. A plain <code>T</code> parameter -- and a
-plain <code>T</code> <em>return type</em> -- is a reference, never a copy; reference returns
+<code>const T&amp;</code>, and <code>Ptr[T]</code> is a raw <code>T*</code>. A plain <code>T</code> parameter — and a
+plain <code>T</code> <em>return type</em> — is a reference, never a copy; reference returns
 by default are the biggest single departure from C++. Storage is
 single-owner as in Rust, but borrows are unchecked C++-style references:
 the compiler rejects references that escape their owner (returns, stores)
@@ -1283,8 +1283,8 @@ aliasing-XOR-mutation rule to satisfy. The full mapping:
 </div>
 <h2 id="advanced-shared-ownership-rc-arc">Advanced: shared ownership (<code>Rc</code>, <code>Arc</code>)<a class="headerlink" href="#advanced-shared-ownership-rc-arc" title="Permanent link">&para;</a></h2>
 <p>Single ownership plus copies covers most designs, but not all of them. When one
-object genuinely needs several owners -- a cache and a live user, an object
-indexed by two dicts -- the standard library provides <code>Rc</code> (<code>from tplib import
+object genuinely needs several owners — a cache and a live user, an object
+indexed by two dicts — the standard library provides <code>Rc</code> (<code>from tplib import
 Rc</code>): opt-in shared ownership with reference counting, paid only where it is
 used. <code>Rc.new(...)</code> creates the shared object and <code>.clone()</code> adds an owner;
 clones alias the same object, as references do in Python. <code>Arc</code>

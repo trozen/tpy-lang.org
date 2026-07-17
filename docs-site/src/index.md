@@ -5,11 +5,11 @@ keeps Python's familiar syntax and adds a few extensions that let a program
 be statically compiled into a fast native binary. These docs cover how to
 write TurboPython and what works today.
 
-- **[Getting started](getting-started.md)** — installation, a first program,
+- **[Getting started](getting-started.md)** -- installation, a first program,
   and a ten-minute tour of the language.
-- **[Guide](guide/index.md)** — what changes coming from Python, the
+- **[Guide](guide/index.md)** -- what changes coming from Python, the
   ownership model, and idiomatic patterns.
-- **[Compatibility](compatibility.md)** — a precise list of what works today.
+- **[Compatibility](compatibility.md)** -- a precise list of what works today.
 
 A generated API reference will follow.
 

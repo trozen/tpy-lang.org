@@ -13,10 +13,10 @@
         <link rel="canonical" href="https://tpy-lang.org/docs/guide/cpp-rust/">
       
       
-        <link rel="prev" href="../building/">
+        <link rel="prev" href="../beyond/">
       
       
-        <link rel="next" href="../beyond/">
+        <link rel="next" href="../../compatibility/">
       
       
         
@@ -582,6 +582,34 @@
                 
   
   
+  
+  
+    <li class="md-nav__item">
+      <a href="../beyond/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Beyond the core
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
     
   
   
@@ -656,10 +684,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#surprises-for-crust-readers" class="md-nav__link">
+  <a href="#behavior-worth-knowing" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Surprises for C++/Rust readers
+        Behavior worth knowing
       
     </span>
   </a>
@@ -681,34 +709,6 @@
   
 </nav>
       
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../beyond/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Beyond the core
-  
-
-    
-  </span>
-  
-  
-
-      </a>
     </li>
   
 
@@ -786,10 +786,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#surprises-for-crust-readers" class="md-nav__link">
+  <a href="#behavior-worth-knowing" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Surprises for C++/Rust readers
+        Behavior worth knowing
       
     </span>
   </a>
@@ -825,21 +825,23 @@
 
 
 <h1 id="coming-from-crust">Coming from C++/Rust<a class="headerlink" href="#coming-from-crust" title="Permanent link">&para;</a></h1>
-<div class="admonition warning">
-<p class="admonition-title">Review pending</p>
-<p>This page has not yet been reviewed by the maintainer.</p>
-</div>
-<p>This page maps TurboPython onto C++ and Rust vocabulary. It is for readers
-who know those languages; Python readers can skip it.</p>
-<p>TurboPython is not Rust borrow-checking and not raw C++. Storage is single-owner, as in Rust: fields, container elements, and
-globals own their values. Access is Python-like aliasing: locals and
-parameters are unchecked references, freely copied and freely aliased, as in
-C++. The compiler checks <em>escape</em>, not aliasing. A reference cannot be returned or
-stored beyond its owner's lifetime. A move is only taken when no live alias
-remains; otherwise the store falls back to a deep copy and a warning. Mutating
-a container while an element borrow is live draws a warning
-(<code>'append' may invalidate references</code>). There is no
-aliasing-XOR-mutation rule to satisfy, and no lifetime annotations anywhere.</p>
+<p>TurboPython targets the same kind of efficient, compiled native code as C++
+and Rust, but with ergonomics much closer to Python. It lets a Python
+developer write efficient native software in Python's own syntax and model,
+without switching to a systems language.</p>
+<p>This page maps TurboPython's constructs to the C++ and Rust terms they
+correspond to. It assumes familiarity with one of those languages; Python
+readers can skip it.</p>
+<p>In TurboPython, every object has exactly one owner. Durable storage owns what
+it holds: a field owns its value, a container owns its elements, a global owns
+its object. Local variables and parameters own nothing — they refer to
+objects the way names do in Python, and several of them can refer to the same
+object at once.</p>
+<p>The compiler does not restrict this aliasing the way Rust's borrow checker
+does. There are no lifetime annotations, and no rule against aliasing a value
+while it can still be mutated. The one thing it checks is escape: a reference
+must not outlive its owner, so a function cannot return or store a reference to
+something that will be freed once the call ends.</p>
 <h2 id="the-mapping">The mapping<a class="headerlink" href="#the-mapping" title="Permanent link">&para;</a></h2>
 <table>
 <thead>
@@ -851,19 +853,24 @@ aliasing-XOR-mutation rule to satisfy, and no lifetime annotations anywhere.</p>
 </thead>
 <tbody>
 <tr>
-<td>plain <code>T</code> parameter</td>
-<td><code>T&amp;</code> (or <code>const T&amp;</code>, inferred)</td>
-<td><code>&amp;T</code>/<code>&amp;mut T</code>, unchecked</td>
+<td><code>T</code> parameter</td>
+<td><code>const T&amp;</code> / <code>T&amp;</code></td>
+<td><code>&amp;T</code> / <code>&amp;mut T</code></td>
 </tr>
 <tr>
-<td>plain <code>T</code> return</td>
+<td><code>T</code> return</td>
 <td><code>T&amp;</code></td>
 <td><code>&amp;T</code></td>
 </tr>
 <tr>
-<td><code>Own[T]</code></td>
-<td><code>T&amp;&amp;</code> in practice; a <code>unique_ptr</code>-style handoff</td>
-<td>by-value <code>T</code></td>
+<td><code>Own[T]</code> parameter</td>
+<td><code>T&amp;&amp;</code></td>
+<td><code>T</code> (moved)</td>
+</tr>
+<tr>
+<td><code>Own[T]</code> return</td>
+<td><code>T</code></td>
+<td><code>T</code> (moved)</td>
 </tr>
 <tr>
 <td><code>readonly[T]</code></td>
@@ -873,36 +880,61 @@ aliasing-XOR-mutation rule to satisfy, and no lifetime annotations anywhere.</p>
 <tr>
 <td><code>Ptr[T]</code></td>
 <td><code>T*</code></td>
-<td>raw pointer</td>
+<td><code>*mut T</code></td>
+</tr>
+<tr>
+<td><code>Span[T]</code></td>
+<td><code>std::span&lt;T&gt;</code></td>
+<td><code>&amp;mut [T]</code></td>
+</tr>
+<tr>
+<td><code>Span[readonly[T]]</code></td>
+<td><code>std::span&lt;const T&gt;</code></td>
+<td><code>&amp;[T]</code></td>
 </tr>
 <tr>
 <td><code>copy()</code></td>
-<td>explicit copy construction</td>
+<td>copy constructor</td>
 <td><code>.clone()</code></td>
 </tr>
 <tr>
-<td><code>@nocopy</code> class</td>
-<td>deleted copy constructor</td>
-<td>a type without <code>Clone</code></td>
+<td><code>@nocopy</code></td>
+<td>deleted copy ctor</td>
+<td>no <code>Clone</code></td>
 </tr>
 <tr>
 <td><code>A \| B</code></td>
 <td><code>std::variant</code></td>
-<td>an <code>enum</code></td>
+<td><code>enum</code></td>
 </tr>
 <tr>
-<td><code>match</code> on a union</td>
-<td>a branch on the tag</td>
+<td><code>T \| None</code></td>
+<td><code>std::optional&lt;T&gt;</code></td>
+<td><code>Option&lt;T&gt;</code></td>
+</tr>
+<tr>
+<td><code>match</code></td>
+<td>tag dispatch</td>
 <td><code>match</code></td>
 </tr>
 <tr>
+<td><code>int</code></td>
+<td><code>BigInt</code> (arbitrary precision)</td>
+<td><code>num-bigint</code></td>
+</tr>
+<tr>
+<td><code>Int32</code> / <code>Int64</code></td>
+<td><code>int32_t</code> / <code>int64_t</code></td>
+<td><code>i32</code> / <code>i64</code></td>
+</tr>
+<tr>
 <td><code>str</code></td>
-<td><code>std::string</code> or <code>std::string_view</code>; the compiler decides per use</td>
-<td><code>Cow&lt;str&gt;</code>-like</td>
+<td><code>std::string_view</code> / <code>std::string</code></td>
+<td><code>Cow&lt;str&gt;</code></td>
 </tr>
 <tr>
 <td><code>String</code></td>
-<td>owned <code>std::string</code></td>
+<td><code>std::string</code></td>
 <td><code>String</code></td>
 </tr>
 <tr>
@@ -911,67 +943,102 @@ aliasing-XOR-mutation rule to satisfy, and no lifetime annotations anywhere.</p>
 <td><code>&amp;str</code></td>
 </tr>
 <tr>
-<td>a class</td>
-<td>a plain <code>struct</code>, stored inline in containers</td>
-<td>a <code>struct</code></td>
+<td>class</td>
+<td><code>struct</code></td>
+<td><code>struct</code></td>
 </tr>
 <tr>
 <td><code>raise</code> / <code>except</code></td>
-<td>C++ exceptions</td>
-<td>no analog: unchecked exceptions</td>
+<td>exceptions</td>
+<td>(no analog)</td>
 </tr>
 <tr>
-<td>a panic</td>
-<td><code>std::exit(1)</code> after printing <code>TurboPython panic: &lt;msg&gt;</code></td>
-<td><code>panic!</code> without <code>catch_unwind</code></td>
+<td>panic</td>
+<td><code>std::exit(1)</code></td>
+<td><code>panic!</code></td>
 </tr>
 <tr>
-<td><code>Rc</code> / <code>Arc</code> / <code>Weak</code> (opt-in)</td>
-<td>like <code>shared_ptr</code> + <code>weak_ptr</code></td>
-<td><code>Rc</code> / <code>Arc</code> / <code>Weak</code></td>
+<td><code>Rc</code> / <code>Arc</code></td>
+<td><code>shared_ptr</code> / <code>weak_ptr</code></td>
+<td><code>Rc</code> / <code>Arc</code></td>
 </tr>
 <tr>
-<td><code>Send</code> (thread spawn bound)</td>
-<td>--</td>
+<td><code>Send</code></td>
+<td>—</td>
 <td><code>Send</code></td>
 </tr>
 </tbody>
 </table>
-<h2 id="surprises-for-crust-readers">Surprises for C++/Rust readers<a class="headerlink" href="#surprises-for-crust-readers" title="Permanent link">&para;</a></h2>
-<p><strong>Plain returns are reference returns.</strong> For a reference type, <code>def f() -&gt; T</code>
-returns <code>T&amp;</code>, not a value (value types return by value); only <code>Own[T]</code> returns
-an owned reference-type value. Returning a <em>reference-type</em> local through a
-plain return type is the compile error that teaches this
+<h2 id="behavior-worth-knowing">Behavior worth knowing<a class="headerlink" href="#behavior-worth-knowing" title="Permanent link">&para;</a></h2>
+<p><strong>Plain returns.</strong> A function that returns a reference type by plain <code>-&gt; T</code>
+hands back a reference (<code>T&amp;</code>), not a copy; the caller borrows the result. Value
+types return by value. To return an owned reference-type value, annotate the
+return <code>Own[T]</code>. Returning a reference-type local by plain <code>T</code> is rejected,
+because that reference would dangle once the frame is gone
 (<a href="../ownership/">Ownership</a>).</p>
-<p><strong>Implicit copies exist, and they warn.</strong> Where C++ would silently copy and
-Rust would refuse to compile, TurboPython copies deeply and emits a warning
-naming the spot. <code>@nocopy</code> per type turns the warning into an error
+<p><strong>Moves, not boxes.</strong> <code>Own[T]</code> transfers ownership. As a parameter it lowers to
+an rvalue reference (<code>T&amp;&amp;</code>), and the caller gives up its value; as a return it
+passes the value straight out. This is Rust's by-value move — no heap
+allocation, nothing boxed.</p>
+<p><strong>Implicit copies.</strong> When a value is stored into durable storage and the source
+is used again afterward, TurboPython makes a deep copy instead of a move. C++
+would copy silently; Rust would reject the program. TurboPython copies, and
+warns at the spot. Marking the type <code>@nocopy</code> turns that warning into an error.
+When the source is not used again, the store is a move and nothing is copied
 (<a href="../efficiency/">Efficiency</a>).</p>
-<p><strong>Dispatch is static, without <code>virtual</code>.</strong> A call through a base-typed
-reference binds at compile time, with a warning on every hiding override.
-Runtime dispatch is an opt-in property of structural protocols (interfaces),
-not of classes (<a href="../data-modeling/">Data modeling</a>).</p>
-<p><strong>Destruction is deterministic.</strong> <code>__del__</code> runs the moment the owner frees
-the object -- a destructor in the RAII sense, not a garbage-collector
-finalizer.</p>
-<p><strong>Generics monomorphize.</strong> <code>def first[T](xs: list[T]) -&gt; T</code> (PEP 695 syntax)
-compiles per instantiation, like a template.</p>
-<p><strong>Exceptions are real C++ exceptions.</strong> The non-throwing path is free; a
-<code>raise</code> unwinds. Panics -- overflow, failed narrowing -- are unrecoverable
-process exits, not exceptions (<a href="../control-flow/">Control flow</a>).</p>
-<p><strong>The generated code is the code to expect.</strong> A class compiles to a plain
-struct; <code>list[Float64]</code> is a contiguous <code>std::vector&lt;double&gt;</code>; <code>Own</code>
-parameters are rvalue references. <code>tpyc --dump-code</code> shows it
-(<a href="../building/">Building</a>).</p>
+<p><strong>Borrows and mutation.</strong> Mutating a container while a reference into it is
+still live is allowed, but the compiler warns (<code>'append' may invalidate
+references</code>) — the hazard C++ knows as iterator invalidation, and the one Rust
+prevents outright with <code>&amp;mut</code>.</p>
+<p><strong>Const-correctness is inferred.</strong> A parameter a function never mutates is
+passed as <code>const T&amp;</code> automatically, so the <code>readonly[T]</code> annotation is rarely
+needed. This is C++ const-correctness, or Rust's split between <code>&amp;</code> and <code>&amp;mut</code>,
+without spelling it out (<a href="../functions/">Functions</a>).</p>
+<p><strong>Arbitrary-precision <code>int</code>.</strong> A bare <code>int</code> is not a machine word; it is an
+arbitrary-precision integer, the kind C++ and Rust reach for a library to get.
+A value that fits in 63 bits stays inline in a single word, so ordinary-sized
+integers allocate nothing; only larger values move to the heap. The
+fixed-width machine types are <code>Int32</code>, <code>Int64</code>, and their unsigned siblings,
+which map to <code>int32_t</code>/<code>int64_t</code> and <code>i32</code>/<code>i64</code> (<a href="../types/">Types</a>).</p>
+<p><strong>No null dereference.</strong> <code>T | None</code> is an explicit option type
+(<code>std::optional&lt;T&gt;</code> / <code>Option&lt;T&gt;</code>). A value that might be <code>None</code> must be
+narrowed before its <code>T</code> operations are allowed, and the compiler enforces
+that — there is no null pointer to forget to check
+(<a href="../control-flow/">Control flow</a>).</p>
+<p><strong>Static dispatch.</strong> Method calls bind at compile time. A call through a
+base-class reference does not dispatch virtually; it calls the static type's
+method, and an override that hides a base method warns. Runtime polymorphism is
+opt-in, through structural protocols (TurboPython's interfaces), not through
+class inheritance (<a href="../data-modeling/">Data modeling</a>).</p>
+<p><strong>Deterministic destruction.</strong> An object is destroyed when its owner releases
+it, as with C++ RAII or Rust's <code>Drop</code>. <code>__del__</code> is that destructor: it runs at
+a defined point, not whenever a garbage collector chooses.</p>
+<p><strong>Monomorphized generics.</strong> A generic function or class compiles once per
+concrete type, like a C++ template or a Rust generic. <code>def first[T](xs:
+list[T]) -&gt; T</code> (PEP 695 syntax) produces a separate specialization for each <code>T</code>
+it is used with.</p>
+<p><strong>Real C++ exceptions.</strong> <code>raise</code> and <code>except</code> compile to real C++ exceptions:
+the non-throwing path costs nothing, and a <code>raise</code> unwinds the stack. The
+<code>@error_return</code> decorator instead propagates errors as values, compiling to
+<code>std::expected</code> — Rust's <code>Result</code> — for hot paths. The compiler applies it
+automatically to every <code>__next__</code>, so a loop ends on <code>StopIteration</code> with no
+exception-throwing cost. Panics are separate — overflow, a failed narrowing,
+and similar unrecoverable errors print a message and exit the process, like a
+Rust <code>panic!</code> with no <code>catch_unwind</code> (<a href="../control-flow/">Control flow</a>).</p>
+<p><strong>Predictable codegen.</strong> A class becomes a plain struct; <code>list[Float64]</code>
+becomes a contiguous <code>std::vector&lt;double&gt;</code>; an <code>Own[T]</code> parameter becomes an
+rvalue reference. <code>tpyc --dump-code</code> prints the generated C++, which shows
+exactly what each construct became (<a href="../building/">Building</a>).</p>
 <h2 id="threads-follow-rusts-model">Threads follow Rust's model<a class="headerlink" href="#threads-follow-rusts-model" title="Permanent link">&para;</a></h2>
-<p>Thread spawning takes an owned task and enforces <code>Send</code> at the boundary;
-threads do not borrow, and the handle joins for the result. There is no GIL.
-Cross-thread sharing goes through <code>Arc</code> (<a href="../ownership/">Ownership</a>), which
-shares without locking and does not enforce race freedom. <code>Atomic[T]</code> covers
+<p>Thread spawning takes ownership of the task and enforces <code>Send</code> at the
+boundary, as Rust does. Threads do not borrow from the spawning frame, and the
+join handle returns the result. There is no GIL. Sharing data across threads
+goes through <code>Arc</code> — an atomic reference count, like Rust's — which shares
+without locking and does not by itself prevent data races. <code>Atomic[T]</code> covers
 counters and flags. <a href="../../compatibility/">Compatibility</a> tracks the current
 state of the concurrency primitives.</p>
 <p>The thread API and a worked <code>spawn</code>/<code>join</code> example are on
-<a href="../beyond/">Beyond the core</a>, which tracks the rest of the concurrency
+<a href="../beyond/">Beyond the core</a>, which covers the rest of the concurrency
 support.</p>
 
 

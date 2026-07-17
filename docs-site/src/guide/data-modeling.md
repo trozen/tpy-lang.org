@@ -1,41 +1,37 @@
 # Data modeling
 
-!!! warning "Review pending"
-    This page has not yet been reviewed by the maintainer.
+TurboPython programs model data with the same building blocks as Python.
+Classes describe records with behavior, containers hold collections, tuples
+group a fixed set of values, and unions describe a value that is one of several
+alternatives. All are written as in Python, and the largest departure is that
+method calls bind at compile time.
 
-Programs model data with three tools. Classes describe records with behavior.
-Containers hold collections of them. Unions describe a value that is exactly
-one of several alternatives. All three are written as in Python. The largest
-departure from Python is that method calls bind at compile time.
+## Classes
 
-## Classes are records with methods
-
-Fields are declared as annotations and form a fixed set
-([the map](differences.md) shows the diagnostic for an undeclared field).
-Methods are ordinary Python methods; `self` is a borrowed parameter, as
-[the functions page](functions.md) explains. Dunder methods are ordinary
-methods too: `__str__` drives `print` and f-strings, `__eq__` drives `==`.
-Class-level field defaults, `@property`, and `@staticmethod` work, and
-`@dataclass` generates the constructor as in Python.
+Fields are declared as annotations and form a fixed set. Methods are written as
+in Python, and `self` is a borrowed parameter
+([Functions and API boundaries](functions.md) covers borrowing). Dunder methods
+work too -- `__str__` drives `print` and f-strings, and `__eq__` drives `==`.
+Class-level field defaults, `@property`, and `@staticmethod` all work.
 
 The `Reading` example from the earlier pages, extended to a full class:
 
 <!-- tpy: prelude -->
 ```python
-from tpy import Own, Float64, Int32
+from tpy import Own, Int32
 
 class Reading:
     sensor: str
-    values: list[Float64]
+    values: list[float]
 
-    def __init__(self, sensor: str, values: Own[list[Float64]]):
+    def __init__(self, sensor: str, values: Own[list[float]]):
         self.sensor = sensor
         self.values = values
 
-    def add(self, v: Float64) -> None:
+    def add(self, v: float) -> None:
         self.values.append(v)
 
-    def mean(self) -> Float64:
+    def mean(self) -> float:
         return sum(self.values) / len(self.values)
 
     @property
@@ -57,14 +53,7 @@ def main():
 main()
 ```
 
-A property getter receives `self` read-only.
-
-!!! info "Limited today"
-    `mean` stays an ordinary method here: `sum` cannot yet accept a read-only
-    list, so it cannot be called from a property.
-    [Compatibility](../compatibility.md) tracks this gap.
-
-## Method calls bind at compile time
+## Inheritance and dispatch
 
 Inheritance works, but overriding does not dispatch dynamically. A call
 through a base-typed reference calls the base method, and the compiler warns
@@ -104,10 +93,11 @@ protocol when several types share behavior, a union when a value is one of a
 fixed set of alternatives. In both, the data stays on the concrete classes;
 the protocol or union carries only the choice.
 
-## Protocols are structural
+## Protocols
 
-A protocol declares a shape. Any class with matching methods satisfies it --
-no inheritance, no registration:
+A protocol is a named interface -- a set of method signatures with no bodies.
+Any class whose methods match satisfies the protocol automatically, with no
+inheritance and no registration. Conformance is checked at compile time:
 
 <!-- tpy: run -->
 ```python
@@ -132,20 +122,23 @@ def main():
 main()
 ```
 
-The match between class and protocol is checked at compile time.
+By default a protocol is resolved statically. Each call site is compiled
+against the concrete type it receives, at no runtime cost. A protocol marked
+`@dynamic` (from `tpy`) instead dispatches through a vtable, so a single
+reference can hold different implementers chosen at runtime, the way
+inheritance does in Python. [Beyond the core](beyond.md) covers `@dynamic`
+protocols.
 
-## Containers hold the records
+## Containers
 
-`list`, `dict`, `set`, and `tuple` work as in Python and nest freely. A dict
-keeps insertion order, as in Python. A container owns its elements
+`list`, `dict`, and `set` work as in Python and nest freely. A dict keeps
+insertion order, as in Python. A container owns its elements
 ([Ownership and references](ownership.md)).
 
 <!-- tpy: run -->
 ```python
-from tpy import Float64
-
 def main():
-    by_sensor: dict[str, list[Float64]] = {}
+    by_sensor: dict[str, list[float]] = {}
     by_sensor["boiler-3"] = [20.5, 21.0]
     by_sensor["boiler-7"] = [19.0]
     if "boiler-3" in by_sensor:
@@ -156,9 +149,6 @@ def main():
     seen.add("boiler-3")
     seen.add("boiler-3")
     print(len(seen))                  # 1
-    pair: tuple[str, Float64] = ("mean", 20.9)
-    label, value = pair               # tuples unpack as usual
-    print(label, value)
 
 main()
 ```
@@ -167,39 +157,93 @@ Sorting accepts Python's key functions, including lambdas:
 
 <!-- tpy: run -->
 ```python
-from tpy import Float64
-
 def main():
-    xs: list[Float64] = [3.0, 1.0, 2.0]
+    xs: list[float] = [3.0, 1.0, 2.0]
     print(sorted(xs, key=lambda v: -v))   # [3.0, 2.0, 1.0]
 
 main()
 ```
 
-## Unions model the alternatives
+## Tuples
 
-A union's members are ordinary classes; a fieldless member needs no
-`__init__` at all. For plain absence, `T | None` is enough
-([the types page](types.md)); a marker class is the better member when the
-alternative means something of its own, or will grow fields later.
+A tuple groups a fixed number of values, each of its own type, and behaves as
+in Python. Elements are reached by a constant index or by unpacking, and tuples
+compare element by element. A tuple of hashable values also works as a
+dictionary key.
 
-A `match` statement branches on the union, binds fields in the pattern, and
-takes guards. A `match` that misses a member cannot fall through silently.
-With a declared return type, every path must return, and a guarded `case` does
-not count as covering its member. The bare `case Sample():` below is therefore
-required.
+<!-- tpy: run -->
+```python
+def main():
+    pair: tuple[str, float] = ("mean", 20.9)
+    label, value = pair                # unpack
+    print(label, value)                # mean 20.9
+    print(pair[0])                     # index with a constant
+    print(("a", 1) == ("a", 1))        # True -- element-wise comparison
+    seen: dict[tuple[int, int], str] = {(1, 2): "cell"}
+    print((1, 2) in seen)              # True -- a tuple works as a dict key
+
+main()
+```
+
+Each element keeps the passing semantics it would have on its own. A value-type
+element is copied; a reference-type element is held by reference, the same way
+a standalone parameter or return of that type would be. Wrapping a value in a
+tuple slot therefore does not change how it is passed: a function whose return
+type goes from `Reading` to `tuple[Reading, bool]` still returns the `Reading`
+by reference. [Ownership and references](ownership.md) covers the rules the
+elements follow.
+
+## Unions
+
+A union describes a value that is exactly one of several classes, written
+`A | B`. A `match` statement branches on the member a value holds and binds its
+fields in the pattern:
+
+<!-- tpy: run -->
+```python
+class Circle:
+    radius: float
+    def __init__(self, radius: float):
+        self.radius = radius
+
+class Square:
+    side: float
+    def __init__(self, side: float):
+        self.side = side
+
+def area(shape: Circle | Square) -> float:
+    match shape:
+        case Circle(radius=r):
+            return 3.14159 * r * r
+        case Square(side=s):
+            return s * s
+
+def main():
+    print(area(Circle(1.0)))    # 3.14159
+    print(area(Square(2.0)))    # 4.0
+
+main()
+```
+
+A union used in more than one place can be named with a `type` alias, written
+`type Shape = Circle | Square`, and the name then stands for the union anywhere
+a type is expected.
+
+A `match` that misses a member cannot fall through silently. With a declared
+return type, every path must return, and a guarded `case` does not count as
+covering its member, so the bare `case Sample():` below is required:
 
 <!-- tpy: prelude run -->
 ```python
-from tpy import Float64
-
 class Sample:
-    value: Float64
-    def __init__(self, value: Float64):
+    value: float
+    def __init__(self, value: float):
         self.value = value
 
 class Gap:
-    pass
+    reason: str
+    def __init__(self, reason: str):
+        self.reason = reason
 
 def describe(x: Sample | Gap) -> str:
     match x:
@@ -207,13 +251,13 @@ def describe(x: Sample | Gap) -> str:
             return "high"
         case Sample():
             return "normal"
-        case Gap():
-            return "missing"
+        case Gap(reason=r):
+            return f"missing: {r}"
 
 def main():
-    print(describe(Sample(21.5)))   # high
-    print(describe(Sample(20.0)))   # normal
-    print(describe(Gap()))          # missing
+    print(describe(Sample(21.5)))            # high
+    print(describe(Sample(20.0)))            # normal
+    print(describe(Gap("sensor offline")))   # missing: sensor offline
 
 main()
 ```
@@ -224,7 +268,7 @@ catch-all pattern:
 <!-- tpy: cont run -->
 ```python
 def main():
-    stream: list[Sample | Gap] = [Sample(20.5), Gap(), Sample(21.5)]
+    stream: list[Sample | Gap] = [Sample(20.5), Gap("offline"), Sample(21.5)]
     good = 0
     for x in stream:
         match x:
@@ -237,18 +281,41 @@ def main():
 main()
 ```
 
-A single check also works, since `isinstance(x, Sample)` is valid on a union value.
+For a one-off test, `isinstance(x, Sample)` is also valid on a union value.
 Unions with `match` replace `isinstance` chains, and often replace a whole
 inheritance hierarchy.
 
-## In practice
+## Dataclasses
 
-| The data is... | Model it as |
-|---|---|
-| A record with behavior | a class |
-| One of a fixed set of alternatives | a union, branched on with `match` |
-| Shared behavior across unrelated types | a protocol |
-| A collection of records | a container -- it owns its elements |
+`@dataclass` writes the methods a plain class spells out by hand. It is a
+built-in compile-time macro that generates `__init__`, `__repr__`, and `__eq__`
+from the annotated fields. Passing `frozen=True` additionally makes instances
+hashable, so they can serve as dict keys or set members. The decorator is
+imported from `dataclasses`, as in Python.
+
+<!-- tpy: run -->
+```python
+from dataclasses import dataclass
+
+@dataclass
+class Point:
+    x: float
+    y: float
+
+@dataclass(frozen=True)
+class Cell:
+    row: int
+    col: int
+
+def main():
+    p = Point(1.0, 2.0)
+    print(p)                        # Point(x=1.0, y=2.0)
+    print(p == Point(1.0, 2.0))     # True
+    grid: dict[Cell, str] = {Cell(0, 0): "origin"}
+    print(grid[Cell(0, 0)])         # origin -- frozen is hashable
+
+main()
+```
 
 How programs branch and fail -- `None` narrowing, `try`/`except`, iterators --
 is the next page: [Control flow, None & errors](control-flow.md).

@@ -1,10 +1,8 @@
 # Building & running
 
-!!! warning "Review pending"
-    This page has not yet been reviewed by the maintainer.
-
-The `tpy` command compiles a program and runs it. The `tpyc` command compiles
-without running. Both take ordinary `.py` files.
+A TurboPython program is compiled to a native binary before it runs. The `tpy`
+command compiles a program and runs it, while `tpyc` compiles without running.
+Both take ordinary `.py` files.
 
 ## Run a program
 
@@ -45,29 +43,55 @@ Built: build/release/program
 ```
 
 The result needs no Python installation. It links only the standard system
-libraries (the C++ runtime and libc), so it runs on any Linux with the same
-or newer system libraries. Building happens on the platform the binary
-targets. Binaries are small. A trivial release build is about 250 KB.
+libraries (the C++ runtime and libc), so it runs on other machines of the
+same platform with compatible system libraries. Building happens on the
+platform the binary targets; Linux and macOS are supported.
 
-## Check without building; read the C++
+Adding `-x` to a `-b` build runs the result immediately after building.
 
-The `tpyc` command runs the front end only -- parsing, type checking,
-ownership analysis, C++ generation -- and skips the native build. It is the
-fast way to check a change:
+## Emit and integrate C++
+
+By default the `tpyc` command emits a C++ project and skips the native build:
 
 ```console
 $ tpyc -o build program.py
 ```
 
-The output directory receives the generated C++ project. `--dump-code` prints
-the generated C++ instead, which shows directly whether a loop stayed
-fixed-width, where a copy happens, and what a class compiles to:
+The generated `.hpp` and `.cpp` files land in a `program.d/` directory under
+the output path, so this run writes `build/program.d/`. Omitting `-o` writes
+to `__tpyc__/` next to the source instead.
+
+Skipping the native build also makes `tpyc` the fast way to check a change. The
+front end still parses, type-checks, and runs ownership analysis, so type and
+ownership errors surface without waiting for the C++ compiler.
+
+The `--dump-code` flag prints the generated C++ to stdout instead of writing a
+project. It shows directly whether a loop stayed fixed-width, where a copy
+happens, and what a class compiles to:
 
 ```console
 $ tpyc --dump-code program.py
 ```
 
-Adding `-x` to a `-b` build runs the result immediately after building.
+### Integrate with a CMake build
+
+Each project carries a `sources.cmake` that defines the generated sources, the
+include directories, the link libraries, and the required C++ standard. A CMake
+target consumes them directly:
+
+```cmake
+include(build/program.d/sources.cmake)
+add_executable(app ${TPYC_SOURCES})
+target_include_directories(app PRIVATE ${TPYC_INCLUDE_DIRS})
+target_link_libraries(app PRIVATE ${TPYC_LIBRARIES})
+set_target_properties(app PROPERTIES CXX_STANDARD ${TPYC_CXX_STANDARD})
+```
+
+The `--no-main` flag omits the generated `main()` so the compiled code links
+into an existing C++ program rather than running on its own. The runtime
+headers are bundled into the output directory by default, which keeps the
+project self-contained and safe to commit or copy to another machine. The
+`--no-bundle-runtime` flag skips that copy.
 
 ## Build a CPython extension
 
@@ -97,10 +121,10 @@ and a mismatched argument raises an ordinary `TypeError` on the Python side.
 [Compatibility](../compatibility.md) tracks which boundary types are
 supported.
 
-This supports gradual migration: the application stays in CPython while the
+This supports gradual migration. The application stays in CPython while the
 hot module moves to TurboPython.
 
-## A project is a directory of modules
+## Compile a multi-module program
 
 There is no project file yet ([Planned](#toolchain-notes), below). A program
 is its entry file plus everything it imports. Local modules and packages next
@@ -112,16 +136,6 @@ helpers.py      # import helpers
 pkg/
     __init__.py
     scale.py    # from pkg.scale import to_f
-```
-
-Module-level constants are declared `Final`. The compiler suggests it for an
-ALL_CAPS name whose type `Final` can wrap:
-
-```python
-from typing import Final
-from tpy import Float64
-
-FACTOR: Final[Float64] = 1.8
 ```
 
 ## Toolchain notes
@@ -137,5 +151,5 @@ compilation (`-j N`).
     and build settings -- does not exist yet. Configuration is currently
     command-line flags only.
 
-The remaining pages are orientation: [Coming from C++/Rust](cpp-rust.md) and
-[Beyond the core](beyond.md).
+The remaining pages are orientation: [Beyond the core](beyond.md) and
+[Coming from C++/Rust](cpp-rust.md).

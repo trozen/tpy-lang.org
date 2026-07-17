@@ -1,16 +1,13 @@
 # Writing efficient TPy
 
-!!! warning "Review pending"
-    This page has not yet been reviewed by the maintainer.
-
 Efficient TurboPython is mostly ordinary TurboPython. There is no interpreter,
 no garbage collector, and no reference counting to pay for. The rules that
 keep it efficient concern how values are represented and how they move. The
 constraint decorators turn those rules into compiler checks.
 
-Hot paths are found the usual way: profile the logic under CPython, where the
-same code usually runs unchanged, or time the compiled binary. The generated
-C++ can also be inspected directly ([Building & running](building.md)).
+Hot paths are found by timing the compiled binary. The generated C++ can also
+be inspected directly to confirm how a value is represented
+([Building & running](building.md)).
 
 ## Keep arithmetic fixed-width
 
@@ -40,7 +37,7 @@ any `int` operand converts the whole expression. For confirmation, the
 generated C++ shows a promoted loop directly ([Building](building.md)) -- no
 C++ fluency is needed to spot a big-integer type where `int32_t` was expected.
 
-## Let values move; copy on purpose
+## Move values, copy on purpose
 
 A store into durable storage moves when it can and copies when it must, with
 a warning for every copy ([Ownership](ownership.md)). The resolution order:
@@ -57,7 +54,7 @@ small fixed-size value and copies no elements. A view -- a borrow, a
 contiguous slice, a `StrView` -- costs nothing.
 A deep copy allocates and copies everything the object owns; for the
 `Reading` class, that is the sensor text plus the whole values buffer (a
-`list[Float64]` is one contiguous block of machine floats, not boxed
+`list[float]` is one contiguous block of machine floats, not boxed
 elements). A big-integer operation can allocate. These four facts rank almost
 every decision on this page.
 
@@ -77,23 +74,41 @@ gain comes from the copies that are never written.
 Beyond copies, allocations come from growing containers, strings, and big
 integers.
 
+## Keep dispatch static
+
+Structural protocols and unions resolve at compile time, with no runtime
+dispatch cost ([Data modeling](data-modeling.md)). The dynamic escape hatches
+trade that away. A `@dynamic` protocol dispatches every method call through a
+vtable, and `Any` holds a value of statically unknown type, checking or casting
+it against a runtime type tag on each use. `Any` is supported but slow, and it
+gives up most of the compiler's static reasoning.
+
+Prefer a static protocol or a union where the set of types is known; reach for
+`@dynamic` or `Any` only when the design genuinely needs runtime polymorphism.
+
 ## Constrain the hot path
 
 The markers above make efficient code possible; the constraint decorators
-make it checked. Two are enforced today; `@noalloc` is declared but not yet
-checked.
+make it checked. Two are enforced today, `@nocopy` and `@readonly`; `@noalloc`
+and `@hotpath` are planned.
+
+!!! warning "Not available yet"
+    `@noalloc` (a function must not allocate) and `@hotpath` (code that must
+    stay on the fast path) are accepted but not enforced today, and enforcement
+    will not land in the next release. [Compatibility](../compatibility.md)
+    tracks their status.
 
 The `@nocopy` decorator on a class forbids every implicit copy of that type.
 Code that would have compiled with a copy warning becomes an error:
 
 <!-- tpy: prelude -->
 ```python
-from tpy import nocopy, Own, Float64
+from tpy import nocopy, Own
 
 @nocopy
 class Frame:                 # hot data: copying is never acceptable
-    values: list[Float64]
-    def __init__(self, values: Own[list[Float64]]):
+    values: list[float]
+    def __init__(self, values: Own[list[float]]):
         self.values = values
 ```
 
@@ -126,35 +141,61 @@ def main():
 main()
 ```
 
+## Read-only methods
+
 The `@readonly` decorator on a method promises the object is not mutated, and
 the compiler enforces the promise ([Ownership](ownership.md) covers the
 parameter form, `readonly[T]`):
 
 ```python
-from tpy import readonly, Own, Float64
+from tpy import readonly, Own
 
 class Reading:
     sensor: str
-    values: list[Float64]
-    def __init__(self, sensor: str, values: Own[list[Float64]]):
+    values: list[float]
+    def __init__(self, sensor: str, values: Own[list[float]]):
         self.sensor = sensor
         self.values = values
 
     @readonly
-    def first(self) -> Float64:   # mutating self here is a compile error
+    def first(self) -> float:   # mutating self here is a compile error
         return self.values[0]
 ```
 
-The `@noalloc` decorator declares that a function must not allocate.
+## Error returns
 
-!!! info "Limited today"
-    The compiler accepts `@noalloc` but does not enforce the no-allocation
-    check yet. [Compatibility](../compatibility.md) tracks it.
+Exceptions are the throw-and-catch tier of a two-tier model; `@error_return` is
+the explicit-propagation tier for hot paths. A function marked
+`@error_return(E)` returns its error as a value instead of throwing, so raising
+`E` costs nothing while the caller still writes ordinary `try`/`except`. The
+error class mixes in `ReturnException`:
 
-One more tool exists at this level: `@error_return(E)`, the explicit form of
-the rewrite that makes `raise StopIteration` free
-([Control flow](control-flow.md)). It is rarely written by hand; iterators
-get it automatically.
+<!-- tpy: run -->
+```python
+from tpy import error_return, ReturnException
+
+class NotFound(Exception, ReturnException):
+    pass
+
+@error_return(NotFound)
+def find(items: list[int], target: int) -> int:
+    for i in range(len(items)):
+        if items[i] == target:
+            return i
+    raise NotFound
+
+def main():
+    items = [10, 20, 30]
+    try:
+        print(find(items, 20))     # 1
+    except NotFound:
+        print("not found")
+
+main()
+```
+
+The same rewrite makes `raise StopIteration` free, so iterators get
+`@error_return` automatically ([Control flow](control-flow.md)).
 
 ## The checklist
 
@@ -164,6 +205,7 @@ get it automatically.
 | A store that warns about a copy | restructure to a move, construct in place, or take `Own[T]` |
 | A copy that is genuinely needed | `copy()` -- the copy is deep |
 | Reading without mutating | plain parameters (read-only is inferred); slices and `StrView` for text |
+| Runtime polymorphism | static protocols or unions; `@dynamic` and `Any` add dispatch cost |
 | A type that must never be copied | `@nocopy` on the class |
 | A method that must not mutate | `@readonly` |
 | An exception on the hot path | usually return `T \| None` instead of raising; `@error_return` exists |
