@@ -68,6 +68,7 @@ markdown_extensions:
         ndash: "—"
   - toc:
       permalink: true
+      toc_depth: 3          # keep h4 (compatibility library entries) out of the sidebar TOC
   - pymdownx.highlight:
       anchor_linenums: true
   - pymdownx.superfences
