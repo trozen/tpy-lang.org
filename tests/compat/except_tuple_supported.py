@@ -1,4 +1,4 @@
-# expect: error simple or dotted name
+# expect: ok
 class AppError(Exception):
     pass
 

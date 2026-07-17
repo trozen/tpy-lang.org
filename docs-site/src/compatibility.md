@@ -46,7 +46,6 @@ module level for the standard library.
 | `asyncio` | single-threaded executor; `run`, `create_task`, `sleep`, and plain `await` work ([Beyond the core](guide/beyond.md) has the details) |
 | `**kwargs` | only the typed form (`Unpack[TypedDict]`); plain `**kwargs: T` is rejected |
 | f-strings | scalars format; a list or dict cannot be formatted directly |
-| `except` clauses | one exception type per clause; `except (A, B)` is rejected |
 | `print(e)` on exceptions | prints the object, not the message; `str(e)` and f-strings return the message |
 | Union elements in containers | matching on elements of `list[A \| B]` works; passing an element to a union-typed *parameter* fails in the C++ build today |
 | Protocol types in containers | `list[SomeProtocol]` is rejected |

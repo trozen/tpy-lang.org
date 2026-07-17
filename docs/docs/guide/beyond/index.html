@@ -173,7 +173,7 @@
             TurboPython 0.5.0.dev0
             
               <ul class="md-source__facts">
-                <li class="md-source__fact md-source__fact--version">v0.4.0-131-g97ffc74ca</li>
+                <li class="md-source__fact md-source__fact--version">v0.4.0-227-gffb79ebbe</li>
               </ul>
             
           </div>
@@ -1010,8 +1010,11 @@ to send across threads (<code>Send</code>):</p>
 <a id="__codelineno-1-15" name="__codelineno-1-15" href="#__codelineno-1-15"></a><span class="n">main</span><span class="p">()</span>
 </code></pre></div>
 <p>Cross-thread sharing goes through <code>Arc</code> (<a href="../ownership/">Ownership</a>), and
-<code>Atomic[T]</code> covers shared counters. The cross-thread and async-interop surface
-is still partial; <a href="../../compatibility/">Compatibility</a> tracks what works today.</p>
+<code>Atomic[T]</code> covers shared counters. <code>Mutex[T]</code> and <code>RwLock[T]</code> guard shared
+mutable state, and <code>Condvar</code> blocks until a condition holds — Rust's
+<code>std::sync</code> primitives, from <code>tpy.sync</code>. The cross-thread and async-interop
+surface is still partial; <a href="../../compatibility/">Compatibility</a> tracks what
+works today.</p>
 <h2 id="generators-and-iterators">Generators and iterators<a class="headerlink" href="#generators-and-iterators" title="Permanent link">&para;</a></h2>
 <p>Generator functions, generator expressions, and hand-written iterators work.
 The one exception is <code>yield from</code>, which is not supported yet; the compiler
@@ -1101,7 +1104,7 @@ records its status.</p>
       <div class="md-copyright">
   
     <div class="md-copyright__highlight">
-      These docs describe <span class="tpy-version">TurboPython 0.5.0.dev0</span> (v0.4.0-131-g97ffc74ca).
+      These docs describe <span class="tpy-version">TurboPython 0.5.0.dev0</span> (v0.4.0-227-gffb79ebbe).
     </div>
   
   

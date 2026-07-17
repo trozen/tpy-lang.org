@@ -173,7 +173,7 @@
             TurboPython 0.5.0.dev0
             
               <ul class="md-source__facts">
-                <li class="md-source__fact md-source__fact--version">v0.4.0-131-g97ffc74ca</li>
+                <li class="md-source__fact md-source__fact--version">v0.4.0-227-gffb79ebbe</li>
               </ul>
             
           </div>
@@ -1035,8 +1035,10 @@ boundary, as Rust does. Threads do not borrow from the spawning frame, and the
 join handle returns the result. There is no GIL. Sharing data across threads
 goes through <code>Arc</code> — an atomic reference count, like Rust's — which shares
 without locking and does not by itself prevent data races. <code>Atomic[T]</code> covers
-counters and flags. <a href="../../compatibility/">Compatibility</a> tracks the current
-state of the concurrency primitives.</p>
+counters and flags, and <code>Mutex[T]</code>, <code>RwLock[T]</code>, and <code>Condvar</code> mirror Rust's
+<code>std::sync</code> types (<code>std::mutex</code>, <code>std::shared_mutex</code>, and
+<code>std::condition_variable</code> in C++). <a href="../../compatibility/">Compatibility</a> tracks
+the current state of the concurrency primitives.</p>
 <p>The thread API and a worked <code>spawn</code>/<code>join</code> example are on
 <a href="../beyond/">Beyond the core</a>, which covers the rest of the concurrency
 support.</p>
@@ -1077,7 +1079,7 @@ support.</p>
       <div class="md-copyright">
   
     <div class="md-copyright__highlight">
-      These docs describe <span class="tpy-version">TurboPython 0.5.0.dev0</span> (v0.4.0-131-g97ffc74ca).
+      These docs describe <span class="tpy-version">TurboPython 0.5.0.dev0</span> (v0.4.0-227-gffb79ebbe).
     </div>
   
   

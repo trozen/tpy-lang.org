@@ -61,8 +61,11 @@ main()
 ```
 
 Cross-thread sharing goes through `Arc` ([Ownership](ownership.md)), and
-`Atomic[T]` covers shared counters. The cross-thread and async-interop surface
-is still partial; [Compatibility](../compatibility.md) tracks what works today.
+`Atomic[T]` covers shared counters. `Mutex[T]` and `RwLock[T]` guard shared
+mutable state, and `Condvar` blocks until a condition holds -- Rust's
+`std::sync` primitives, from `tpy.sync`. The cross-thread and async-interop
+surface is still partial; [Compatibility](../compatibility.md) tracks what
+works today.
 
 ## Generators and iterators
 

@@ -129,8 +129,10 @@ boundary, as Rust does. Threads do not borrow from the spawning frame, and the
 join handle returns the result. There is no GIL. Sharing data across threads
 goes through `Arc` -- an atomic reference count, like Rust's -- which shares
 without locking and does not by itself prevent data races. `Atomic[T]` covers
-counters and flags. [Compatibility](../compatibility.md) tracks the current
-state of the concurrency primitives.
+counters and flags, and `Mutex[T]`, `RwLock[T]`, and `Condvar` mirror Rust's
+`std::sync` types (`std::mutex`, `std::shared_mutex`, and
+`std::condition_variable` in C++). [Compatibility](../compatibility.md) tracks
+the current state of the concurrency primitives.
 
 The thread API and a worked `spawn`/`join` example are on
 [Beyond the core](beyond.md), which covers the rest of the concurrency
