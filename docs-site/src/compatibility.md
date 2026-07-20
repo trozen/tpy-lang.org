@@ -45,10 +45,10 @@ see the `asyncio` entry under [Concurrency](#concurrency).
 
 **Works:** the common built-ins -- `len`, `range`, `enumerate`, `zip`, `map`,
 `filter`, `sorted`, `sum`, `min` / `max`, `abs`, `round`, `int` / `float` /
-`str`, `list` / `dict` / `set` / `tuple`, `isinstance`, and most exception
-types.
+`str`, `list` / `dict` / `set` / `tuple`, `isinstance`, `input()`, and most
+exception types. The `input` function does not accept a prompt argument.
 
-**Not yet:** `frozenset`, `complex`, `memoryview`, `input`, `format`, `ascii`,
+**Not yet:** `frozenset`, `complex`, `memoryview`, `format`, `ascii`,
 `callable`, `id`, runtime `type(x)`.
 
 **`**kwargs`.** The typed form `**kwargs: Unpack[TypedDict]` works; the untyped
@@ -228,10 +228,11 @@ inheritance, `asdict` / `astuple`, `__post_init__`.
 
 **Works:** `Protocol`, `Self`, `overload`, `override`, `Sized`, `Iterable`,
 `Iterator`, `Sequence`, `Optional`, `Final`, `Callable`, `Literal`,
-`TypedDict`, `Unpack`.
+`TypedDict`, `Unpack`, `ClassVar`, `Any`, `cast`. Most operations on an `Any`
+value require narrowing with `isinstance` or extraction with `cast` first.
 
-**Not yet:** `Generic`, `TypeVar`, `ParamSpec`, `ClassVar`, `Any`, `cast`,
-`NewType` -- use PEP 695 syntax (`class C[T]`, `def f[T]`) for generics.
+**Not yet:** `Generic`, `TypeVar`, `ParamSpec`, `NewType` -- use PEP 695
+syntax (`class C[T]`, `def f[T]`) for generics.
 
 #### `copy` -- Not yet { #copy }
 

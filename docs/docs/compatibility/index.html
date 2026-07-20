@@ -1199,9 +1199,9 @@ see the <code>asyncio</code> entry under <a href="#concurrency">Concurrency</a>.
 <p><strong>Built-in functions and types.</strong></p>
 <p><strong>Works:</strong> the common built-ins — <code>len</code>, <code>range</code>, <code>enumerate</code>, <code>zip</code>, <code>map</code>,
 <code>filter</code>, <code>sorted</code>, <code>sum</code>, <code>min</code> / <code>max</code>, <code>abs</code>, <code>round</code>, <code>int</code> / <code>float</code> /
-<code>str</code>, <code>list</code> / <code>dict</code> / <code>set</code> / <code>tuple</code>, <code>isinstance</code>, and most exception
-types.</p>
-<p><strong>Not yet:</strong> <code>frozenset</code>, <code>complex</code>, <code>memoryview</code>, <code>input</code>, <code>format</code>, <code>ascii</code>,
+<code>str</code>, <code>list</code> / <code>dict</code> / <code>set</code> / <code>tuple</code>, <code>isinstance</code>, <code>input()</code>, and most
+exception types. The <code>input</code> function does not accept a prompt argument.</p>
+<p><strong>Not yet:</strong> <code>frozenset</code>, <code>complex</code>, <code>memoryview</code>, <code>format</code>, <code>ascii</code>,
 <code>callable</code>, <code>id</code>, runtime <code>type(x)</code>.</p>
 <p><strong><code>**kwargs</code>.</strong> The typed form <code>**kwargs: Unpack[TypedDict]</code> works; the untyped
 <code>**kwargs: T</code> form is rejected.</p>
@@ -1346,9 +1346,10 @@ inheritance, <code>asdict</code> / <code>astuple</code>, <code>__post_init__</co
 <h4 id="typing"><code>typing</code> — Partial<a class="headerlink" href="#typing" title="Permanent link">&para;</a></h4>
 <p><strong>Works:</strong> <code>Protocol</code>, <code>Self</code>, <code>overload</code>, <code>override</code>, <code>Sized</code>, <code>Iterable</code>,
 <code>Iterator</code>, <code>Sequence</code>, <code>Optional</code>, <code>Final</code>, <code>Callable</code>, <code>Literal</code>,
-<code>TypedDict</code>, <code>Unpack</code>.</p>
-<p><strong>Not yet:</strong> <code>Generic</code>, <code>TypeVar</code>, <code>ParamSpec</code>, <code>ClassVar</code>, <code>Any</code>, <code>cast</code>,
-<code>NewType</code> — use PEP 695 syntax (<code>class C[T]</code>, <code>def f[T]</code>) for generics.</p>
+<code>TypedDict</code>, <code>Unpack</code>, <code>ClassVar</code>, <code>Any</code>, <code>cast</code>. Most operations on an <code>Any</code>
+value require narrowing with <code>isinstance</code> or extraction with <code>cast</code> first.</p>
+<p><strong>Not yet:</strong> <code>Generic</code>, <code>TypeVar</code>, <code>ParamSpec</code>, <code>NewType</code> — use PEP 695
+syntax (<code>class C[T]</code>, <code>def f[T]</code>) for generics.</p>
 <h4 id="copy"><code>copy</code> — Not yet<a class="headerlink" href="#copy" title="Permanent link">&para;</a></h4>
 <p>TurboPython has its own <a href="../guide/ownership/"><code>copy()</code></a>.</p>
 <h3 id="files-os-runtime">Files, OS &amp; runtime<a class="headerlink" href="#files-os-runtime" title="Permanent link">&para;</a></h3>

@@ -981,10 +981,10 @@ compile and run:</p>
 </code></pre></div>
 <div class="admonition info">
 <p class="admonition-title">Limited today</p>
-<p>The executor is single-threaded. <code>asyncio.run</code>, <code>create_task</code>, <code>sleep</code>,
-and awaiting results work; <code>gather</code> works with an explicit type argument
-(<code>gather[int](...)</code>) and returns a list. Timeouts, streams, and the wider
-<code>asyncio</code> surface are not covered yet.
+<p>The executor is single-threaded. Tasks, timers, <code>wait_for</code>, synchronization
+primitives, socket I/O, and client/server streams work. <code>gather</code> infers a
+common result type and returns a list. It cannot gather heterogeneous
+result types into a tuple.
 <a href="../../compatibility/">Compatibility</a> tracks the exact boundary.</p>
 </div>
 <h2 id="threads">Threads<a class="headerlink" href="#threads" title="Permanent link">&para;</a></h2>

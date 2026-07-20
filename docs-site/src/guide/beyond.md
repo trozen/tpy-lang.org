@@ -28,10 +28,10 @@ asyncio.run(amain())
 ```
 
 !!! info "Limited today"
-    The executor is single-threaded. `asyncio.run`, `create_task`, `sleep`,
-    and awaiting results work; `gather` works with an explicit type argument
-    (`gather[int](...)`) and returns a list. Timeouts, streams, and the wider
-    `asyncio` surface are not covered yet.
+    The executor is single-threaded. Tasks, timers, `wait_for`, synchronization
+    primitives, socket I/O, and client/server streams work. `gather` infers a
+    common result type and returns a list. It cannot gather heterogeneous
+    result types into a tuple.
     [Compatibility](../compatibility.md) tracks the exact boundary.
 
 ## Threads
