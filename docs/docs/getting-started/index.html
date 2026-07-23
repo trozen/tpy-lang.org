@@ -173,7 +173,7 @@
             TurboPython 0.5.0.dev0
             
               <ul class="md-source__facts">
-                <li class="md-source__fact md-source__fact--version">v0.4.0-227-gffb79ebbe</li>
+                <li class="md-source__fact md-source__fact--version">v0.4.0-295-g4d940c255</li>
               </ul>
             
           </div>
@@ -874,6 +874,9 @@ binaries. This page covers installation, a first program, and a ten-minute
 tour of the language. <a href="../guide/differences/">The guide</a> teaches the language
 in depth.</p>
 <h2 id="install">Install<a class="headerlink" href="#install" title="Permanent link">&para;</a></h2>
+<p>TurboPython runs on Linux and macOS. On Windows, the recommended setup is
+<a href="https://learn.microsoft.com/windows/wsl/install" rel="noopener" target="_blank">WSL</a>;
+inside a WSL distribution, everything on this page works as on Linux.</p>
 <p>TurboPython is distributed on PyPI as <code>tpy-lang</code> and can be installed with
 <a href="https://docs.astral.sh/uv/getting-started/installation/" rel="noopener" target="_blank">uv</a>
 or pip:</p>
@@ -891,10 +894,10 @@ or pip:</p>
 </div>
 </div>
 </div>
-<p>Compilation needs a C++23 compiler: g++ 13 or newer, clang++ 19 or newer, or
-zig. An installed system compiler is detected automatically. If no suitable
-compiler is present, the <code>[bundled]</code> extra installs zig together with the
-package and needs no other setup:</p>
+<p>Compilation needs a C++23 compiler: g++ 13 or newer, or clang++ 19 or newer.
+An installed system compiler is detected automatically. If no suitable
+compiler is present, the <code>[bundled]</code> extra installs a C++ compiler (zig)
+together with the package and needs no other setup:</p>
 <div class="tabbed-set tabbed-alternate" data-tabs="2:2"><input checked="checked" id="__tabbed_2_1" name="__tabbed_2" type="radio" /><input id="__tabbed_2_2" name="__tabbed_2" type="radio" /><div class="tabbed-labels"><label for="__tabbed_2_1">uv</label><label for="__tabbed_2_2">pip</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
@@ -1073,7 +1076,7 @@ before writing TurboPython code.</p>
       <div class="md-copyright">
   
     <div class="md-copyright__highlight">
-      These docs describe <span class="tpy-version">TurboPython 0.5.0.dev0</span> (v0.4.0-227-gffb79ebbe).
+      These docs describe <span class="tpy-version">TurboPython 0.5.0.dev0</span> (v0.4.0-295-g4d940c255).
     </div>
   
   

@@ -7,6 +7,10 @@ in depth.
 
 ## Install
 
+TurboPython runs on Linux and macOS. On Windows, the recommended setup is
+[WSL](https://learn.microsoft.com/windows/wsl/install){ target="_blank" rel="noopener" };
+inside a WSL distribution, everything on this page works as on Linux.
+
 TurboPython is distributed on PyPI as `tpy-lang` and can be installed with
 [uv](https://docs.astral.sh/uv/getting-started/installation/){ target="_blank" rel="noopener" }
 or pip:
@@ -27,10 +31,10 @@ or pip:
 
     This installs the `tpy` and `tpyc` commands into the active environment.
 
-Compilation needs a C++23 compiler: g++ 13 or newer, clang++ 19 or newer, or
-zig. An installed system compiler is detected automatically. If no suitable
-compiler is present, the `[bundled]` extra installs zig together with the
-package and needs no other setup:
+Compilation needs a C++23 compiler: g++ 13 or newer, or clang++ 19 or newer.
+An installed system compiler is detected automatically. If no suitable
+compiler is present, the `[bundled]` extra installs a C++ compiler (zig)
+together with the package and needs no other setup:
 
 === "uv"
 

@@ -45,7 +45,8 @@ Built: build/release/program
 The result needs no Python installation. It links only the standard system
 libraries (the C++ runtime and libc), so it runs on other machines of the
 same platform with compatible system libraries. Building happens on the
-platform the binary targets; Linux and macOS are supported.
+platform the binary targets; Linux and macOS are supported. On Windows,
+builds run inside WSL and produce Linux binaries.
 
 Adding `-x` to a `-b` build runs the result immediately after building.
 

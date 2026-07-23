@@ -227,14 +227,14 @@
   <div class="wrap">
     <span class="dot"></span>
     <span><b>Early development.</b> Most of Python's syntax works&mdash;the parts that can be compiled
-    statically&mdash;but expect gaps in the standard library and rough edges. <a href="/docs/compatibility/">See what works &rarr;</a></span>
+    statically&mdash;but there are gaps in the standard library and rough edges. <a href="/docs/compatibility/">See what works &rarr;</a></span>
   </div>
 </div>
 
 <header class="hero">
   <div class="wrap">
     <div>
-      <h1 class="lede"><b>TurboPython</b> is a general purpose, statically typed language that
+      <h1 class="lede"><b>TurboPython</b> is a general-purpose, statically typed language that
         compiles Python through C++ to a native binary. It combines Python's syntax with an
         ownership model that gives memory safety and predictable performance&mdash;no garbage
         collector, no automatic reference counting, no GIL.</h1>
@@ -291,9 +291,10 @@
   <div class="wrap">
     <div class="eyebrow">Installation</div>
     <h2>Getting started</h2>
-    <p class="lead">TurboPython is a Python package that drives a C++ compiler. It installs from PyPI;
-      the build step uses a C++23 compiler (GCC 13+ or Clang 19+) on the PATH&mdash;or add the
-      <code>[bundled]</code> extra to ship one with it.</p>
+    <p class="lead">The entire TurboPython toolchain is an ordinary Python package, published on PyPI as
+      <code>tpy-lang</code>; installing the package is the whole setup. Compilation uses a C++23 compiler
+      on the PATH&mdash;GCC 13+ or Clang 19+. The <code>tpy-lang[bundled]</code> option comes with
+      a compiler included.</p>
     <div class="steps">
       <div class="step">
         <span class="stepn">1</span>
@@ -309,7 +310,7 @@
             <div class="cmd-line" data-panel="uv" hidden><span class="p">$</span> uv tool install tpy-lang</div>
             <div class="cmd-line" data-panel="pipx" hidden><span class="p">$</span> pipx install tpy-lang</div>
           </div>
-          <p class="cmd-note">No C++ compiler on the PATH? Install <code>'tpy-lang[bundled]'</code> to bundle a self-contained one.</p>
+          <p class="cmd-note">Without a C++ compiler on the PATH, <code>'tpy-lang[bundled]'</code> installs a self-contained compiler.</p>
         </div>
       </div>
       <div class="step">
@@ -328,7 +329,7 @@
       </div>
     </div>
     <p style="color:var(--faint);font-size:13px;margin-top:20px">GCC 13+ ships with most current Linux
-      distributions; on macOS, a recent Homebrew LLVM/Clang works.</p>
+      distributions; on macOS, a recent Homebrew LLVM/Clang works. On Windows, the recommended setup is WSL.</p>
   </div>
 </section>
 
@@ -338,7 +339,7 @@
     <h2>Python syntax with static types and a strict ownership model.</h2>
     <p class="lead"><b>Type annotations are required on function parameters, return types, and class
       fields</b>; an unannotated integer literal defaults to a 32-bit <code>Int32</code>. Beyond these
-      rules, most code reads like standard Python, apart from its dynamic runtime features. Where a construct diverges from the static type and
+      rules, most code reads like standard Python&mdash;minus Python's dynamic runtime features. Where a construct diverges from the static type and
       ownership model, the compiler reports it, and its diagnostics name the required change.</p>
 
     <h3 class="ownhead">Ownership</h3>
@@ -372,7 +373,7 @@
     <div class="owncase"><span class="own">field</span><h4>A field owns its value.</h4></div>
     <div class="pair">
       <div class="codecard">
-        <div class="cap"><span class="d amber"></span>Storing a borrowed value</div>
+        <div class="cap"><span class="d amber"></span>Storing a borrowed value &mdash; compiles with a warning</div>
 <pre><span class="k">class</span> <span class="t">Cache</span>:
     <span class="n">item</span>: <span class="t">Tag</span>
     <span class="k">def</span> <span class="fn">__init__</span>(<span class="n">self</span>, <span class="n">t</span>: <span class="t">Tag</span>) -> <span class="t">None</span>:
@@ -380,7 +381,7 @@
         <div class="diag warn"><span class="lbl">warning:</span><span class="msg">copies Tag into field; use copy() to make this explicit</span></div>
       </div>
       <div class="codecard">
-        <div class="cap"><span class="d green"></span>Take ownership of the argument &mdash; compiles</div>
+        <div class="cap"><span class="d green"></span>Take ownership of the argument &mdash; compiles clean</div>
 <pre><span class="k">class</span> <span class="t">Cache</span>:
     <span class="n">item</span>: <span class="t">Tag</span>
     <span class="k">def</span> <span class="fn">__init__</span>(<span class="n">self</span>, <span class="n">t</span>: <span class="t">Own</span>[<span class="t">Tag</span>]) -> <span class="t">None</span>:
@@ -396,7 +397,7 @@
     <div class="owncase"><span class="own">container</span><h4>A collection owns its elements.</h4></div>
     <div class="pair">
       <div class="codecard">
-        <div class="cap"><span class="d amber"></span>Keep using a value after storing it</div>
+        <div class="cap"><span class="d amber"></span>Keep using a value after storing it &mdash; compiles with a warning</div>
 <pre><span class="n">l</span> = []
 <span class="n">o</span> = <span class="fn">Obj</span>(<span class="num">1</span>)
 <span class="n">l</span>.<span class="fn">append</span>(<span class="n">o</span>)   <span class="c"># implicit copy: o is used below</span>
@@ -404,7 +405,7 @@
         <div class="diag warn"><span class="lbl">warning:</span><span class="msg">copies Obj into owned storage; use copy() to make this explicit</span></div>
       </div>
       <div class="codecard">
-        <div class="cap"><span class="d green"></span>Make the copy explicit &mdash; compiles</div>
+        <div class="cap"><span class="d green"></span>Make the copy explicit &mdash; compiles clean</div>
 <pre><span class="n">l</span> = []
 <span class="n">o</span> = <span class="fn">Obj</span>(<span class="num">1</span>)
 <span class="n">l</span>.<span class="fn">append</span>(<span class="fn">copy</span>(<span class="n">o</span>))
@@ -414,7 +415,7 @@
     </div>
     <p class="prose">A list stores objects, not references, so the append copies either way &mdash; where Python
       would share the same object. <code>copy()</code> doesn't introduce the copy; it makes the unavoidable one
-      explicit and clears the warning. And if <code>o</code> weren't used afterward, it would be <b>moved</b>
+      explicit and clears the warning. If <code>o</code> weren't used afterward, it would be <b>moved</b>
       into the list instead &mdash; no copy at all.</p>
 
     <h3 class="ownhead">Other differences</h3>
@@ -440,7 +441,7 @@
       <div class="card">
         <div class="ic">&#128292;</div>
         <h3>str adapts to context</h3>
-        <p>A <code>str</code> is an owned string or a borrowed view depending on context; <code>String</code> and <code>StrView</code> spell it out. Plain <code>str</code> is the right default when allocations are fine.</p>
+        <p>A <code>str</code> is an owned string or a borrowed view depending on context; <code>String</code> and <code>StrView</code> spell it out. Plain <code>str</code> is the right default when allocations are acceptable.</p>
       </div>
       <div class="card">
         <div class="ic">&#128274;</div>
