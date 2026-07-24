@@ -37,7 +37,7 @@ any `int` operand converts the whole expression. For confirmation, the
 generated C++ shows a promoted loop directly ([Building](building.md)) -- no
 C++ fluency is needed to spot a big-integer type where `int32_t` was expected.
 
-## Move values, copy on purpose
+## Move instead of copying
 
 A store into durable storage moves when it can and copies when it must, with
 a warning for every copy ([Ownership](ownership.md)). The resolution order:

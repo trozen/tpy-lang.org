@@ -7,7 +7,8 @@ in depth.
 
 ## Install
 
-TurboPython runs on Linux and macOS. On Windows, the recommended setup is
+TurboPython runs on Linux and macOS and needs Python 3.12 or newer. On Windows,
+the recommended setup is
 [WSL](https://learn.microsoft.com/windows/wsl/install){ target="_blank" rel="noopener" };
 inside a WSL distribution, everything on this page works as on Linux.
 

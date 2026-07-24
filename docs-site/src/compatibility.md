@@ -446,6 +446,18 @@ operation takes a `MemoryOrder` that defaults to `SEQ_CST`.
 `Rc` (non-atomic), the thread-safe `Arc`, and `Weak` for both, with an explicit
 `.clone()` to share.
 
+#### Channels (`tplib.channel`) -- Works { #channels }
+
+A blocking multi-producer, single-consumer channel over OS threads.
+`channel[T: Send](capacity)` returns a `(Sender[T], Receiver[T])` pair backed by
+a fixed-capacity ring buffer. `send` and `recv` block the calling thread until
+space or a value is available. Values cross the channel as `Own[T]`, moved from
+sender to receiver rather than duplicated. `Sender.clone()` adds another producer; the
+receiver is single-consumer and drains through `recv()` or iteration
+(`for v in rx:`). The channel closes when the last `Sender` is dropped or on an
+explicit `close()`, after which `recv` raises `ChannelClosed` once the buffer is
+empty.
+
 #### `asyncio` -- Partial { #asyncio }
 
 **Works:** `run`, `sleep`, `create_task`, `Task[T]` / `Future[T]`, `Event`,

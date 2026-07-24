@@ -173,7 +173,7 @@
             TurboPython 0.5.0.dev0
             
               <ul class="md-source__facts">
-                <li class="md-source__fact md-source__fact--version">v0.4.0-295-g4d940c255</li>
+                <li class="md-source__fact md-source__fact--version">v0.4.0-308-g2fcb6c931</li>
               </ul>
             
           </div>
@@ -443,10 +443,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#the-int-type-is-exact-fixed-width-is-fast" class="md-nav__link">
+  <a href="#arbitrary-precision-and-fixed-width-integers" class="md-nav__link">
     <span class="md-ellipsis">
       
-        The int type is exact; fixed-width is fast
+        Arbitrary-precision and fixed-width integers
       
     </span>
   </a>
@@ -454,10 +454,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#third-party-packages-cannot-be-imported" class="md-nav__link">
+  <a href="#packages-written-for-cpython-do-not-compile" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Third-party packages cannot be imported
+        Packages written for CPython do not compile
       
     </span>
   </a>
@@ -476,10 +476,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#the-type-includes-none" class="md-nav__link">
+  <a href="#an-optional-value-has-the-type-t-none" class="md-nav__link">
     <span class="md-ellipsis">
       
-        The type includes None
+        An optional value has the type T | None
       
     </span>
   </a>
@@ -487,10 +487,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#unions-are-real-types-match-branches-on-them" class="md-nav__link">
+  <a href="#unions-are-real-types-not-just-hints" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Unions are real types; match branches on them
+        Unions are real types, not just hints
       
     </span>
   </a>
@@ -885,10 +885,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#the-int-type-is-exact-fixed-width-is-fast" class="md-nav__link">
+  <a href="#arbitrary-precision-and-fixed-width-integers" class="md-nav__link">
     <span class="md-ellipsis">
       
-        The int type is exact; fixed-width is fast
+        Arbitrary-precision and fixed-width integers
       
     </span>
   </a>
@@ -896,10 +896,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#third-party-packages-cannot-be-imported" class="md-nav__link">
+  <a href="#packages-written-for-cpython-do-not-compile" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Third-party packages cannot be imported
+        Packages written for CPython do not compile
       
     </span>
   </a>
@@ -918,10 +918,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#the-type-includes-none" class="md-nav__link">
+  <a href="#an-optional-value-has-the-type-t-none" class="md-nav__link">
     <span class="md-ellipsis">
       
-        The type includes None
+        An optional value has the type T | None
       
     </span>
   </a>
@@ -929,10 +929,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#unions-are-real-types-match-branches-on-them" class="md-nav__link">
+  <a href="#unions-are-real-types-not-just-hints" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Unions are real types; match branches on them
+        Unions are real types, not just hints
       
     </span>
   </a>
@@ -1044,11 +1044,14 @@ them to check calls and generate typed code:</p>
 </code></pre></div>
 <p>Local variables are inferred; annotating them is allowed but rarely needed.
 More on designing signatures: <a href="../functions/">Functions and API boundaries</a>.</p>
-<h2 id="the-int-type-is-exact-fixed-width-is-fast">The <code>int</code> type is exact; fixed-width is fast<a class="headerlink" href="#the-int-type-is-exact-fixed-width-is-fast" title="Permanent link">&para;</a></h2>
-<p>Like Python, TurboPython's <code>int</code> is arbitrary-precision. It is always correct
-and never the fastest choice. The fixed-width types (<code>Int8</code> through <code>Int64</code>,
-unsigned variants, <code>Float32</code>/<code>Float64</code>) are fixed-size machine numbers. An
-unannotated integer literal infers as <code>Int32</code>:</p>
+<h2 id="arbitrary-precision-and-fixed-width-integers">Arbitrary-precision and fixed-width integers<a class="headerlink" href="#arbitrary-precision-and-fixed-width-integers" title="Permanent link">&para;</a></h2>
+<p>Like Python, TurboPython's <code>int</code> is arbitrary-precision, so it is always exact
+and is the right type for genuinely unbounded arithmetic. The fixed-width
+integer types — <code>Int8</code> through <code>Int64</code> and their unsigned variants — are
+machine integers that trade that guarantee for speed, and an unannotated integer
+literal infers as <code>Int32</code>. Floating-point works as in Python: <code>float</code> is itself
+a fixed-size machine double (an alias for <code>Float64</code>) and the default for real
+numbers, with <code>Float32</code> available where narrower precision is wanted.</p>
 <!-- tpy: run -->
 <div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">():</span>
 <a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>    <span class="n">n</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">**</span> <span class="mi">100</span>    <span class="c1"># int is arbitrary-precision</span>
@@ -1064,7 +1067,7 @@ exception; it cannot be caught.</p>
 <p>Fixed-width types are for computation, and <code>int</code> is for genuinely unbounded
 arithmetic. The details, including literal inference and conversions:
 <a href="../types/">Types, inference and values</a>.</p>
-<h2 id="third-party-packages-cannot-be-imported">Third-party packages cannot be imported<a class="headerlink" href="#third-party-packages-cannot-be-imported" title="Permanent link">&para;</a></h2>
+<h2 id="packages-written-for-cpython-do-not-compile">Packages written for CPython do not compile<a class="headerlink" href="#packages-written-for-cpython-do-not-compile" title="Permanent link">&para;</a></h2>
 <p>Importing a package written for regular Python fails to compile:</p>
 <!-- tpy: expect-error="Module 'numpy' not found" -->
 <div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span>            <span class="c1"># error: no such module</span>
@@ -1100,7 +1103,7 @@ attribute that was never declared cannot be added later:</p>
 <p>In exchange, objects are fixed-size and field access is a direct load, not a
 dictionary lookup. Classes, collections, and <code>match</code>:
 <a href="../data-modeling/">Data modeling</a>.</p>
-<h2 id="the-type-includes-none">The type includes <code>None</code><a class="headerlink" href="#the-type-includes-none" title="Permanent link">&para;</a></h2>
+<h2 id="an-optional-value-has-the-type-t-none">An optional value has the type <code>T | None</code><a class="headerlink" href="#an-optional-value-has-the-type-t-none" title="Permanent link">&para;</a></h2>
 <p>A value that may be <code>None</code> has a union type, <code>T | None</code>, and the compiler
 tracks it. Using it as a plain <code>T</code> without a check is flagged:</p>
 <!-- tpy: cont -->
@@ -1126,7 +1129,7 @@ names the fix, which is to narrow the value before using it.</p>
 <a id="__codelineno-10-10" name="__codelineno-10-10" href="#__codelineno-10-10"></a><span class="n">main</span><span class="p">()</span>
 </code></pre></div>
 <p>Narrowing <code>None</code> in full: <a href="../control-flow/">Control flow, None &amp; errors</a>.</p>
-<h2 id="unions-are-real-types-match-branches-on-them">Unions are real types; <code>match</code> branches on them<a class="headerlink" href="#unions-are-real-types-match-branches-on-them" title="Permanent link">&para;</a></h2>
+<h2 id="unions-are-real-types-not-just-hints">Unions are real types, not just hints<a class="headerlink" href="#unions-are-real-types-not-just-hints" title="Permanent link">&para;</a></h2>
 <p>In CPython, <code>A | B</code> is only a type hint. Here it is a real representation. The
 value carries a small marker, the <em>tag</em>, that records which member it currently
 holds. <code>match</code> compiles to a branch on that tag rather than a chain of
@@ -1264,7 +1267,7 @@ missing, and <a href="../../compatibility/">Compatibility</a> tracks the gaps.</
       <div class="md-copyright">
   
     <div class="md-copyright__highlight">
-      These docs describe <span class="tpy-version">TurboPython 0.5.0.dev0</span> (v0.4.0-295-g4d940c255).
+      These docs describe <span class="tpy-version">TurboPython 0.5.0.dev0</span> (v0.4.0-308-g2fcb6c931).
     </div>
   
   

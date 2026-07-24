@@ -22,7 +22,7 @@ class Reading:
         self.values = values
 ```
 
-## A signature is a contract
+## Signatures are fully typed
 
 Parameter and return types are mandatory; the compiler rejects an unannotated
 signature. Default values, keyword arguments, and annotated `*args` work as in

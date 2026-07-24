@@ -54,12 +54,15 @@ error: Parameter 'x' must have type annotation
 Local variables are inferred; annotating them is allowed but rarely needed.
 More on designing signatures: [Functions and API boundaries](functions.md).
 
-## The `int` type is exact; fixed-width is fast
+## Arbitrary-precision and fixed-width integers
 
-Like Python, TurboPython's `int` is arbitrary-precision. It is always correct
-and never the fastest choice. The fixed-width types (`Int8` through `Int64`,
-unsigned variants, `Float32`/`Float64`) are fixed-size machine numbers. An
-unannotated integer literal infers as `Int32`:
+Like Python, TurboPython's `int` is arbitrary-precision, so it is always exact
+and is the right type for genuinely unbounded arithmetic. The fixed-width
+integer types -- `Int8` through `Int64` and their unsigned variants -- are
+machine integers that trade that guarantee for speed, and an unannotated integer
+literal infers as `Int32`. Floating-point works as in Python: `float` is itself
+a fixed-size machine double (an alias for `Float64`) and the default for real
+numbers, with `Float32` available where narrower precision is wanted.
 
 <!-- tpy: run -->
 ```python
@@ -80,7 +83,7 @@ Fixed-width types are for computation, and `int` is for genuinely unbounded
 arithmetic. The details, including literal inference and conversions:
 [Types, inference and values](types.md).
 
-## Third-party packages cannot be imported
+## Packages written for CPython do not compile
 
 Importing a package written for regular Python fails to compile:
 
@@ -131,7 +134,7 @@ In exchange, objects are fixed-size and field access is a direct load, not a
 dictionary lookup. Classes, collections, and `match`:
 [Data modeling](data-modeling.md).
 
-## The type includes `None`
+## An optional value has the type `T | None`
 
 A value that may be `None` has a union type, `T | None`, and the compiler
 tracks it. Using it as a plain `T` without a check is flagged:
@@ -167,7 +170,7 @@ main()
 
 Narrowing `None` in full: [Control flow, None & errors](control-flow.md).
 
-## Unions are real types; `match` branches on them
+## Unions are real types, not just hints
 
 In CPython, `A | B` is only a type hint. Here it is a real representation. The
 value carries a small marker, the *tag*, that records which member it currently

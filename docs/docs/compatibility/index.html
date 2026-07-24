@@ -171,7 +171,7 @@
             TurboPython 0.5.0.dev0
             
               <ul class="md-source__facts">
-                <li class="md-source__fact md-source__fact--version">v0.4.0-295-g4d940c255</li>
+                <li class="md-source__fact md-source__fact--version">v0.4.0-308-g2fcb6c931</li>
               </ul>
             
           </div>
@@ -1495,6 +1495,16 @@ operation takes a <code>MemoryOrder</code> that defaults to <code>SEQ_CST</code>
 <h4 id="shared-ownership">Shared ownership — Works<a class="headerlink" href="#shared-ownership" title="Permanent link">&para;</a></h4>
 <p><code>Rc</code> (non-atomic), the thread-safe <code>Arc</code>, and <code>Weak</code> for both, with an explicit
 <code>.clone()</code> to share.</p>
+<h4 id="channels">Channels (<code>tplib.channel</code>) — Works<a class="headerlink" href="#channels" title="Permanent link">&para;</a></h4>
+<p>A blocking multi-producer, single-consumer channel over OS threads.
+<code>channel[T: Send](capacity)</code> returns a <code>(Sender[T], Receiver[T])</code> pair backed by
+a fixed-capacity ring buffer. <code>send</code> and <code>recv</code> block the calling thread until
+space or a value is available. Values cross the channel as <code>Own[T]</code>, moved from
+sender to receiver rather than duplicated. <code>Sender.clone()</code> adds another producer; the
+receiver is single-consumer and drains through <code>recv()</code> or iteration
+(<code>for v in rx:</code>). The channel closes when the last <code>Sender</code> is dropped or on an
+explicit <code>close()</code>, after which <code>recv</code> raises <code>ChannelClosed</code> once the buffer is
+empty.</p>
 <h4 id="asyncio"><code>asyncio</code> — Partial<a class="headerlink" href="#asyncio" title="Permanent link">&para;</a></h4>
 <p><strong>Works:</strong> <code>run</code>, <code>sleep</code>, <code>create_task</code>, <code>Task[T]</code> / <code>Future[T]</code>, <code>Event</code>,
 <code>CancelledError</code>; <code>gather(*tasks)</code> and <code>gather_list(tasks)</code>; <code>async with</code> /
@@ -1576,7 +1586,7 @@ do not import. TurboPython-native libraries live under <code>tplib</code> (for e
       <div class="md-copyright">
   
     <div class="md-copyright__highlight">
-      These docs describe <span class="tpy-version">TurboPython 0.5.0.dev0</span> (v0.4.0-295-g4d940c255).
+      These docs describe <span class="tpy-version">TurboPython 0.5.0.dev0</span> (v0.4.0-308-g2fcb6c931).
     </div>
   
   
