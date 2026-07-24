@@ -55,6 +55,23 @@ To confirm the installation:
 $ tpy --version
 ```
 
+### Updating
+
+`uv tool install` pins the version it first fetched; a later release installs
+over it explicitly:
+
+=== "uv"
+
+    ```console
+    $ uv tool upgrade tpy-lang
+    ```
+
+=== "pip"
+
+    ```console
+    $ pip install --upgrade tpy-lang
+    ```
+
 ## Hello
 
 <!-- tpy: run -->
