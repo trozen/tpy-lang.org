@@ -922,8 +922,11 @@ or pip:</p>
 </div>
 </div>
 <p>Compilation needs a C++23 compiler: g++ 13 or newer, or clang++ 19 or newer.
-An installed system compiler is detected automatically. If no suitable
-compiler is present, the <code>[bundled]</code> extra installs a C++ compiler (zig)
+An installed system compiler is detected automatically, and its C++23 support
+is checked before the build; an unsupported compiler is rejected upfront with
+the version floors and a suggested fix, rather than failing partway through. If
+no suitable compiler is present, the <code>[bundled]</code> extra installs a C++ compiler
+(zig)
 together with the package and needs no other setup:</p>
 <div class="tabbed-set tabbed-alternate" data-tabs="2:2"><input checked="checked" id="__tabbed_2_1" name="__tabbed_2" type="radio" /><input id="__tabbed_2_2" name="__tabbed_2" type="radio" /><div class="tabbed-labels"><label for="__tabbed_2_1">uv</label><label for="__tabbed_2_2">pip</label></div>
 <div class="tabbed-content">

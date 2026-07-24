@@ -33,8 +33,11 @@ or pip:
     This installs the `tpy` and `tpyc` commands into the active environment.
 
 Compilation needs a C++23 compiler: g++ 13 or newer, or clang++ 19 or newer.
-An installed system compiler is detected automatically. If no suitable
-compiler is present, the `[bundled]` extra installs a C++ compiler (zig)
+An installed system compiler is detected automatically, and its C++23 support
+is checked before the build; an unsupported compiler is rejected upfront with
+the version floors and a suggested fix, rather than failing partway through. If
+no suitable compiler is present, the `[bundled]` extra installs a C++ compiler
+(zig)
 together with the package and needs no other setup:
 
 === "uv"
