@@ -21,13 +21,16 @@ experienced Python developers.
   against the pinned `vendor/tpy`, and fails rather than skipping if that
   checkout is missing. Nothing the site shows should fail to compile.
 - **Before announcing the site, re-check the examples against the published
-  package.** `make check` uses the pin, which runs ahead of the release, so it
-  cannot prove a visitor can run what the landing page shows. Today they
-  cannot: `requests_demo.py` needs `tplib.requests`, which is unreleased, and
-  it is tile 6 on the page. This is knowingly accepted only because the site is
+  package.** `make check` uses the pin, which runs ahead of PyPI, so it cannot
+  prove a visitor can run what the landing page shows. Today they cannot: 0.5.0
+  is tagged and pinned but not yet on PyPI, so `pip install tpy-lang` still
+  resolves to 0.4.0, which lacks `tplib.requests` -- and `requests_demo.py`
+  (tile 6) needs it. This is knowingly accepted only because the site is
   unannounced. `uv run --with tpy-lang python verify_examples.py` runs that
   check against `pip install tpy-lang`; it must pass, or the affected examples
-  must come off the page, before anyone is pointed at the site.
+  must come off the page, before anyone is pointed at the site. The example
+  compiles and links against the 0.5.0 pin, so publishing 0.5.0 should clear
+  the gate -- re-run it once the release is on PyPI.
 - **Self-contained landing page.** No external scripts, styles, fonts, or network
   requests in `index.html` -- everything inline, no framework. (The docs site under
   `docs-site/` is the exception: it uses MkDocs Material.)
