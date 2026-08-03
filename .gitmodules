@@ -1,3 +1,6 @@
 [submodule "vendor/tpy"]
 	path = vendor/tpy
 	url = git@github.com:trozen/tpy-lang.git
+[submodule "vendor/tpy-examples"]
+	path = vendor/tpy-examples
+	url = git@github.com:trozen/tpy-examples.git
