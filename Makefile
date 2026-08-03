@@ -34,5 +34,5 @@ check:  ## verify everything the site shows: docs snippets + landing examples
 	uv run pytest
 	uv run --project vendor/tpy python verify_examples.py
 
-examples:  ## regenerate docs/examples.js from examples/
+examples:  ## regenerate docs/examples.js from the tpy-examples submodule
 	python3 build_examples.py

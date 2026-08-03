@@ -190,6 +190,27 @@ not the only possible outcome either: when the appended object is not used
 again, it is moved into the list instead of copied.
 [Ownership and references](guide/ownership.md) teaches the whole model.
 
+## More examples
+
+The programs on this page are deliberately small. Complete programs live in a
+separate repository,
+[tpy-examples](https://github.com/trozen/tpy-examples){ target="_blank" rel="noopener" },
+which also holds the examples shown on the [landing page](https://tpy-lang.org/).
+Most are ported from the examples of another Python-to-C++ compiler, and each
+port records what changed from the original. Licensing is per program.
+
+Each one sits in its own directory, together with any data files it reads, and
+its entry point is named after that directory:
+
+```console
+$ git clone https://github.com/trozen/tpy-examples
+$ cd tpy-examples/shedskin/voronoi
+$ tpy -O voronoi.py
+```
+
+The `-O` flag turns on optimizations. The default build compiles faster and
+runs slower.
+
 ## Coding with an AI agent
 
 TurboPython source is valid Python, so coding agents such as Claude Code,

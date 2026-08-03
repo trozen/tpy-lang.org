@@ -14,7 +14,8 @@ import subprocess, sys, tempfile
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
-SRC_DIR = ROOT / "examples"
+# Sources live in the tpy-examples submodule; see build_examples.py.
+SRC_DIR = ROOT / "vendor" / "tpy-examples" / "landing"
 # Hit the network / nondeterministic -- compile + link only, don't run.
 NO_RUN = {"requests_demo.py", "async_demo.py"}
 # The source panel is ~61 chars wide; longer lines scroll horizontally (see
@@ -51,7 +52,9 @@ def check(path):
 def main():
     files = sorted(SRC_DIR.glob("*.py"))
     if not files:
-        sys.exit(f"no examples found in {SRC_DIR}")
+        sys.exit(f"no examples found in {SRC_DIR} -- if the directory is missing, "
+                 "the tpy-examples submodule is not checked out:\n"
+                 "    git submodule update --init vendor/tpy-examples")
     failures = []
     for path in files:
         wide = wide_lines(path)

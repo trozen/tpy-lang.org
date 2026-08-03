@@ -352,6 +352,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#more-examples" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        More examples
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#coding-with-an-ai-agent" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -856,6 +867,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#more-examples" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        More examples
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#coding-with-an-ai-agent" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1051,13 +1073,28 @@ warning that makes it visible, is the core of the ownership model. A copy is
 not the only possible outcome either: when the appended object is not used
 again, it is moved into the list instead of copied.
 <a href="../guide/ownership/">Ownership and references</a> teaches the whole model.</p>
+<h2 id="more-examples">More examples<a class="headerlink" href="#more-examples" title="Permanent link">&para;</a></h2>
+<p>The programs on this page are deliberately small. Complete programs live in a
+separate repository,
+<a href="https://github.com/trozen/tpy-examples" rel="noopener" target="_blank">tpy-examples</a>,
+which also holds the examples shown on the <a href="https://tpy-lang.org/">landing page</a>.
+Most are ported from the examples of another Python-to-C++ compiler, and each
+port records what changed from the original. Licensing is per program.</p>
+<p>Each one sits in its own directory, together with any data files it reads, and
+its entry point is named after that directory:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="gp">$ </span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/trozen/tpy-examples
+<a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a><span class="gp">$ </span><span class="nb">cd</span><span class="w"> </span>tpy-examples/shedskin/voronoi
+<a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a><span class="gp">$ </span>tpy<span class="w"> </span>-O<span class="w"> </span>voronoi.py
+</code></pre></div>
+<p>The <code>-O</code> flag turns on optimizations. The default build compiles faster and
+runs slower.</p>
 <h2 id="coding-with-an-ai-agent">Coding with an AI agent<a class="headerlink" href="#coding-with-an-ai-agent" title="Permanent link">&para;</a></h2>
 <p>TurboPython source is valid Python, so coding agents such as Claude Code,
 Cursor, and Copilot work without a plugin. What they miss is where
 TurboPython departs from Python: the ownership model, the fixed-width types,
 and the parts of the standard library that are not yet available. The
 <code>tpy --install-agent-docs</code> command writes that knowledge into a project.</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="gp">$ </span>tpy<span class="w"> </span>--install-agent-docs<span class="w"> </span>docs
+<div class="highlight"><pre><span></span><code><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="gp">$ </span>tpy<span class="w"> </span>--install-agent-docs<span class="w"> </span>docs
 </code></pre></div>
 <p>The command writes four reference files into the given directory:</p>
 <ul>

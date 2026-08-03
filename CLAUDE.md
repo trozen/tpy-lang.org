@@ -15,9 +15,14 @@ experienced Python developers.
 - **Never push, and never deploy.** The user controls every push and the live
   site. Commit only when explicitly asked.
 - **Never hand-edit `docs/examples.js`** -- it is generated. Edit the programs
-  in `examples/` and run `python3 build_examples.py`.
+  in `vendor/tpy-examples/landing/` and run `python3 build_examples.py`.
+- **The example sources are in another repository.** `vendor/tpy-examples` is a
+  submodule (`trozen/tpy-examples`). Editing an example means a commit there and
+  a pointer bump here, and the pointer must reference a commit that has been
+  pushed -- otherwise a fresh clone cannot resolve it. `ORDER` in
+  `build_examples.py` still decides which programs reach the page.
 - **Examples must be real.** Run `make check` before relying on or showing an
-  example -- it compiles every docs snippet *and* every `examples/` program
+  example -- it compiles every docs snippet *and* every `landing/` program
   against the pinned `vendor/tpy`, and fails rather than skipping if that
   checkout is missing. Nothing the site shows should fail to compile.
 - **Before announcing the site, re-check the examples against the published
@@ -54,8 +59,9 @@ it unprompted.
 
 ## Examples
 
-- Real TurboPython programs under `examples/`; order/labels in `build_examples.py`'s
-  `ORDER`. Each opens with a 1-2 line comment saying what it shows.
+- Real TurboPython programs under `vendor/tpy-examples/landing/`; order/labels in
+  `build_examples.py`'s `ORDER`. Each opens with a 1-2 line comment saying what it
+  shows.
 - Keep lines <= ~57 chars (the code window width; longer lines scroll).
 
 ## Docs site (`docs-site/`) conventions

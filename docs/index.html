@@ -122,6 +122,11 @@
   .k{color:#ff9d6b}.fn{color:var(--py)}.s{color:#9be58b}.c{color:#5d6b85;font-style:italic}.n{color:#e7ecf5}.num{color:#ffd23d}
   .run{border-top:1px solid var(--line);background:var(--bg2);padding:14px 22px;font-family:var(--mono);font-size:13px;line-height:1.9;white-space:pre;overflow-x:auto}
   .run .p{color:var(--green)}.run .cmd{color:var(--text)}.run .o{color:var(--muted)}
+  /* strip under the run line -- points at the repo these examples come from */
+  .winfoot{display:flex;justify-content:flex-end;border-top:1px solid var(--line);background:var(--bg2);
+    padding:10px 22px;font-family:var(--sans);font-size:12.5px}
+  .winfoot a{color:var(--muted);font-weight:600}
+  .winfoot a:hover{color:var(--accent2)}
 
   /* themed scrollbars -- override the OS default on scrollable panels */
   pre,.run{scrollbar-width:thin;scrollbar-color:#2c333f transparent}
@@ -283,6 +288,7 @@
 
 <span class="n">main</span>()</pre>
       <div class="run" id="exRun"><span class="p">$</span> <span class="cmd">tpy mandelbrot.py</span></div>
+      <div class="winfoot"><a href="https://github.com/trozen/tpy-examples" target="_blank" rel="noopener">These examples and more, on GitHub &rarr;</a></div>
     </div>
   </div>
 </header>

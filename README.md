@@ -13,8 +13,10 @@ data.
 
 ## Files
 
-The served site lives in `docs/` (what GitHub Pages publishes); the example
-sources and the generator sit at the repo root, outside the served folder.
+The served site lives in `docs/` (what GitHub Pages publishes); the generator
+sits at the repo root, outside the served folder. The example sources are not in
+this repository at all -- they live in `trozen/tpy-examples`, vendored as a
+submodule.
 
 | Path | What |
 |------|------|
@@ -23,8 +25,8 @@ sources and the generator sit at the repo root, outside the served folder.
 | `docs/examples.js` | **Generated** into `docs/` by `build_examples.py`. A `const EXAMPLES = [...]` array (per example: `label`, `file`, raw `src`, highlighted `code`). Do not edit by hand. |
 | `docs/docs/` | **Generated** docs site -- the `mkdocs build` output, served at `tpy-lang.org/docs/`. Do not edit by hand. |
 | `docs/CNAME` | The custom domain (`tpy-lang.org`). |
-| `examples/*.py` | Source: the example programs (the code shown on the landing page). |
-| `build_examples.py` | Reads `examples/`, highlights them, writes `docs/examples.js`. Pure stdlib -- no `tpy` needed to regenerate. |
+| `vendor/tpy-examples/` | **Submodule** (`trozen/tpy-examples`) -- the example gallery. `landing/` in it holds the programs shown on the landing page; `shedskin/` holds the larger ported programs the docs link to. |
+| `build_examples.py` | Reads `vendor/tpy-examples/landing/`, highlights the programs, writes `docs/examples.js`. Pure stdlib -- no `tpy` needed to regenerate. |
 | `verify_examples.py` | Compiles each example with `tpy` (runs the deterministic ones), failing on any that don't. Requires the toolchain; checks against the **published** `tpy`. |
 | `docs-site/` | Source for the docs site: `mkdocs.yml`, `src/` markdown, theme overrides, logo. Built with MkDocs Material into `docs/docs/`. |
 
@@ -47,13 +49,22 @@ edit to `docs-site/` that isn't rebuilt leaves the served site stale.
 
 ## Examples pipeline
 
-Each example on the site is a **real TurboPython program** under `examples/`.
-The dropdown order and display order come from the `ORDER` list in
-`build_examples.py`.
+Each example on the site is a **real TurboPython program**, and the sources live
+in the `tpy-examples` submodule under `vendor/tpy-examples/landing/`. The
+dropdown order and display order come from the `ORDER` list in
+`build_examples.py`, which is in this repo -- adding a file to the submodule
+does not put it on the page.
+
+Both scripts need the submodule checked out, and say so if it is missing:
+
+```bash
+git submodule update --init vendor/tpy-examples
+```
 
 Workflow when adding/editing an example:
 
-1. Edit (or add) the `.py` under `examples/`.
+1. Edit (or add) the `.py` under `vendor/tpy-examples/landing/`, and **commit it
+   in that repository** -- it is a separate repo with its own history.
 2. **Verify it compiles with tpy** (this is the bar -- examples must be real).
    With the toolchain installed (`pip install tpy-lang`), check them all at once:
    `python3 verify_examples.py` (compiles each; runs the deterministic ones;
@@ -62,11 +73,17 @@ Workflow when adding/editing an example:
    - tpy-only / network ones (ownership, requests): `tpy -b <f>.py` (compile + link).
 3. Regenerate the data: `python3 build_examples.py`.
 4. If you added a file, add it to `ORDER` in `build_examples.py`.
+5. Commit the moved submodule pointer here, alongside the regenerated
+   `docs/examples.js`. The pointer has to reference a commit that has been
+   **pushed** to `tpy-examples`, or a fresh clone and the Pages build cannot
+   resolve it.
 
 Conventions:
 - **Keep lines <= ~57 chars.** The code window is ~61 chars wide; longer lines
   scroll horizontally (ugly). `verify_examples.py` enforces the 61-char window
-  (fails any example that exceeds it); aim for <=57 for a margin.
+  (fails any example that exceeds it); aim for <=57 for a margin. The constraint
+  is restated in `vendor/tpy-examples/landing/README.md`, since that is where
+  someone editing the sources will be.
 - Comments explain a concept at **showcase altitude**, not full docs -- the
   examples are a taste, the language guide is where things get taught.
 

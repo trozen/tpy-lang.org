@@ -1,18 +1,20 @@
 """Fold the example programs into examples.js.
 
-Reads each program from examples/ and emits a JS array with a display label,
-the filename (for the run line), the raw source (Copy button), and
-syntax-highlighted HTML. Output is not captured -- the page shows code only.
+Reads each program from the tpy-examples submodule and emits a JS array with a
+display label, the filename (for the run line), the raw source (Copy button),
+and syntax-highlighted HTML. Output is not captured -- the page shows code only.
 Pure stdlib; tpy is not needed to regenerate (only to verify the examples
 still compile -- see README). Run from the repo root:
 
     python build_examples.py
 """
-import io, json, keyword, tokenize
+import io, json, keyword, sys, tokenize
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
-SRC_DIR = ROOT / "examples"        # input: the example programs
+# The example programs live in the tpy-examples repository, vendored as a
+# submodule, so that every published example has one home.
+SRC_DIR = ROOT / "vendor" / "tpy-examples" / "landing"
 OUT = ROOT / "docs" / "examples.js"  # output: into the Pages-served folder
 # (filename, dropdown label) -- controls order and what the selector shows.
 ORDER = [
@@ -65,6 +67,11 @@ def highlight(src):
         prow, pcol = erow, ecol
     return "".join(out).strip("\n")
 
+
+if not SRC_DIR.is_dir():
+    sys.exit(f"error: {SRC_DIR.relative_to(ROOT)} is missing -- the tpy-examples "
+             "submodule is not checked out:\n"
+             "    git submodule update --init vendor/tpy-examples")
 
 examples = []
 for filename, label in ORDER:
