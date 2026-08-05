@@ -226,6 +226,17 @@
     nav .links a:hover{background:var(--bg2);color:var(--text)}
   }
 
+  /* The footer row is the one thing on the page that could not shrink: ~512px of
+     logo, domain and links, none of it wrapping, which scrolled the whole page
+     sideways on a phone. The link row drops to its own line below this width --
+     flex-basis rather than relying on spare space, so it is not sensitive to the
+     exact text widths. */
+  @media(max-width:560px){
+    /* the row gap comes from the element's inline gap:14px, which outranks this */
+    footer .wrap{flex-wrap:wrap}
+    footer .links{flex-basis:100%;flex-wrap:wrap;gap:14px}
+  }
+
   /* Phones. The window toolbar needs ~386px on one row, so below ~434px of
      viewport it was being clipped by .win's overflow:hidden. Splitting it in two
      -- lights and selector, then arrows and Copy -- fits down to 320px with the
