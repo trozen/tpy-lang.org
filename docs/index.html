@@ -48,6 +48,10 @@
   }
   nav .links{display:flex;gap:24px;margin-left:auto;color:var(--muted);font-size:14.5px;font-weight:500}
   nav .links a:hover{color:var(--text)}
+  /* shown only under 860px, where .links becomes a dropdown panel instead */
+  .navtoggle{display:none;margin-left:auto;line-height:0;cursor:pointer;padding:7px 9px;
+    color:var(--muted);background:var(--bg);border:1px solid var(--line);border-radius:8px}
+  .navtoggle:hover{color:var(--text);border-color:#3a4258}
 
   /* hero */
   .hero{position:relative;overflow:hidden;border-bottom:1px solid var(--line)}
@@ -90,8 +94,10 @@
   .win .bar{display:flex;align-items:center;gap:7px;padding:12px 14px;border-bottom:1px solid var(--line);background:var(--bg2)}
   .win .bar i{width:11px;height:11px;border-radius:50%;display:block}
   .win .bar .r{background:#ff5f57}.win .bar .y{background:#febc2e}.win .bar .g{background:#28c840}
-  .exnav{display:flex;align-items:center;gap:7px;margin-left:12px}
-  .exsel{appearance:none;-webkit-appearance:none;font-family:var(--mono);font-size:12.5px;color:var(--text);
+  .exnav{display:flex;align-items:center;gap:7px}
+  .barbreak{display:none}
+  /* the 12px sits on the select, which follows the lights on every layout */
+  .exsel{appearance:none;-webkit-appearance:none;font-family:var(--mono);font-size:12.5px;color:var(--text);margin-left:12px;
     background:var(--bg);border:1px solid var(--line);border-radius:7px;padding:5px 28px 5px 11px;cursor:pointer;
     background-image:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="10" height="6" fill="none" stroke="%239aa6bd" stroke-width="1.4"><path d="M1 1l4 4 4-4"/></svg>');
     background-repeat:no-repeat;background-position:right 9px center;}
@@ -206,7 +212,33 @@
     h1{font-size:40px}
     .grid{grid-template-columns:1fr}
     .pair{grid-template-columns:1fr}
-    nav .links a{display:none}
+    /* the nav links collapse into a panel behind the toggle -- all four stay
+       reachable, which a row of them at this width cannot manage */
+    .navtoggle{display:block}
+    nav .links{
+      position:absolute;top:100%;right:24px;display:none;
+      flex-direction:column;gap:0;min-width:184px;padding:6px;
+      background:var(--panel);border:1px solid var(--line);border-radius:11px;
+      box-shadow:0 14px 34px rgba(0,0,0,.45);
+    }
+    nav .links.open{display:flex}
+    nav .links a{display:block;padding:10px 12px;border-radius:7px;font-size:15px}
+    nav .links a:hover{background:var(--bg2);color:var(--text)}
+  }
+
+  /* Phones. The window toolbar needs ~386px on one row, so below ~434px of
+     viewport it was being clipped by .win's overflow:hidden. Splitting it in two
+     -- lights and selector, then arrows and Copy -- fits down to 320px with the
+     lights kept. The selector grows so the second row cannot creep back up. */
+  @media(max-width:480px){
+    .win .bar{flex-wrap:wrap;row-gap:9px;padding:10px 12px}
+    .barbreak{display:block;width:100%;height:0}
+    .exsel{margin-left:0;flex:1 1 auto;min-width:0}
+    /* 676px is most of a phone screen; a fixed px height avoids the reflow that
+       vh units get when a mobile browser collapses its URL bar */
+    #exCode{height:420px}
+    pre{padding:16px}
+    .run,.winfoot{padding-left:16px;padding-right:16px}
   }
 
   @media (prefers-reduced-motion: reduce){
@@ -220,10 +252,14 @@
 <nav>
   <div class="wrap">
     <a class="logo" href="#" aria-label="TurboPython -- back to top"><span class="mark">TPy</span> TurboPython</a>
-    <div class="links">
+    <button class="navtoggle" id="navToggle" type="button" aria-label="Menu" aria-expanded="false" aria-controls="navLinks">
+      <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"><path d="M2 4.5h14M2 9h14M2 13.5h14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+    </button>
+    <div class="links" id="navLinks">
       <a href="#install">Install</a>
       <a href="#differences">vs Python</a>
       <a href="/docs/">Docs</a>
+      <a href="https://github.com/trozen/tpy-examples" target="_blank" rel="noopener">Examples</a>
     </div>
   </div>
 </nav>
@@ -259,8 +295,10 @@
     <div class="win">
       <div class="bar">
         <i class="r"></i><i class="y"></i><i class="g"></i>
+        <select id="exSel" class="exsel" aria-label="Choose example"></select>
+        <!-- forces the arrows and Copy onto a second row on phones; inert above 480px -->
+        <span class="barbreak" aria-hidden="true"></span>
         <div class="exnav">
-          <select id="exSel" class="exsel" aria-label="Choose example"></select>
           <button class="exbtn" id="exPrev" type="button" aria-label="Previous example">&lsaquo;</button>
           <button class="exbtn" id="exNext" type="button" aria-label="Next example">&rsaquo;</button>
         </div>
@@ -288,7 +326,7 @@
 
 <span class="n">main</span>()</pre>
       <div class="run" id="exRun"><span class="p">$</span> <span class="cmd">tpy mandelbrot.py</span></div>
-      <div class="winfoot"><a href="https://github.com/trozen/tpy-examples" target="_blank" rel="noopener">These examples and more, on GitHub &rarr;</a></div>
+      <div class="winfoot"><a href="https://github.com/trozen/tpy-examples" target="_blank" rel="noopener">See these and more examples &rarr;</a></div>
     </div>
   </div>
 </header>
@@ -476,6 +514,7 @@
     <a href="https://tpy-lang.org">tpy-lang.org</a>
     <div class="links">
       <a href="/docs/">Docs</a>
+      <a href="https://github.com/trozen/tpy-examples" target="_blank" rel="noopener">Examples</a>
       <a href="https://pypi.org/project/tpy-lang/" target="_blank" rel="noopener">PyPI</a>
       <span>&copy; 2026</span>
     </div>
@@ -541,6 +580,29 @@
 
     show(0);
   }
+
+  // Mobile nav. The same .links list is the desktop row and the dropdown panel,
+  // so there is only one copy of the links in the DOM.
+  const navToggle = document.getElementById('navToggle'),
+        navLinks = document.getElementById('navLinks');
+  function setNavOpen(open){
+    navLinks.classList.toggle('open', open);
+    navToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+  }
+  navToggle.addEventListener('click', e => {
+    e.stopPropagation();   // don't let the document handler close it again
+    setNavOpen(!navLinks.classList.contains('open'));
+  });
+  navLinks.addEventListener('click', e => { if (e.target.tagName === 'A') setNavOpen(false); });
+  document.addEventListener('click', e => {
+    if (!navLinks.contains(e.target) && !navToggle.contains(e.target)) setNavOpen(false);
+  });
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape' && navLinks.classList.contains('open')) { setNavOpen(false); navToggle.focus(); }
+  });
+  // Widening past the breakpoint drops the panel styles, so clear the state too
+  // rather than leaving aria-expanded true on a hidden button.
+  window.addEventListener('resize', () => { if (window.innerWidth > 860) setNavOpen(false); });
 
   // Install method tabs (pip / uv / pipx) -- independent of EXAMPLES
   const tabs = document.getElementById('installTabs');
