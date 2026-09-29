@@ -162,10 +162,10 @@
       <div class="md-header__source">
         <div class="md-source">
           <div class="md-source__repository">
-            TurboPython 0.5.1
+            TurboPython 0.6.1
             
               <ul class="md-source__facts">
-                <li class="md-source__fact md-source__fact--version">v0.5.1</li>
+                <li class="md-source__fact md-source__fact--version">v0.6.1</li>
               </ul>
             
           </div>
@@ -935,28 +935,26 @@ constraint decorators turn those rules into compiler checks.</p>
 be inspected directly to confirm how a value is represented
 (<a href="../building/">Building &amp; running</a>).</p>
 <h2 id="keep-arithmetic-fixed-width">Keep arithmetic fixed-width<a class="headerlink" href="#keep-arithmetic-fixed-width" title="Permanent link">&para;</a></h2>
-<p>The <code>int</code> type is exact and allocates as it grows; the fixed-width types are
-fixed-size machine numbers (<a href="../types/">Types</a>). The trap is silent promotion.
-One <code>int</code> operand converts a whole expression to big-integer arithmetic. A stray <code>int</code>
-usually comes from a literal past the <code>Int32</code> range or a value built with
-<code>int()</code>. The fix is an explicit conversion at the boundary:</p>
+<p>The fixed-width types are machine numbers; <code>int</code> is exact and allocates as it
+grows (<a href="../types/">Types</a>). Hot arithmetic stays fast when every operand is
+fixed-width. Two habits keep it that way: annotate accumulators and fields
+with a fixed-width type, and convert an <code>int</code> once where it enters a hot path,
+with <code>int32(n)</code> or by assigning it to a declared <code>int32</code> slot. An <code>int</code> that
+reaches an operation makes the result an <code>int</code>, and everything computed from
+it after that.</p>
 <!-- tpy: run -->
-<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">tpy</span><span class="w"> </span><span class="kn">import</span> <span class="n">Int32</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">tpy</span><span class="w"> </span><span class="kn">import</span> <span class="n">int32</span>
 <a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>
 <a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">():</span>
 <a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>    <span class="n">n</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">100</span>            <span class="c1"># arrives as int, e.g. from int(...)</span>
-<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>    <span class="n">k</span> <span class="o">=</span> <span class="n">Int32</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>            <span class="c1"># converted once, at the boundary</span>
-<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>    <span class="n">total</span><span class="p">:</span> <span class="n">Int32</span> <span class="o">=</span> <span class="mi">0</span>
+<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>    <span class="n">k</span> <span class="o">=</span> <span class="n">int32</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>            <span class="c1"># converted once, at the boundary</span>
+<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>    <span class="n">total</span><span class="p">:</span> <span class="n">int32</span> <span class="o">=</span> <span class="mi">0</span>
 <a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">):</span>
 <a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>        <span class="n">total</span> <span class="o">+=</span> <span class="n">k</span> <span class="o">+</span> <span class="n">i</span>      <span class="c1"># stays fixed-width all the way</span>
 <a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>    <span class="nb">print</span><span class="p">(</span><span class="n">total</span><span class="p">)</span>            <span class="c1"># 303</span>
 <a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>
 <a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a><span class="n">main</span><span class="p">()</span>
 </code></pre></div>
-<p>Promotion has no diagnostic today. The first check is the arithmetic itself:
-any <code>int</code> operand converts the whole expression. For confirmation, the
-generated C++ shows a promoted loop directly (<a href="../building/">Building</a>) — no
-C++ fluency is needed to spot a big-integer type where <code>int32_t</code> was expected.</p>
 <h2 id="move-instead-of-copying">Move instead of copying<a class="headerlink" href="#move-instead-of-copying" title="Permanent link">&para;</a></h2>
 <p>A store into durable storage moves when it can and copies when it must, with
 a warning for every copy (<a href="../ownership/">Ownership</a>). The resolution order:</p>
@@ -980,17 +978,19 @@ every decision on this page.</p>
 hot path, the resolution order above applies before <code>copy()</code> silences the
 warning.</p>
 <h2 id="borrow-instead-of-copying">Borrow instead of copying<a class="headerlink" href="#borrow-instead-of-copying" title="Permanent link">&para;</a></h2>
-<p>Passing never copies: parameters borrow, and non-mutating parameters are
-passed read-only automatically (<a href="../functions/">Functions</a>). Slices of <code>str</code>
-are views, not copies, and <code>StrView</code> makes the no-copy view part of a
-signature (<a href="../types/">Types</a>). A plain reference return gives the caller a
-borrowed object with no transfer at all. None of this needs annotations; the
-gain comes from the copies that are never written.</p>
+<p>Passing a reference type never copies: parameters borrow, and non-mutating
+parameters are passed read-only automatically (<a href="../functions/">Functions</a>). A
+<code>str</code> argument is passed as a view as well. Slices of <code>str</code> are views, not
+copies, and <code>StrView</code> makes the no-copy view part of a signature
+(<a href="../types/">Types</a>). A plain reference return gives the caller a borrowed
+object with no transfer at all. None of this needs annotations; the gain comes
+from the copies that are never written.</p>
 <p>Beyond copies, allocations come from growing containers, strings, and big
 integers.</p>
 <h2 id="keep-dispatch-static">Keep dispatch static<a class="headerlink" href="#keep-dispatch-static" title="Permanent link">&para;</a></h2>
-<p>Structural protocols and unions resolve at compile time, with no runtime
-dispatch cost (<a href="../data-modeling/">Data modeling</a>). The dynamic escape hatches
+<p>Structural protocols resolve at compile time, with no runtime dispatch cost,
+and a <code>match</code> on a union is a branch on a tag with no indirect call
+(<a href="../data-modeling/">Data modeling</a>). The dynamic escape hatches
 trade that away. A <code>@dynamic</code> protocol dispatches every method call through a
 vtable, and <code>Any</code> holds a value of statically unknown type, checking or casting
 it against a runtime type tag on each use. <code>Any</code> is supported but slow, and it
@@ -1063,7 +1063,9 @@ parameter form, <code>readonly[T]</code>):</p>
 the explicit-propagation tier for hot paths. A function marked
 <code>@error_return(E)</code> returns its error as a value instead of throwing, so raising
 <code>E</code> costs nothing while the caller still writes ordinary <code>try</code>/<code>except</code>. The
-error class mixes in <code>ReturnException</code>:</p>
+error class mixes in <code>ReturnException</code> and derives from <code>Exception</code> directly.
+It carries only the fields it declares, so a message is a declared
+<code>message: str</code> field.</p>
 <!-- tpy: run -->
 <div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">tpy</span><span class="w"> </span><span class="kn">import</span> <span class="n">error_return</span><span class="p">,</span> <span class="n">ReturnException</span>
 <a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>
@@ -1173,7 +1175,7 @@ a script, inspecting the generated C++, and producing a standalone binary.</p>
       <div class="md-copyright">
   
     <div class="md-copyright__highlight">
-      These docs describe <span class="tpy-version">TurboPython 0.5.1</span> (v0.5.1).
+      These docs describe <span class="tpy-version">TurboPython 0.6.1</span> (v0.6.1).
     </div>
   
   

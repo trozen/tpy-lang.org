@@ -162,10 +162,10 @@
       <div class="md-header__source">
         <div class="md-source">
           <div class="md-source__repository">
-            TurboPython 0.5.1
+            TurboPython 0.6.1
             
               <ul class="md-source__facts">
-                <li class="md-source__fact md-source__fact--version">v0.5.1</li>
+                <li class="md-source__fact md-source__fact--version">v0.6.1</li>
               </ul>
             
           </div>
@@ -872,14 +872,17 @@ split.</p>
 <p>The <code>int</code> type is Python's integer. It has arbitrary precision and never
 overflows. Small values are stored inline; a value allocates on the heap only
 once it grows past what fits inline. The fixed-width types are fixed-size
-machine numbers: <code>Int8</code>, <code>Int16</code>, <code>Int32</code>, <code>Int64</code>, the unsigned <code>UInt8</code>
-through <code>UInt64</code>, and <code>Float32</code>. <code>Float64</code> is an alias for <code>float</code>. <code>bool</code> and
-<code>Char</code> complete the set.</p>
-<p>Literals infer a concrete type. A plain integer literal is <code>Int32</code>, a decimal
+machine numbers: <code>int8</code>, <code>int16</code>, <code>int32</code>, <code>int64</code>, the unsigned <code>uint8</code>
+through <code>uint64</code>, and <code>float32</code>. <code>float64</code> is an alias for <code>float</code>. <code>bool</code> and
+<code>char</code> complete the set.</p>
+<p>The lowercase names are machine representations, spelled like Python's own
+<code>int</code>, <code>float</code>, and <code>bool</code>. Capitalized names such as <code>String</code>, <code>StrView</code>,
+<code>BigInt</code>, <code>Span</code>, and <code>Own</code> are abstractions built over them.</p>
+<p>Literals infer a concrete type. A plain integer literal is <code>int32</code>, a decimal
 literal is <code>float</code>:</p>
 <!-- tpy: run -->
 <div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">():</span>
-<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>    <span class="n">n</span> <span class="o">=</span> <span class="mi">5</span>            <span class="c1"># Int32</span>
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>    <span class="n">n</span> <span class="o">=</span> <span class="mi">5</span>            <span class="c1"># int32</span>
 <a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>    <span class="n">x</span> <span class="o">=</span> <span class="mf">1.5</span>          <span class="c1"># float</span>
 <a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>    <span class="n">flag</span> <span class="o">=</span> <span class="kc">True</span>      <span class="c1"># bool</span>
 <a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>    <span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;boiler&quot;</span>  <span class="c1"># str</span>
@@ -887,20 +890,20 @@ literal is <code>float</code>:</p>
 <a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>
 <a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="n">main</span><span class="p">()</span>
 </code></pre></div>
-<p>A literal that does not fit <code>Int32</code> falls back to <code>int</code>, and the compiler says
+<p>A literal that does not fit <code>int32</code> falls back to <code>int</code>, and the compiler says
 so:</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">():</span>
-<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>    <span class="n">big</span> <span class="o">=</span> <span class="mi">5_000_000_000</span>   <span class="c1"># warning: outside Int32 range, inferring int</span>
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>    <span class="n">big</span> <span class="o">=</span> <span class="mi">5_000_000_000</span>   <span class="c1"># warning: outside int32 range, inferring int</span>
 <a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>    <span class="nb">print</span><span class="p">(</span><span class="n">big</span><span class="p">)</span>
 <a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>
 <a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="n">main</span><span class="p">()</span>
 </code></pre></div>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>warning: Integer literal 5000000000 is outside default Int32 range;
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>warning: Integer literal 5000000000 is outside default int32 range;
 <a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>inferring int (BigInt).
 </code></pre></div>
 <div class="admonition note">
 <p class="admonition-title">Default integer type</p>
-<p>Unannotated integer literals currently infer <code>Int32</code>. This default can be
+<p>Unannotated integer literals currently infer <code>int32</code>. This default can be
 changed per compilation with the <code>--default-int</code> flag, and may itself
 change in a future version.</p>
 </div>
@@ -920,69 +923,95 @@ An <code>int</code> value is exact at any size:</p>
 <p>Two different fixed widths cannot be combined in one expression. The compiler
 rejects the expression rather than converting one side:</p>
 <!-- tpy: expect-error="Invalid operand types" -->
-<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">tpy</span><span class="w"> </span><span class="kn">import</span> <span class="n">Int32</span><span class="p">,</span> <span class="n">Int64</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">tpy</span><span class="w"> </span><span class="kn">import</span> <span class="n">int32</span><span class="p">,</span> <span class="n">int64</span>
 <a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>
 <a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">():</span>
-<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a>    <span class="n">a</span><span class="p">:</span> <span class="n">Int32</span> <span class="o">=</span> <span class="mi">5</span>
-<a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a>    <span class="n">b</span><span class="p">:</span> <span class="n">Int64</span> <span class="o">=</span> <span class="mi">10</span>
-<a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a>    <span class="nb">print</span><span class="p">(</span><span class="n">a</span> <span class="o">+</span> <span class="n">b</span><span class="p">)</span>         <span class="c1"># error: Int32 and Int64 cannot mix</span>
+<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a>    <span class="n">a</span><span class="p">:</span> <span class="n">int32</span> <span class="o">=</span> <span class="mi">5</span>
+<a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a>    <span class="n">b</span><span class="p">:</span> <span class="n">int64</span> <span class="o">=</span> <span class="mi">10</span>
+<a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a>    <span class="nb">print</span><span class="p">(</span><span class="n">a</span> <span class="o">+</span> <span class="n">b</span><span class="p">)</span>         <span class="c1"># error: int32 and int64 cannot mix</span>
 <a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a>
 <a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a><span class="n">main</span><span class="p">()</span>
 </code></pre></div>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>error: Invalid operand types for &#39;+&#39;: Int32 and Int64
+<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>error: Invalid operand types for &#39;+&#39;: int32 and int64
 </code></pre></div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>This strictness is not final. A future version may allow some mixed-width
 expressions, where the widening is unambiguous, to improve ergonomics.</p>
 </div>
-<p>Conversions are written explicitly, in either direction, including to and from
-<code>int</code>. Mixing an integer with a float needs no conversion; as in Python, the
+<p>Narrowing between fixed widths is written explicitly. A wider slot accepts a
+narrower value, and an <code>int</code> slot accepts any fixed-width value, with no
+conversion; an <code>int</code> value at a fixed-width slot narrows with a runtime range
+check. Mixing an integer with a float needs no conversion; as in Python, the
 result is a float:</p>
 <!-- tpy: run -->
-<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">tpy</span><span class="w"> </span><span class="kn">import</span> <span class="n">Int32</span><span class="p">,</span> <span class="n">Int64</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">tpy</span><span class="w"> </span><span class="kn">import</span> <span class="n">int32</span><span class="p">,</span> <span class="n">int64</span>
 <a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>
 <a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a><span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">():</span>
-<a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a>    <span class="n">b</span><span class="p">:</span> <span class="n">Int64</span> <span class="o">=</span> <span class="mi">10</span>
-<a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a>    <span class="n">a</span> <span class="o">=</span> <span class="n">Int32</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>             <span class="c1"># explicit narrowing</span>
+<a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a>    <span class="n">b</span><span class="p">:</span> <span class="n">int64</span> <span class="o">=</span> <span class="mi">10</span>
+<a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a>    <span class="n">a</span> <span class="o">=</span> <span class="n">int32</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>             <span class="c1"># explicit narrowing</span>
 <a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a>    <span class="n">n</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>               <span class="c1"># fixed-width to int</span>
-<a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a>    <span class="nb">print</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">Int64</span><span class="p">(</span><span class="n">a</span><span class="p">),</span> <span class="n">n</span><span class="p">,</span> <span class="n">Int32</span><span class="p">(</span><span class="n">n</span><span class="p">))</span>
+<a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a>    <span class="nb">print</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">int64</span><span class="p">(</span><span class="n">a</span><span class="p">),</span> <span class="n">n</span><span class="p">,</span> <span class="n">int32</span><span class="p">(</span><span class="n">n</span><span class="p">))</span>
 <a id="__codelineno-6-8" name="__codelineno-6-8" href="#__codelineno-6-8"></a>    <span class="nb">print</span><span class="p">(</span><span class="n">a</span> <span class="o">+</span> <span class="mf">0.5</span><span class="p">)</span>           <span class="c1"># int-float mix gives a float: 10.5</span>
 <a id="__codelineno-6-9" name="__codelineno-6-9" href="#__codelineno-6-9"></a>
 <a id="__codelineno-6-10" name="__codelineno-6-10" href="#__codelineno-6-10"></a><span class="n">main</span><span class="p">()</span>
 </code></pre></div>
-<p>A conversion checks its range at runtime. <code>Int32(n)</code> with a value outside the
-<code>Int32</code> range does not truncate; it panics:
-<code>TurboPython panic: Int32 overflow: value out of range</code>.</p>
+<p>A variable does not change between the two, though. Rebinding an integer
+local with a float, or growing it with <code>*=</code> by a float, is a compile error
+rather than a silent widening, and the error names the fix: write the literal
+as a float, or annotate the variable as <code>float</code>. A list literal or a
+conditional expression that mixes the two is rejected the same way; a slot
+declared <code>float</code> still accepts an integer, as in Python.</p>
+<!-- tpy: expect-error="is bound to int" -->
+<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">():</span>
+<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>    <span class="n">x</span> <span class="o">=</span> <span class="mi">14</span>
+<a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a>    <span class="n">x</span> <span class="o">*=</span> <span class="mf">1.3</span>         <span class="c1"># error: x is bound to int, and *= makes it float</span>
+<a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a>    <span class="nb">print</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a>
+<a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a><span class="n">main</span><span class="p">()</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>error: &#39;x&#39; is bound to int at line 2 and &#39;*=&#39; makes it float here, and
+<a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>CPython keeps each value&#39;s own type; write 14.0 instead of 14, or annotate
+<a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a>x: float
+</code></pre></div>
+<p>A conversion checks its range at runtime. <code>int32(n)</code> with a value outside the
+<code>int32</code> range does not truncate; it panics:
+<code>TurboPython panic: int32 overflow: value out of range</code>.</p>
 <p>Mixing a fixed-width type with <code>int</code> promotes silently. The expression
-<code>Int32 + int</code> compiles, and the result is <code>int</code>. One <code>int</code> in a hot loop turns
+<code>int32 + int</code> compiles, and the result is <code>int</code>. One <code>int</code> in a hot loop turns
 fixed-width arithmetic into big-integer arithmetic. A stray <code>int</code> usually comes
-from a literal past the <code>Int32</code> range or a value built with <code>int()</code>.
+from a literal past the <code>int32</code> range or a value built with <code>int()</code>.
 <a href="../efficiency/">Writing efficient TPy</a> returns to this.</p>
+<div class="admonition note">
+<p class="admonition-title">Promotion behavior</p>
+<p>Silent promotion to <code>int</code> is the current behavior, not a settled one. A
+future version may warn on the promoting operation or reject it, so that
+the trap surfaces at compile time.</p>
+</div>
 <!-- tpy: run -->
-<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">tpy</span><span class="w"> </span><span class="kn">import</span> <span class="n">Int32</span>
-<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>
-<a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a><span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">():</span>
-<a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a>    <span class="n">a</span><span class="p">:</span> <span class="n">Int32</span> <span class="o">=</span> <span class="mi">5</span>
-<a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a>    <span class="n">n</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">100</span>
-<a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a>    <span class="n">c</span> <span class="o">=</span> <span class="n">a</span> <span class="o">+</span> <span class="n">n</span>        <span class="c1"># c is int -- the Int32 side is promoted</span>
-<a id="__codelineno-7-7" name="__codelineno-7-7" href="#__codelineno-7-7"></a>    <span class="nb">print</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
-<a id="__codelineno-7-8" name="__codelineno-7-8" href="#__codelineno-7-8"></a>
-<a id="__codelineno-7-9" name="__codelineno-7-9" href="#__codelineno-7-9"></a><span class="n">main</span><span class="p">()</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">tpy</span><span class="w"> </span><span class="kn">import</span> <span class="n">int32</span>
+<a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>
+<a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a><span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">():</span>
+<a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a>    <span class="n">a</span><span class="p">:</span> <span class="n">int32</span> <span class="o">=</span> <span class="mi">5</span>
+<a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a>    <span class="n">n</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">100</span>
+<a id="__codelineno-9-6" name="__codelineno-9-6" href="#__codelineno-9-6"></a>    <span class="n">c</span> <span class="o">=</span> <span class="n">a</span> <span class="o">+</span> <span class="n">n</span>        <span class="c1"># c is int -- the int32 side is promoted</span>
+<a id="__codelineno-9-7" name="__codelineno-9-7" href="#__codelineno-9-7"></a>    <span class="nb">print</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
+<a id="__codelineno-9-8" name="__codelineno-9-8" href="#__codelineno-9-8"></a>
+<a id="__codelineno-9-9" name="__codelineno-9-9" href="#__codelineno-9-9"></a><span class="n">main</span><span class="p">()</span>
 </code></pre></div>
 <p>Overflow panics rather than wrapping. Fixed-width arithmetic that exceeds the
 type's range stops the program, in optimized builds too. A panic is not an
 exception: <code>try</code>/<code>except</code> cannot catch it. Where the range of a value is not
 certain, a wider type or <code>int</code> is the right choice.</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">tpy</span><span class="w"> </span><span class="kn">import</span> <span class="n">Int32</span>
-<a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>
-<a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a><span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">():</span>
-<a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a>    <span class="n">k</span><span class="p">:</span> <span class="n">Int32</span> <span class="o">=</span> <span class="mi">2147483647</span>
-<a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a>    <span class="nb">print</span><span class="p">(</span><span class="n">k</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>          <span class="c1"># panics: Int32 overflow</span>
-<a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a>
-<a id="__codelineno-8-7" name="__codelineno-8-7" href="#__codelineno-8-7"></a><span class="n">main</span><span class="p">()</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">tpy</span><span class="w"> </span><span class="kn">import</span> <span class="n">int32</span>
+<a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a>
+<a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a><span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">():</span>
+<a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a>    <span class="n">k</span><span class="p">:</span> <span class="n">int32</span> <span class="o">=</span> <span class="mi">2147483647</span>
+<a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a>    <span class="nb">print</span><span class="p">(</span><span class="n">k</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>          <span class="c1"># panics: int32 overflow</span>
+<a id="__codelineno-10-6" name="__codelineno-10-6" href="#__codelineno-10-6"></a>
+<a id="__codelineno-10-7" name="__codelineno-10-7" href="#__codelineno-10-7"></a><span class="n">main</span><span class="p">()</span>
 </code></pre></div>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>TurboPython panic: Int32 overflow in addition
+<div class="highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a>TurboPython panic: int32 overflow in addition
 </code></pre></div>
 <div class="admonition note">
 <p class="admonition-title">Overflow behavior</p>
@@ -992,32 +1021,32 @@ wrapping or a catchable exception.</p>
 </div>
 <h2 id="strings">Strings<a class="headerlink" href="#strings" title="Permanent link">&para;</a></h2>
 <p>The default string type is <code>str</code>. It matches Python's string for methods,
-comparison, and iteration, apart from two differences worth knowing. Indexing yields a <code>Char</code> rather than a length-one string, though
-a <code>Char</code> still compares against a string literal and converts to <code>str</code> freely.
+comparison, and iteration, apart from two differences worth knowing. Indexing yields a <code>char</code> rather than a length-one string, though
+a <code>char</code> still compares against a string literal and converts to <code>str</code> freely.
 A plain-range slice such as <code>s[0:5]</code> is a view of the original bytes and does
 not copy, while a stepped slice, <code>s[i:j:k]</code>, returns an owned copy.</p>
 <!-- tpy: run -->
-<div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">tpy</span><span class="w"> </span><span class="kn">import</span> <span class="n">Char</span>
-<a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a>
-<a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a><span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">():</span>
-<a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a>    <span class="n">s</span> <span class="o">=</span> <span class="s2">&quot;hello world&quot;</span>
-<a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a>    <span class="n">c</span><span class="p">:</span> <span class="n">Char</span> <span class="o">=</span> <span class="n">s</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>       <span class="c1"># a single character</span>
-<a id="__codelineno-10-6" name="__codelineno-10-6" href="#__codelineno-10-6"></a>    <span class="k">if</span> <span class="n">c</span> <span class="o">==</span> <span class="s2">&quot;h&quot;</span><span class="p">:</span>         <span class="c1"># a Char compares to a str literal</span>
-<a id="__codelineno-10-7" name="__codelineno-10-7" href="#__codelineno-10-7"></a>        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;first is h&quot;</span><span class="p">)</span>
-<a id="__codelineno-10-8" name="__codelineno-10-8" href="#__codelineno-10-8"></a>    <span class="n">head</span> <span class="o">=</span> <span class="n">s</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">5</span><span class="p">]</span>        <span class="c1"># a slice is a view -- no copy</span>
-<a id="__codelineno-10-9" name="__codelineno-10-9" href="#__codelineno-10-9"></a>    <span class="nb">print</span><span class="p">(</span><span class="n">head</span><span class="p">,</span> <span class="n">s</span><span class="o">.</span><span class="n">upper</span><span class="p">())</span>
-<a id="__codelineno-10-10" name="__codelineno-10-10" href="#__codelineno-10-10"></a>
-<a id="__codelineno-10-11" name="__codelineno-10-11" href="#__codelineno-10-11"></a><span class="n">main</span><span class="p">()</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">tpy</span><span class="w"> </span><span class="kn">import</span> <span class="n">char</span>
+<a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a>
+<a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a><span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">():</span>
+<a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a>    <span class="n">s</span> <span class="o">=</span> <span class="s2">&quot;hello world&quot;</span>
+<a id="__codelineno-12-5" name="__codelineno-12-5" href="#__codelineno-12-5"></a>    <span class="n">c</span><span class="p">:</span> <span class="n">char</span> <span class="o">=</span> <span class="n">s</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>       <span class="c1"># a single character</span>
+<a id="__codelineno-12-6" name="__codelineno-12-6" href="#__codelineno-12-6"></a>    <span class="k">if</span> <span class="n">c</span> <span class="o">==</span> <span class="s2">&quot;h&quot;</span><span class="p">:</span>         <span class="c1"># a char compares to a str literal</span>
+<a id="__codelineno-12-7" name="__codelineno-12-7" href="#__codelineno-12-7"></a>        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;first is h&quot;</span><span class="p">)</span>
+<a id="__codelineno-12-8" name="__codelineno-12-8" href="#__codelineno-12-8"></a>    <span class="n">head</span> <span class="o">=</span> <span class="n">s</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">5</span><span class="p">]</span>        <span class="c1"># a slice is a view -- no copy</span>
+<a id="__codelineno-12-9" name="__codelineno-12-9" href="#__codelineno-12-9"></a>    <span class="nb">print</span><span class="p">(</span><span class="n">head</span><span class="p">,</span> <span class="n">s</span><span class="o">.</span><span class="n">upper</span><span class="p">())</span>
+<a id="__codelineno-12-10" name="__codelineno-12-10" href="#__codelineno-12-10"></a>
+<a id="__codelineno-12-11" name="__codelineno-12-11" href="#__codelineno-12-11"></a><span class="n">main</span><span class="p">()</span>
 </code></pre></div>
 <p>Formatted string literals (f-strings) work as in Python. They interpolate
 values into a string and apply the usual format specifiers:</p>
 <!-- tpy: run -->
-<div class="highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">():</span>
-<a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a>    <span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;boiler-3&quot;</span>
-<a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a>    <span class="n">temp</span> <span class="o">=</span> <span class="mf">21.5</span>
-<a id="__codelineno-11-4" name="__codelineno-11-4" href="#__codelineno-11-4"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">temp</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2"> C&quot;</span><span class="p">)</span>   <span class="c1"># boiler-3: 21.5 C</span>
-<a id="__codelineno-11-5" name="__codelineno-11-5" href="#__codelineno-11-5"></a>
-<a id="__codelineno-11-6" name="__codelineno-11-6" href="#__codelineno-11-6"></a><span class="n">main</span><span class="p">()</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">():</span>
+<a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a>    <span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;boiler-3&quot;</span>
+<a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a>    <span class="n">temp</span> <span class="o">=</span> <span class="mf">21.5</span>
+<a id="__codelineno-13-4" name="__codelineno-13-4" href="#__codelineno-13-4"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">temp</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2"> C&quot;</span><span class="p">)</span>   <span class="c1"># boiler-3: 21.5 C</span>
+<a id="__codelineno-13-5" name="__codelineno-13-5" href="#__codelineno-13-5"></a>
+<a id="__codelineno-13-6" name="__codelineno-13-6" href="#__codelineno-13-6"></a><span class="n">main</span><span class="p">()</span>
 </code></pre></div>
 <p>Underneath, the compiler represents a <code>str</code> as owned bytes or as a view of
 another string's bytes, whichever is provably safe, so the copy often never
@@ -1032,29 +1061,29 @@ types exist for when performance or ownership matters:</p>
   refers to part of a larger string without copying it.</li>
 </ul>
 <!-- tpy: run -->
-<div class="highlight"><pre><span></span><code><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">tpy</span><span class="w"> </span><span class="kn">import</span> <span class="n">String</span>
-<a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a>
-<a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a><span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">():</span>
-<a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a>    <span class="n">out</span> <span class="o">=</span> <span class="n">String</span><span class="p">(</span><span class="s2">&quot;sensor=&quot;</span><span class="p">)</span>
-<a id="__codelineno-12-5" name="__codelineno-12-5" href="#__codelineno-12-5"></a>    <span class="n">out</span> <span class="o">+=</span> <span class="s2">&quot;boiler-3&quot;</span>
-<a id="__codelineno-12-6" name="__codelineno-12-6" href="#__codelineno-12-6"></a>    <span class="n">out</span> <span class="o">+=</span> <span class="s2">&quot;;ok&quot;</span>
-<a id="__codelineno-12-7" name="__codelineno-12-7" href="#__codelineno-12-7"></a>    <span class="nb">print</span><span class="p">(</span><span class="n">out</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">out</span><span class="p">))</span>
-<a id="__codelineno-12-8" name="__codelineno-12-8" href="#__codelineno-12-8"></a>
-<a id="__codelineno-12-9" name="__codelineno-12-9" href="#__codelineno-12-9"></a><span class="n">main</span><span class="p">()</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">tpy</span><span class="w"> </span><span class="kn">import</span> <span class="n">String</span>
+<a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a>
+<a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a><span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">():</span>
+<a id="__codelineno-14-4" name="__codelineno-14-4" href="#__codelineno-14-4"></a>    <span class="n">out</span> <span class="o">=</span> <span class="n">String</span><span class="p">(</span><span class="s2">&quot;sensor=&quot;</span><span class="p">)</span>
+<a id="__codelineno-14-5" name="__codelineno-14-5" href="#__codelineno-14-5"></a>    <span class="n">out</span> <span class="o">+=</span> <span class="s2">&quot;boiler-3&quot;</span>
+<a id="__codelineno-14-6" name="__codelineno-14-6" href="#__codelineno-14-6"></a>    <span class="n">out</span> <span class="o">+=</span> <span class="s2">&quot;;ok&quot;</span>
+<a id="__codelineno-14-7" name="__codelineno-14-7" href="#__codelineno-14-7"></a>    <span class="nb">print</span><span class="p">(</span><span class="n">out</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">out</span><span class="p">))</span>
+<a id="__codelineno-14-8" name="__codelineno-14-8" href="#__codelineno-14-8"></a>
+<a id="__codelineno-14-9" name="__codelineno-14-9" href="#__codelineno-14-9"></a><span class="n">main</span><span class="p">()</span>
 </code></pre></div>
 <!-- tpy: run -->
-<div class="highlight"><pre><span></span><code><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">tpy</span><span class="w"> </span><span class="kn">import</span> <span class="n">StrView</span>
-<a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a>
-<a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a><span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">():</span>
-<a id="__codelineno-13-4" name="__codelineno-13-4" href="#__codelineno-13-4"></a>    <span class="n">s</span> <span class="o">=</span> <span class="s2">&quot;hello world&quot;</span>
-<a id="__codelineno-13-5" name="__codelineno-13-5" href="#__codelineno-13-5"></a>    <span class="n">v</span> <span class="o">=</span> <span class="n">StrView</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>       <span class="c1"># always a view of s</span>
-<a id="__codelineno-13-6" name="__codelineno-13-6" href="#__codelineno-13-6"></a>    <span class="n">tail</span> <span class="o">=</span> <span class="n">v</span><span class="p">[</span><span class="mi">6</span><span class="p">:]</span>         <span class="c1"># slicing a view is free</span>
-<a id="__codelineno-13-7" name="__codelineno-13-7" href="#__codelineno-13-7"></a>    <span class="nb">print</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">tail</span><span class="p">)</span>
-<a id="__codelineno-13-8" name="__codelineno-13-8" href="#__codelineno-13-8"></a>
-<a id="__codelineno-13-9" name="__codelineno-13-9" href="#__codelineno-13-9"></a><span class="n">main</span><span class="p">()</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">tpy</span><span class="w"> </span><span class="kn">import</span> <span class="n">StrView</span>
+<a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a>
+<a id="__codelineno-15-3" name="__codelineno-15-3" href="#__codelineno-15-3"></a><span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">():</span>
+<a id="__codelineno-15-4" name="__codelineno-15-4" href="#__codelineno-15-4"></a>    <span class="n">s</span> <span class="o">=</span> <span class="s2">&quot;hello world&quot;</span>
+<a id="__codelineno-15-5" name="__codelineno-15-5" href="#__codelineno-15-5"></a>    <span class="n">v</span> <span class="o">=</span> <span class="n">StrView</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>       <span class="c1"># always a view of s</span>
+<a id="__codelineno-15-6" name="__codelineno-15-6" href="#__codelineno-15-6"></a>    <span class="n">tail</span> <span class="o">=</span> <span class="n">v</span><span class="p">[</span><span class="mi">6</span><span class="p">:]</span>         <span class="c1"># slicing a view is free</span>
+<a id="__codelineno-15-7" name="__codelineno-15-7" href="#__codelineno-15-7"></a>    <span class="nb">print</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">tail</span><span class="p">)</span>
+<a id="__codelineno-15-8" name="__codelineno-15-8" href="#__codelineno-15-8"></a>
+<a id="__codelineno-15-9" name="__codelineno-15-9" href="#__codelineno-15-9"></a><span class="n">main</span><span class="p">()</span>
 </code></pre></div>
 <h2 id="value-types-and-reference-types">Value types and reference types<a class="headerlink" href="#value-types-and-reference-types" title="Permanent link">&para;</a></h2>
-<p>The numeric types, <code>bool</code>, <code>Char</code>, <code>str</code>, and tuples of these are <strong>value
+<p>The numeric types, <code>bool</code>, <code>char</code>, <code>str</code>, and tuples of these are <strong>value
 types</strong>. A value lives directly in its variable and is copied on assignment, so
 an assigned or stored value is independent of the original. Class instances and
 containers are <strong>reference types</strong>. Locals and parameters alias them, and
@@ -1063,28 +1092,28 @@ map</a>; <a href="../ownership/">Ownership and references</a> covers the full
 model and its observable consequences.</p>
 <p>A small <code>Reading</code> type combines one value-type field and one owned container:</p>
 <!-- tpy: prelude -->
-<div class="highlight"><pre><span></span><code><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">tpy</span><span class="w"> </span><span class="kn">import</span> <span class="n">Own</span>
-<a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a>
-<a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a><span class="k">class</span><span class="w"> </span><span class="nc">Reading</span><span class="p">:</span>
-<a id="__codelineno-14-4" name="__codelineno-14-4" href="#__codelineno-14-4"></a>    <span class="n">sensor</span><span class="p">:</span> <span class="nb">str</span>
-<a id="__codelineno-14-5" name="__codelineno-14-5" href="#__codelineno-14-5"></a>    <span class="n">values</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span>
-<a id="__codelineno-14-6" name="__codelineno-14-6" href="#__codelineno-14-6"></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sensor</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">values</span><span class="p">:</span> <span class="n">Own</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">]]):</span>
-<a id="__codelineno-14-7" name="__codelineno-14-7" href="#__codelineno-14-7"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">sensor</span> <span class="o">=</span> <span class="n">sensor</span>
-<a id="__codelineno-14-8" name="__codelineno-14-8" href="#__codelineno-14-8"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">values</span> <span class="o">=</span> <span class="n">values</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">tpy</span><span class="w"> </span><span class="kn">import</span> <span class="n">Own</span>
+<a id="__codelineno-16-2" name="__codelineno-16-2" href="#__codelineno-16-2"></a>
+<a id="__codelineno-16-3" name="__codelineno-16-3" href="#__codelineno-16-3"></a><span class="k">class</span><span class="w"> </span><span class="nc">Reading</span><span class="p">:</span>
+<a id="__codelineno-16-4" name="__codelineno-16-4" href="#__codelineno-16-4"></a>    <span class="n">sensor</span><span class="p">:</span> <span class="nb">str</span>
+<a id="__codelineno-16-5" name="__codelineno-16-5" href="#__codelineno-16-5"></a>    <span class="n">values</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span>
+<a id="__codelineno-16-6" name="__codelineno-16-6" href="#__codelineno-16-6"></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sensor</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">values</span><span class="p">:</span> <span class="n">Own</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">]]):</span>
+<a id="__codelineno-16-7" name="__codelineno-16-7" href="#__codelineno-16-7"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">sensor</span> <span class="o">=</span> <span class="n">sensor</span>
+<a id="__codelineno-16-8" name="__codelineno-16-8" href="#__codelineno-16-8"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">values</span> <span class="o">=</span> <span class="n">values</span>
 </code></pre></div>
 <p>The <code>sensor</code> field is a value type and copies freely. The <code>values</code> field is a
 container that the <code>Reading</code> owns, and the <code>Own[...]</code> parameter takes the
 caller's list — the caller gives the list up instead of keeping a shared
 reference. <a href="../ownership/">Ownership and references</a> explains this <em>move</em>.</p>
 <!-- tpy: cont run -->
-<div class="highlight"><pre><span></span><code><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a><span class="k">def</span><span class="w"> </span><span class="nf">mean</span><span class="p">(</span><span class="n">r</span><span class="p">:</span> <span class="n">Reading</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
-<a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a>    <span class="k">return</span> <span class="nb">sum</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">values</span><span class="p">)</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
-<a id="__codelineno-15-3" name="__codelineno-15-3" href="#__codelineno-15-3"></a>
-<a id="__codelineno-15-4" name="__codelineno-15-4" href="#__codelineno-15-4"></a><span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">():</span>
-<a id="__codelineno-15-5" name="__codelineno-15-5" href="#__codelineno-15-5"></a>    <span class="n">r</span> <span class="o">=</span> <span class="n">Reading</span><span class="p">(</span><span class="s2">&quot;boiler-3&quot;</span><span class="p">,</span> <span class="p">[</span><span class="mf">20.5</span><span class="p">,</span> <span class="mf">21.0</span><span class="p">,</span> <span class="mf">21.7</span><span class="p">])</span>
-<a id="__codelineno-15-6" name="__codelineno-15-6" href="#__codelineno-15-6"></a>    <span class="nb">print</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">sensor</span><span class="p">,</span> <span class="n">mean</span><span class="p">(</span><span class="n">r</span><span class="p">))</span>
-<a id="__codelineno-15-7" name="__codelineno-15-7" href="#__codelineno-15-7"></a>
-<a id="__codelineno-15-8" name="__codelineno-15-8" href="#__codelineno-15-8"></a><span class="n">main</span><span class="p">()</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a><span class="k">def</span><span class="w"> </span><span class="nf">mean</span><span class="p">(</span><span class="n">r</span><span class="p">:</span> <span class="n">Reading</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<a id="__codelineno-17-2" name="__codelineno-17-2" href="#__codelineno-17-2"></a>    <span class="k">return</span> <span class="nb">sum</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">values</span><span class="p">)</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
+<a id="__codelineno-17-3" name="__codelineno-17-3" href="#__codelineno-17-3"></a>
+<a id="__codelineno-17-4" name="__codelineno-17-4" href="#__codelineno-17-4"></a><span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">():</span>
+<a id="__codelineno-17-5" name="__codelineno-17-5" href="#__codelineno-17-5"></a>    <span class="n">r</span> <span class="o">=</span> <span class="n">Reading</span><span class="p">(</span><span class="s2">&quot;boiler-3&quot;</span><span class="p">,</span> <span class="p">[</span><span class="mf">20.5</span><span class="p">,</span> <span class="mf">21.0</span><span class="p">,</span> <span class="mf">21.7</span><span class="p">])</span>
+<a id="__codelineno-17-6" name="__codelineno-17-6" href="#__codelineno-17-6"></a>    <span class="nb">print</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">sensor</span><span class="p">,</span> <span class="n">mean</span><span class="p">(</span><span class="n">r</span><span class="p">))</span>
+<a id="__codelineno-17-7" name="__codelineno-17-7" href="#__codelineno-17-7"></a>
+<a id="__codelineno-17-8" name="__codelineno-17-8" href="#__codelineno-17-8"></a><span class="n">main</span><span class="p">()</span>
 </code></pre></div>
 <p>Containers themselves — lists, dicts, sets, and how they model data — are
 the subject of <a href="../data-modeling/">Data modeling</a>.</p>
@@ -1094,20 +1123,20 @@ compiler tracks which member the value currently holds and warns where a
 possible <code>None</code> is used as a plain <code>T</code>. A check such as <code>is not None</code> narrows
 the value back to a plain <code>T</code>:</p>
 <!-- tpy: run -->
-<div class="highlight"><pre><span></span><code><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a><span class="k">def</span><span class="w"> </span><span class="nf">first_over</span><span class="p">(</span><span class="n">values</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">limit</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
-<a id="__codelineno-16-2" name="__codelineno-16-2" href="#__codelineno-16-2"></a>    <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">values</span><span class="p">:</span>
-<a id="__codelineno-16-3" name="__codelineno-16-3" href="#__codelineno-16-3"></a>        <span class="k">if</span> <span class="n">v</span> <span class="o">&gt;</span> <span class="n">limit</span><span class="p">:</span>
-<a id="__codelineno-16-4" name="__codelineno-16-4" href="#__codelineno-16-4"></a>            <span class="k">return</span> <span class="n">v</span>
-<a id="__codelineno-16-5" name="__codelineno-16-5" href="#__codelineno-16-5"></a>    <span class="k">return</span> <span class="kc">None</span>
-<a id="__codelineno-16-6" name="__codelineno-16-6" href="#__codelineno-16-6"></a>
-<a id="__codelineno-16-7" name="__codelineno-16-7" href="#__codelineno-16-7"></a><span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">():</span>
-<a id="__codelineno-16-8" name="__codelineno-16-8" href="#__codelineno-16-8"></a>    <span class="n">hit</span> <span class="o">=</span> <span class="n">first_over</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">9</span><span class="p">],</span> <span class="mi">4</span><span class="p">)</span>
-<a id="__codelineno-16-9" name="__codelineno-16-9" href="#__codelineno-16-9"></a>    <span class="k">if</span> <span class="n">hit</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-<a id="__codelineno-16-10" name="__codelineno-16-10" href="#__codelineno-16-10"></a>        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;first over 4:&quot;</span><span class="p">,</span> <span class="n">hit</span><span class="p">)</span>   <span class="c1"># hit is int here</span>
-<a id="__codelineno-16-11" name="__codelineno-16-11" href="#__codelineno-16-11"></a>    <span class="k">else</span><span class="p">:</span>
-<a id="__codelineno-16-12" name="__codelineno-16-12" href="#__codelineno-16-12"></a>        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;none over 4&quot;</span><span class="p">)</span>
-<a id="__codelineno-16-13" name="__codelineno-16-13" href="#__codelineno-16-13"></a>
-<a id="__codelineno-16-14" name="__codelineno-16-14" href="#__codelineno-16-14"></a><span class="n">main</span><span class="p">()</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a><span class="k">def</span><span class="w"> </span><span class="nf">first_over</span><span class="p">(</span><span class="n">values</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">limit</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+<a id="__codelineno-18-2" name="__codelineno-18-2" href="#__codelineno-18-2"></a>    <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">values</span><span class="p">:</span>
+<a id="__codelineno-18-3" name="__codelineno-18-3" href="#__codelineno-18-3"></a>        <span class="k">if</span> <span class="n">v</span> <span class="o">&gt;</span> <span class="n">limit</span><span class="p">:</span>
+<a id="__codelineno-18-4" name="__codelineno-18-4" href="#__codelineno-18-4"></a>            <span class="k">return</span> <span class="n">v</span>
+<a id="__codelineno-18-5" name="__codelineno-18-5" href="#__codelineno-18-5"></a>    <span class="k">return</span> <span class="kc">None</span>
+<a id="__codelineno-18-6" name="__codelineno-18-6" href="#__codelineno-18-6"></a>
+<a id="__codelineno-18-7" name="__codelineno-18-7" href="#__codelineno-18-7"></a><span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">():</span>
+<a id="__codelineno-18-8" name="__codelineno-18-8" href="#__codelineno-18-8"></a>    <span class="n">hit</span> <span class="o">=</span> <span class="n">first_over</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">9</span><span class="p">],</span> <span class="mi">4</span><span class="p">)</span>
+<a id="__codelineno-18-9" name="__codelineno-18-9" href="#__codelineno-18-9"></a>    <span class="k">if</span> <span class="n">hit</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+<a id="__codelineno-18-10" name="__codelineno-18-10" href="#__codelineno-18-10"></a>        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;first over 4:&quot;</span><span class="p">,</span> <span class="n">hit</span><span class="p">)</span>   <span class="c1"># hit is int here</span>
+<a id="__codelineno-18-11" name="__codelineno-18-11" href="#__codelineno-18-11"></a>    <span class="k">else</span><span class="p">:</span>
+<a id="__codelineno-18-12" name="__codelineno-18-12" href="#__codelineno-18-12"></a>        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;none over 4&quot;</span><span class="p">)</span>
+<a id="__codelineno-18-13" name="__codelineno-18-13" href="#__codelineno-18-13"></a>
+<a id="__codelineno-18-14" name="__codelineno-18-14" href="#__codelineno-18-14"></a><span class="n">main</span><span class="p">()</span>
 </code></pre></div>
 <p>General union types <code>A | B</code> and the <code>match</code> that branches on them are covered
 in <a href="../data-modeling/">Data modeling</a>.</p>
@@ -1150,7 +1179,7 @@ in <a href="../data-modeling/">Data modeling</a>.</p>
       <div class="md-copyright">
   
     <div class="md-copyright__highlight">
-      These docs describe <span class="tpy-version">TurboPython 0.5.1</span> (v0.5.1).
+      These docs describe <span class="tpy-version">TurboPython 0.6.1</span> (v0.6.1).
     </div>
   
   

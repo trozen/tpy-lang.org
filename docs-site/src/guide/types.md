@@ -14,17 +14,21 @@ Annotations appear at function boundaries; nearly everything else is inferred.
 The `int` type is Python's integer. It has arbitrary precision and never
 overflows. Small values are stored inline; a value allocates on the heap only
 once it grows past what fits inline. The fixed-width types are fixed-size
-machine numbers: `Int8`, `Int16`, `Int32`, `Int64`, the unsigned `UInt8`
-through `UInt64`, and `Float32`. `Float64` is an alias for `float`. `bool` and
-`Char` complete the set.
+machine numbers: `int8`, `int16`, `int32`, `int64`, the unsigned `uint8`
+through `uint64`, and `float32`. `float64` is an alias for `float`. `bool` and
+`char` complete the set.
 
-Literals infer a concrete type. A plain integer literal is `Int32`, a decimal
+The lowercase names are machine representations, spelled like Python's own
+`int`, `float`, and `bool`. Capitalized names such as `String`, `StrView`,
+`BigInt`, `Span`, and `Own` are abstractions built over them.
+
+Literals infer a concrete type. A plain integer literal is `int32`, a decimal
 literal is `float`:
 
 <!-- tpy: run -->
 ```python
 def main():
-    n = 5            # Int32
+    n = 5            # int32
     x = 1.5          # float
     flag = True      # bool
     name = "boiler"  # str
@@ -33,24 +37,24 @@ def main():
 main()
 ```
 
-A literal that does not fit `Int32` falls back to `int`, and the compiler says
+A literal that does not fit `int32` falls back to `int`, and the compiler says
 so:
 
 ```python
 def main():
-    big = 5_000_000_000   # warning: outside Int32 range, inferring int
+    big = 5_000_000_000   # warning: outside int32 range, inferring int
     print(big)
 
 main()
 ```
 
 ```
-warning: Integer literal 5000000000 is outside default Int32 range;
+warning: Integer literal 5000000000 is outside default int32 range;
 inferring int (BigInt).
 ```
 
 !!! note "Default integer type"
-    Unannotated integer literals currently infer `Int32`. This default can be
+    Unannotated integer literals currently infer `int32`. This default can be
     changed per compilation with the `--default-int` flag, and may itself
     change in a future version.
 
@@ -76,60 +80,90 @@ rejects the expression rather than converting one side:
 
 <!-- tpy: expect-error="Invalid operand types" -->
 ```python
-from tpy import Int32, Int64
+from tpy import int32, int64
 
 def main():
-    a: Int32 = 5
-    b: Int64 = 10
-    print(a + b)         # error: Int32 and Int64 cannot mix
+    a: int32 = 5
+    b: int64 = 10
+    print(a + b)         # error: int32 and int64 cannot mix
 
 main()
 ```
 
 ```
-error: Invalid operand types for '+': Int32 and Int64
+error: Invalid operand types for '+': int32 and int64
 ```
 
 !!! note
     This strictness is not final. A future version may allow some mixed-width
     expressions, where the widening is unambiguous, to improve ergonomics.
 
-Conversions are written explicitly, in either direction, including to and from
-`int`. Mixing an integer with a float needs no conversion; as in Python, the
+Narrowing between fixed widths is written explicitly. A wider slot accepts a
+narrower value, and an `int` slot accepts any fixed-width value, with no
+conversion; an `int` value at a fixed-width slot narrows with a runtime range
+check. Mixing an integer with a float needs no conversion; as in Python, the
 result is a float:
 
 <!-- tpy: run -->
 ```python
-from tpy import Int32, Int64
+from tpy import int32, int64
 
 def main():
-    b: Int64 = 10
-    a = Int32(b)             # explicit narrowing
+    b: int64 = 10
+    a = int32(b)             # explicit narrowing
     n = int(a)               # fixed-width to int
-    print(a, Int64(a), n, Int32(n))
+    print(a, int64(a), n, int32(n))
     print(a + 0.5)           # int-float mix gives a float: 10.5
 
 main()
 ```
 
-A conversion checks its range at runtime. `Int32(n)` with a value outside the
-`Int32` range does not truncate; it panics:
-`TurboPython panic: Int32 overflow: value out of range`.
+A variable does not change between the two, though. Rebinding an integer
+local with a float, or growing it with `*=` by a float, is a compile error
+rather than a silent widening, and the error names the fix: write the literal
+as a float, or annotate the variable as `float`. A list literal or a
+conditional expression that mixes the two is rejected the same way; a slot
+declared `float` still accepts an integer, as in Python.
+
+<!-- tpy: expect-error="is bound to int" -->
+```python
+def main():
+    x = 14
+    x *= 1.3         # error: x is bound to int, and *= makes it float
+    print(x)
+
+main()
+```
+
+```
+error: 'x' is bound to int at line 2 and '*=' makes it float here, and
+CPython keeps each value's own type; write 14.0 instead of 14, or annotate
+x: float
+```
+
+A conversion checks its range at runtime. `int32(n)` with a value outside the
+`int32` range does not truncate; it panics:
+`TurboPython panic: int32 overflow: value out of range`.
 
 Mixing a fixed-width type with `int` promotes silently. The expression
-`Int32 + int` compiles, and the result is `int`. One `int` in a hot loop turns
+`int32 + int` compiles, and the result is `int`. One `int` in a hot loop turns
 fixed-width arithmetic into big-integer arithmetic. A stray `int` usually comes
-from a literal past the `Int32` range or a value built with `int()`.
+from a literal past the `int32` range or a value built with `int()`.
 [Writing efficient TPy](efficiency.md) returns to this.
+
+!!! note "Promotion behavior"
+    Silent promotion to `int` is the current behavior, not a settled one. A
+    future version may warn on the promoting operation or reject it, so that
+    the trap surfaces at compile time.
 
 <!-- tpy: run -->
 ```python
-from tpy import Int32
+from tpy import int32
 
 def main():
-    a: Int32 = 5
+    a: int32 = 5
     n: int = 100
-    c = a + n        # c is int -- the Int32 side is promoted
+    c = a + n        # c is int -- the int32 side is promoted
     print(c)
 
 main()
@@ -141,17 +175,17 @@ exception: `try`/`except` cannot catch it. Where the range of a value is not
 certain, a wider type or `int` is the right choice.
 
 ```python
-from tpy import Int32
+from tpy import int32
 
 def main():
-    k: Int32 = 2147483647
-    print(k + 1)          # panics: Int32 overflow
+    k: int32 = 2147483647
+    print(k + 1)          # panics: int32 overflow
 
 main()
 ```
 
 ```
-TurboPython panic: Int32 overflow in addition
+TurboPython panic: int32 overflow in addition
 ```
 
 !!! note "Overflow behavior"
@@ -162,19 +196,19 @@ TurboPython panic: Int32 overflow in addition
 ## Strings
 
 The default string type is `str`. It matches Python's string for methods,
-comparison, and iteration, apart from two differences worth knowing. Indexing yields a `Char` rather than a length-one string, though
-a `Char` still compares against a string literal and converts to `str` freely.
+comparison, and iteration, apart from two differences worth knowing. Indexing yields a `char` rather than a length-one string, though
+a `char` still compares against a string literal and converts to `str` freely.
 A plain-range slice such as `s[0:5]` is a view of the original bytes and does
 not copy, while a stepped slice, `s[i:j:k]`, returns an owned copy.
 
 <!-- tpy: run -->
 ```python
-from tpy import Char
+from tpy import char
 
 def main():
     s = "hello world"
-    c: Char = s[0]       # a single character
-    if c == "h":         # a Char compares to a str literal
+    c: char = s[0]       # a single character
+    if c == "h":         # a char compares to a str literal
         print("first is h")
     head = s[0:5]        # a slice is a view -- no copy
     print(head, s.upper())
@@ -235,7 +269,7 @@ main()
 
 ## Value types and reference types
 
-The numeric types, `bool`, `Char`, `str`, and tuples of these are **value
+The numeric types, `bool`, `char`, `str`, and tuples of these are **value
 types**. A value lives directly in its variable and is copied on assignment, so
 an assigned or stored value is independent of the original. Class instances and
 containers are **reference types**. Locals and parameters alias them, and

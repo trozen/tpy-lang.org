@@ -162,10 +162,10 @@
       <div class="md-header__source">
         <div class="md-source">
           <div class="md-source__repository">
-            TurboPython 0.5.1
+            TurboPython 0.6.1
             
               <ul class="md-source__facts">
-                <li class="md-source__fact md-source__fact--version">v0.5.1</li>
+                <li class="md-source__fact md-source__fact--version">v0.6.1</li>
               </ul>
             
           </div>
@@ -945,8 +945,8 @@ or pip:</p>
 </div>
 <p>Compilation needs a C++23 compiler: g++ 13 or newer, or clang++ 19 or newer.
 An installed system compiler is detected automatically, and its C++23 support
-is checked before the build; an unsupported compiler is rejected upfront with
-the version floors and a suggested fix, rather than failing partway through. If
+is checked before the build; one that fails the check is skipped, with the
+version floors and a suggested fix, rather than failing partway through. If
 no suitable compiler is present, the <code>[bundled]</code> extra installs a C++ compiler
 (zig)
 together with the package and needs no other setup:</p>
@@ -1023,9 +1023,9 @@ under CPython:</p>
 <p>The annotations are ordinary Python types. Annotated as <code>int</code>, <code>a</code> and <code>b</code>
 are Python integers with arbitrary precision, which is how <code>fib(100)</code> returns
 its exact 21-digit result. Without the annotations, the literals <code>0</code> and <code>1</code>
-would infer <code>Int32</code>, the fast machine type, and the addition would overflow.
+would infer <code>int32</code>, the fast machine type, and the addition would overflow.
 <a href="../guide/types/">Types</a> explains the inference rules and the fixed-width
-types such as <code>Int32</code> and <code>Int64</code>.</p>
+types such as <code>int32</code> and <code>int64</code>.</p>
 <p>Classes follow the same pattern. Fields are declared with annotations, and
 methods are ordinary Python. There is no <code>__dict__</code>: an instance has exactly
 the fields its class declares, so the compiler knows the memory layout of
@@ -1078,16 +1078,17 @@ again, it is moved into the list instead of copied.
 separate repository,
 <a href="https://github.com/trozen/tpy-examples" rel="noopener" target="_blank">tpy-examples</a>,
 which also holds the examples shown on the <a href="https://tpy-lang.org/">landing page</a>.
-Most are ported from the examples of another Python-to-C++ compiler, and each
-port records what changed from the original. Licensing is per program.</p>
-<p>Each one sits in its own directory, together with any data files it reads, and
-its entry point is named after that directory:</p>
+The larger programs are ported from the examples of another Python-to-C++
+compiler, and each port records what changed from the original; the rest are
+small single-file programs written for the gallery. Licensing is per program.</p>
+<p>A ported program sits in its own directory, together with any data files it
+reads, and its entry point is named after that directory:</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="gp">$ </span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/trozen/tpy-examples
 <a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a><span class="gp">$ </span><span class="nb">cd</span><span class="w"> </span>tpy-examples/shedskin/voronoi
-<a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a><span class="gp">$ </span>tpy<span class="w"> </span>-O<span class="w"> </span>voronoi.py
+<a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a><span class="gp">$ </span>tpy<span class="w"> </span>voronoi.py
 </code></pre></div>
-<p>The <code>-O</code> flag turns on optimizations. The default build compiles faster and
-runs slower.</p>
+<p>The build is optimized by default. The <code>--debug</code> flag builds without
+optimization, which compiles faster and runs slower.</p>
 <h2 id="coding-with-an-ai-agent">Coding with an AI agent<a class="headerlink" href="#coding-with-an-ai-agent" title="Permanent link">&para;</a></h2>
 <p>TurboPython source is valid Python, so coding agents such as Claude Code,
 Cursor, and Copilot work without a plugin. What they miss is where
@@ -1158,7 +1159,7 @@ before writing TurboPython code.</p>
       <div class="md-copyright">
   
     <div class="md-copyright__highlight">
-      These docs describe <span class="tpy-version">TurboPython 0.5.1</span> (v0.5.1).
+      These docs describe <span class="tpy-version">TurboPython 0.6.1</span> (v0.6.1).
     </div>
   
   

@@ -28,19 +28,22 @@ $ tpy -c 'print(2 + 3)'
 
 ```console
 $ tpy -b -o build program.py
-Built: build/debug/program
-$ ./build/debug/program
+Built: build/release/program
+$ ./build/release/program
 ```
 
-The binary is named after the source file and lands in `debug/` by default.
-That build is unoptimized and meant for development. The build to ship and to
-measure is `-O` (or
-`--release`):
+The binary is named after the source file and lands in `release/`. Every
+build is optimized (`-O3`) unless `--debug` is given, so the default binary is
+the one to ship and to measure. The `--debug` flag builds without optimization
+and with debug information (`-g -O0`), which compiles faster and lands in
+`debug/`:
 
 ```console
-$ tpy -O -b -o build program.py
-Built: build/release/program
+$ tpy --debug -b -o build program.py
+Built: build/debug/program
 ```
+
+Runtime checks such as overflow detection stay on in both variants.
 
 The result needs no Python installation. It links only the standard system
 libraries (the C++ runtime and libc), so it runs on other machines of the
@@ -58,9 +61,9 @@ By default the `tpyc` command emits a C++ project and skips the native build:
 $ tpyc -o build program.py
 ```
 
-The generated `.hpp` and `.cpp` files land in a `program.d/` directory under
-the output path, so this run writes `build/program.d/`. Omitting `-o` writes
-to `__tpyc__/` next to the source instead.
+The generated project lands directly in the output directory: `build/src/`,
+`build/include/`, the bundled runtime, and `build/sources.cmake`. Omitting
+`-o` writes to `__tpyc__/program.d/` next to the source instead.
 
 Skipping the native build also makes `tpyc` the fast way to check a change. The
 front end still parses, type-checks, and runs ownership analysis, so type and
@@ -81,7 +84,7 @@ include directories, the link libraries, and the required C++ standard. A CMake
 target consumes them directly:
 
 ```cmake
-include(build/program.d/sources.cmake)
+include(build/sources.cmake)
 add_executable(app ${TPYC_SOURCES})
 target_include_directories(app PRIVATE ${TPYC_INCLUDE_DIRS})
 target_link_libraries(app PRIVATE ${TPYC_LIBRARIES})
@@ -89,10 +92,12 @@ set_target_properties(app PROPERTIES CXX_STANDARD ${TPYC_CXX_STANDARD})
 ```
 
 The `--no-main` flag omits the generated `main()` so the compiled code links
-into an existing C++ program rather than running on its own. The runtime
-headers are bundled into the output directory by default, which keeps the
-project self-contained and safe to commit or copy to another machine. The
-`--no-bundle-runtime` flag skips that copy.
+into an existing C++ program rather than running on its own. When `tpyc`
+emits a project to an explicit `-o` directory, the runtime headers are bundled
+into it, which keeps the project self-contained and safe to commit or copy to
+another machine; the `--no-bundle-runtime` flag skips that copy. A native
+build (`-b`) and the default `__tpyc__/` output reference the installed
+runtime instead.
 
 ## Build a CPython extension
 
@@ -110,8 +115,8 @@ def triple(x: int) -> int:
 
 ```console
 $ tpyc -b -o build fastmod.py
-Built extension: build/debug/fastmod.so
-$ cp build/debug/fastmod.so .
+Built extension: build/release/fastmod.so
+$ cp build/release/fastmod.so .
 $ python3 -c "import fastmod; print(fastmod.triple(14))"
 42
 ```
@@ -143,9 +148,16 @@ pkg/
 
 The build uses the system C++ compiler, and `--cxx` selects a different one.
 C++23 support is required, so GCC 13 or newer, or Clang 19 or newer, works;
-`g++ --version` reports the installed version. The build also uses `ccache`
+`g++ --version` reports the installed version. An auto-detected compiler that
+fails the C++23 check is skipped; one named with `--cxx` is used after a
+warning. The build also uses `ccache`
 when available, precompiled headers (`--no-pch` turns them off), and parallel
-compilation (`-j N`).
+compilation (`-j N`). Builds are cached by content, and `--rebuild` ignores
+the cache and rebuilds everything, the precompiled header included.
+
+The `zlib` and `gzip` modules link a bundled zlib by default; `--zlib system`
+links the system library instead, and `--zlib none` makes importing either
+module a compile error.
 
 !!! info "Planned"
     `pyproject.toml` integration -- project-level configuration, dependencies,

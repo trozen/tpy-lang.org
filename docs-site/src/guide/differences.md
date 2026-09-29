@@ -19,9 +19,12 @@ that come up earliest:
 
 - Functions require type annotations. Parameters and return types are
   mandatory, as are class fields; locals are inferred.
-- Integer literals default to `Int32`. `int` is arbitrary-precision as in
-  Python, but a bare literal is deduced as fixed-width `Int32`, which can
+- Integer literals default to `int32`. `int` is arbitrary-precision as in
+  Python, but a bare literal is deduced as fixed-width `int32`, which can
   overflow and panic.
+- A variable has one numeric type. A local bound to an integer cannot be
+  rebound to a float; the compiler asks for a float literal or a `float`
+  annotation instead.
 - Third-party packages written for regular Python cannot be imported.
   Everything imported is compiled from source with the program, so a module
   is importable only if TurboPython can compile it. Many standard-library
@@ -58,25 +61,25 @@ More on designing signatures: [Functions and API boundaries](functions.md).
 
 Like Python, TurboPython's `int` is arbitrary-precision, so it is always exact
 and is the right type for genuinely unbounded arithmetic. The fixed-width
-integer types -- `Int8` through `Int64` and their unsigned variants -- are
+integer types -- `int8` through `int64` and their unsigned variants -- are
 machine integers that trade that guarantee for speed, and an unannotated integer
-literal infers as `Int32`. Floating-point works as in Python: `float` is itself
-a fixed-size machine double (an alias for `Float64`) and the default for real
-numbers, with `Float32` available where narrower precision is wanted.
+literal infers as `int32`. Floating-point works as in Python: `float` is itself
+a fixed-size machine double (an alias for `float64`) and the default for real
+numbers, with `float32` available where narrower precision is wanted.
 
 <!-- tpy: run -->
 ```python
 def main():
     n: int = 2 ** 100    # int is arbitrary-precision
     print(n + 1)
-    k = 5                # an unannotated literal is Int32
+    k = 5                # an unannotated literal is int32
     print(k * k)         # 25
 
 main()
 ```
 
 Fixed-width arithmetic does not wrap silently. Overflow stops the program with
-a panic: `TurboPython panic: Int32 overflow in addition`. A panic is not an
+a panic: `TurboPython panic: int32 overflow in addition`. A panic is not an
 exception; it cannot be caught.
 
 Fixed-width types are for computation, and `int` is for genuinely unbounded
@@ -220,8 +223,8 @@ class Animal:
     def sound(self) -> str:
         return "..."
 
-class Dog(Animal):
-    def sound(self) -> str:      # warning: hides Animal.sound
+class Dog(Animal):               # warning: hides Animal.sound
+    def sound(self) -> str:
         return "woof"
 ```
 

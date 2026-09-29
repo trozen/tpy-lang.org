@@ -14,5 +14,8 @@ write TurboPython and what works today.
 A generated API reference will follow.
 
 !!! note "Early development"
-    TurboPython is under active development. Most of the core language works,
-    but the standard library has gaps and rough edges remain. The [landing page](https://tpy-lang.org/) has runnable examples.
+    The core language compiles and runs real programs, but some ordinary Python
+    constructs are still rejected, the standard library is a subset, and known
+    bugs can produce wrong results silently. [Compatibility](compatibility.md)
+    records what works; the [landing page](https://tpy-lang.org/) has runnable
+    examples.

@@ -30,10 +30,8 @@ experienced Python developers.
   cannot by itself prove a visitor can run what the landing page shows.
   `uv run --with 'tpy-lang==<version>' python verify_examples.py` runs that
   check against the published package; it must pass, or the affected examples
-  must come off the page, before anyone is pointed at the site. As of 0.5.0
-  this gate passes: all eight examples verify against the published release,
-  `requests_demo.py` (tile 6) included. Re-run it after each release bump, and
-  whenever the pin moves ahead of what is on PyPI.
+  must come off the page, before anyone is pointed at the site. Re-run it
+  after every pin bump.
 - **Self-contained landing page.** No external scripts, styles, fonts, or network
   requests in `index.html` -- everything inline, no framework. (The docs site under
   `docs-site/` is the exception: it uses MkDocs Material.)

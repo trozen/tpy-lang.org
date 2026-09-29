@@ -34,8 +34,8 @@ or pip:
 
 Compilation needs a C++23 compiler: g++ 13 or newer, or clang++ 19 or newer.
 An installed system compiler is detected automatically, and its C++23 support
-is checked before the build; an unsupported compiler is rejected upfront with
-the version floors and a suggested fix, rather than failing partway through. If
+is checked before the build; one that fails the check is skipped, with the
+version floors and a suggested fix, rather than failing partway through. If
 no suitable compiler is present, the `[bundled]` extra installs a C++ compiler
 (zig)
 together with the package and needs no other setup:
@@ -130,9 +130,9 @@ main()
 The annotations are ordinary Python types. Annotated as `int`, `a` and `b`
 are Python integers with arbitrary precision, which is how `fib(100)` returns
 its exact 21-digit result. Without the annotations, the literals `0` and `1`
-would infer `Int32`, the fast machine type, and the addition would overflow.
+would infer `int32`, the fast machine type, and the addition would overflow.
 [Types](guide/types.md) explains the inference rules and the fixed-width
-types such as `Int32` and `Int64`.
+types such as `int32` and `int64`.
 
 Classes follow the same pattern. Fields are declared with annotations, and
 methods are ordinary Python. There is no `__dict__`: an instance has exactly
@@ -196,20 +196,21 @@ The programs on this page are deliberately small. Complete programs live in a
 separate repository,
 [tpy-examples](https://github.com/trozen/tpy-examples){ target="_blank" rel="noopener" },
 which also holds the examples shown on the [landing page](https://tpy-lang.org/).
-Most are ported from the examples of another Python-to-C++ compiler, and each
-port records what changed from the original. Licensing is per program.
+The larger programs are ported from the examples of another Python-to-C++
+compiler, and each port records what changed from the original; the rest are
+small single-file programs written for the gallery. Licensing is per program.
 
-Each one sits in its own directory, together with any data files it reads, and
-its entry point is named after that directory:
+A ported program sits in its own directory, together with any data files it
+reads, and its entry point is named after that directory:
 
 ```console
 $ git clone https://github.com/trozen/tpy-examples
 $ cd tpy-examples/shedskin/voronoi
-$ tpy -O voronoi.py
+$ tpy voronoi.py
 ```
 
-The `-O` flag turns on optimizations. The default build compiles faster and
-runs slower.
+The build is optimized by default. The `--debug` flag builds without
+optimization, which compiles faster and runs slower.
 
 ## Coding with an AI agent
 

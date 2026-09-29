@@ -1,8 +1,8 @@
 # expect: ok
-from tpy import Int32
+from tpy import int32
 
-def total(*xs: Int32) -> Int32:
-    t: Int32 = 0
+def total(*xs: int32) -> int32:
+    t: int32 = 0
     for x in xs:
         t += x
     return t

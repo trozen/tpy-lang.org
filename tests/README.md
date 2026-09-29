@@ -34,8 +34,9 @@ git -C vendor/tpy checkout <commit-or-tag>
 git add vendor/tpy .gitmodules
 ```
 
-Bumping `vendor/tpy` to a newer commit -> re-run `pytest` -> update the
-"Status as of 0.5.0.devN" stamp is the release ritual.
+Bumping `vendor/tpy` to a newer commit and re-running `pytest` is the release
+ritual. The version shown on every docs page is read from the pinned checkout
+by `docs-site/hooks/version.py`, so nothing is stamped by hand.
 
 ## Running
 
@@ -50,6 +51,5 @@ Snippets compile fast by default (front-end only, `tpyc`). Blocks marked
 
 `tests/compat/` holds the probe programs behind every row of the
 Compatibility page (`docs-site/src/compatibility.md`); `test_compat_probes.py`
-compiles each one and import-checks the stdlib tables. Re-running it and
-updating the page's "Status as of" stamp is part of the vendor-bump
-ritual above.
+compiles each one and import-checks the stdlib tables. Re-running it is part
+of the vendor-bump ritual above.

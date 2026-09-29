@@ -160,10 +160,10 @@
       <div class="md-header__source">
         <div class="md-source">
           <div class="md-source__repository">
-            TurboPython 0.5.1
+            TurboPython 0.6.1
             
               <ul class="md-source__facts">
-                <li class="md-source__fact md-source__fact--version">v0.5.1</li>
+                <li class="md-source__fact md-source__fact--version">v0.6.1</li>
               </ul>
             
           </div>
@@ -1105,10 +1105,10 @@ surface and the gaps that matter in practice. Each entry carries a status:</p>
 </tr>
 <tr>
 <td>First-class functions, closures, lambdas</td>
-<td><code>Fn[...]</code> (zero-cost) and <code>Callable[...]</code> (type-erased); nested <code>def</code> with <code>nonlocal</code></td>
+<td><code>Fn[...]</code> (zero-cost) and <code>Callable[...]</code> (type-erased); nested <code>def</code> with <code>nonlocal</code>; a lambda needs a typed context (a parameter or an annotated target)</td>
 </tr>
 <tr>
-<td>Classes: declared fields, methods, <code>@property</code>, <code>@staticmethod</code>, class-level defaults</td>
+<td>Classes: declared fields, methods, <code>@property</code>, <code>@staticmethod</code>, <code>@classmethod</code> (returning <code>Own[Self]</code>), class-level defaults</td>
 <td><a href="../guide/data-modeling/">Data modeling</a></td>
 </tr>
 <tr>
@@ -1161,7 +1161,7 @@ surface and the gaps that matter in practice. Each entry carries a status:</p>
 </tr>
 <tr>
 <td><code>assert</code></td>
-<td>narrows optionals; kept in <code>-O</code> builds</td>
+<td>narrows optionals; kept in optimized builds</td>
 </tr>
 <tr>
 <td><code>bytes</code> literals</td>
@@ -1173,7 +1173,7 @@ surface and the gaps that matter in practice. Each entry carries a status:</p>
 </tr>
 <tr>
 <td>Enums</td>
-<td><code>Enum</code> / <code>IntEnum</code>, <code>auto()</code>, <code>.name</code> / <code>.value</code>, iteration, value/name lookup, <code>match</code></td>
+<td><code>Enum</code> / <code>IntEnum</code>, <code>auto()</code>, <code>.name</code> / <code>.value</code>, iteration, value/name lookup, <code>match</code>, methods</td>
 </tr>
 <tr>
 <td>Top-level code</td>
@@ -1190,23 +1190,44 @@ surface and the gaps that matter in practice. Each entry carries a status:</p>
 see the <code>asyncio</code> entry under <a href="#concurrency">Concurrency</a>.</p>
 <p><strong>Built-in functions and types.</strong></p>
 <p><strong>Works:</strong> the common built-ins — <code>len</code>, <code>range</code>, <code>enumerate</code>, <code>zip</code>, <code>map</code>,
-<code>filter</code>, <code>sorted</code>, <code>sum</code>, <code>min</code> / <code>max</code>, <code>abs</code>, <code>round</code>, <code>int</code> / <code>float</code> /
-<code>str</code>, <code>list</code> / <code>dict</code> / <code>set</code> / <code>tuple</code>, <code>isinstance</code>, <code>input()</code>, and most
-exception types. The <code>input</code> function does not accept a prompt argument.</p>
-<p><strong>Not yet:</strong> <code>frozenset</code>, <code>complex</code>, <code>memoryview</code>, <code>format</code>, <code>ascii</code>,
-<code>callable</code>, <code>id</code>, runtime <code>type(x)</code>.</p>
+<code>filter</code>, <code>sorted(xs, key=...)</code>, <code>sum</code>, <code>min</code> / <code>max</code> over two or more
+arguments, <code>abs</code>, <code>round</code>, <code>int</code> / <code>float</code> / <code>str</code>, <code>list</code> / <code>dict</code> / <code>set</code>,
+<code>isinstance</code>, <code>input()</code> with or without a prompt, and most exception types.</p>
+<p><strong>Not yet:</strong> <code>tuple(...)</code>, <code>min</code> / <code>max</code> over a single iterable,
+<code>sorted(reverse=True)</code>, <code>next(it, default)</code>, <code>slice</code>, <code>vars</code>, <code>getattr</code>,
+<code>print(*xs)</code>, a built-in passed as a value (<code>key=len</code>), <code>frozenset</code>,
+<code>complex</code>, <code>memoryview</code>, <code>format</code>, <code>ascii</code>, <code>callable</code>, <code>id</code>, runtime
+<code>type(x)</code>.</p>
+<p><strong><code>str</code> methods.</strong> The everyday set works. <strong>Not yet:</strong> <code>format()</code> and <code>%</code>
+formatting, <code>center</code> / <code>ljust</code> / <code>rjust</code> / <code>zfill</code>, <code>partition</code>, <code>rsplit</code>,
+<code>casefold</code>, <code>expandtabs</code>, <code>rstrip(chars)</code> (the no-argument form works), and
+<code>endswith</code> with a tuple.</p>
+<p><strong>Unpacking and splats.</strong> <code>a, *rest = xs</code>, <code>[*a]</code>, <code>{**d}</code>, dict <code>|</code>, and
+<code>del xs[a:b]</code> are rejected, and <code>except*</code> is not available. <code>raise X from e</code>
+compiles but drops the cause.</p>
+<p><strong>Module-qualified class names.</strong> Functions are callable as <code>module.func</code>.
+Classes and exception types in several modules are reachable only through
+<code>from module import Name</code>: <code>csv.DictReader</code>, <code>collections.Counter</code>,
+<code>asyncio.Queue</code> / <code>asyncio.Future</code>, and the <code>tplib.requests</code> exceptions, where
+a module-qualified <code>except requests.ConnectionError</code> compiles but does not
+catch.</p>
 <p><strong><code>**kwargs</code>.</strong> The typed form <code>**kwargs: Unpack[TypedDict]</code> works; the untyped
 <code>**kwargs: T</code> form is rejected.</p>
-<p><strong>f-strings.</strong> Scalar values and format specs (<code>f"{x:.2f}"</code>) work; a <code>list</code> or
-<code>dict</code> cannot be formatted directly inside the braces.</p>
+<p><strong>f-strings.</strong> Scalar values, format specs (<code>f"{x:.2f}"</code>), and containers with
+a declared type work; a list whose type is still being inferred (an
+unannotated literal or comprehension) cannot be formatted directly inside the
+braces.</p>
 <p><strong><code>print(e)</code> on exceptions.</strong> For built-in exceptions this prints the message,
 matching CPython, and <code>str(e)</code> and f-strings return the message on both
 runtimes. For a user-defined exception class, <code>print(e)</code> prints the object
-rather than the message, with no diagnostic.</p>
-<p><strong>Protocol and union types in containers.</strong> Matching on the elements of a
-<code>list[A | B]</code> works. <code>list[SomeProtocol]</code> is rejected, and passing a
-<code>list[A | B]</code> element to a union-typed <em>parameter</em> fails in the C++ build
-today.</p>
+rather than the message, with no diagnostic; a library exception class caught
+by its own type (<code>json.JSONDecodeError</code>, <code>zlib.error</code>) behaves the same way.</p>
+<p><strong>Tuples.</strong> Unpacking works on a call result (<code>r, ok = pick(items)</code>); a tuple
+that holds a reference-type element and was stored in a local first cannot be
+unpacked yet.</p>
+<p><strong>Protocol types in containers.</strong> Matching on the elements of a <code>list[A | B]</code>
+works, and an element passes to a union-typed parameter. <code>list[SomeProtocol]</code>
+is rejected.</p>
 <h3 id="not-yet">Not yet<a class="headerlink" href="#not-yet" title="Permanent link">&para;</a></h3>
 <table>
 <thead>
@@ -1277,19 +1298,23 @@ Byte-compatible with CPython.</p>
 <code>dumps</code> / <code>loads</code> keyword arguments (<code>ensure_ascii</code>, <code>separators</code>, <code>default</code>,
 <code>object_hook</code>, <code>parse_float</code>, ...).</p>
 <h4 id="re"><code>re</code> — Partial<a class="headerlink" href="#re" title="Permanent link">&para;</a></h4>
-<p><strong>Works:</strong> <code>compile</code>, <code>search</code>, <code>match</code>, <code>fullmatch</code>, <code>findall</code>, <code>finditer</code>,
-<code>sub</code> (with <code>count</code>), <code>split</code>; <code>Pattern</code> and <code>Match</code> objects (<code>group</code> / <code>start</code>
+<p><strong>Works:</strong> <code>compile</code>, <code>search</code>, <code>match</code>, <code>fullmatch</code>, <code>findall</code>, <code>finditer</code> on
+a compiled pattern, <code>sub</code> (with <code>count</code>), <code>split</code>; <code>Pattern</code> and <code>Match</code> objects (<code>group</code> / <code>start</code>
 / <code>end</code> / <code>span</code>); the <code>IGNORECASE</code> / <code>MULTILINE</code> / <code>DOTALL</code> / <code>VERBOSE</code> /
 <code>ASCII</code> flags; <code>re.error</code>. Backed by PCRE2 (vendored, bundled by default;
 <code>--pcre2=</code> selects the backend).</p>
-<p><strong>Not yet:</strong> named-group accessors, bytes input, the compile cache.</p>
+<p><strong>Not yet:</strong> named-group accessors, bytes input, the compile cache, <code>re.finditer</code>
+as a module function, <code>sub</code> with a callable replacement; <code>groups()</code> returns a
+list rather than a tuple.</p>
 <h4 id="csv"><code>csv</code> — Partial<a class="headerlink" href="#csv" title="Permanent link">&para;</a></h4>
-<p><strong>Works:</strong> <code>reader</code>, <code>writer</code>, <code>DictReader</code>, <code>DictWriter</code> over the <code>io</code>
-<code>Readable</code> / <code>Writable</code> protocols; the Excel dialect; <code>delimiter</code> /
-<code>quotechar</code> / <code>doublequote</code> / <code>skipinitialspace</code> / <code>lineterminator</code> kwargs;
-<code>QUOTE_MINIMAL</code> writing. Byte-compatible with CPython.</p>
+<p><strong>Works:</strong> <code>reader</code>, <code>writer</code>, <code>DictReader</code>, <code>DictWriter</code> (imported by name)
+over the <code>io</code> <code>Readable</code> / <code>Writable</code> protocols; the Excel dialect;
+<code>delimiter</code> / <code>quotechar</code> / <code>doublequote</code> / <code>skipinitialspace</code> /
+<code>lineterminator</code> kwargs on <code>reader</code> / <code>writer</code>; <code>QUOTE_MINIMAL</code> writing.
+Byte-compatible with CPython.</p>
 <p><strong>Not yet:</strong> <code>Sniffer</code>, <code>Dialect</code> objects / <code>register_dialect</code>, the quoting
-constants, <code>escapechar</code>, <code>DictReader</code> <code>restkey</code> / <code>restval</code>.</p>
+constants and <code>quoting=</code>, <code>escapechar</code>, dialect kwargs on <code>DictReader</code>,
+<code>DictReader</code> <code>restkey</code> / <code>restval</code>, printing a row directly.</p>
 <h4 id="base64"><code>base64</code> — Works<a class="headerlink" href="#base64" title="Permanent link">&para;</a></h4>
 <p>b64 / b32 / b16 encode and decode, urlsafe and standard variants, <code>altchars</code> /
 <code>validate</code> / <code>casefold</code> / <code>map01</code> kwargs, <code>encodebytes</code> / <code>decodebytes</code>;
@@ -1299,21 +1324,36 @@ accepts <code>bytes</code> / <code>bytearray</code> / <code>str</code> on the de
 <p><strong>Works:</strong> <code>unpack</code>, <code>calcsize</code>. <strong>Not yet:</strong> <code>pack</code> (needs a buffer builder).</p>
 <h4 id="hashlib"><code>hashlib</code> — Partial<a class="headerlink" href="#hashlib" title="Permanent link">&para;</a></h4>
 <p><strong>Works:</strong> SHA-256 (pure TurboPython). <strong>Not yet:</strong> MD5, SHA-1, SHA-512,
-BLAKE2 / SHA-3, an optional OpenSSL backend.</p>
+BLAKE2 / SHA-3, <code>hashlib.new</code>, an optional OpenSSL backend.</p>
+<h4 id="zlib"><code>zlib</code> — Partial<a class="headerlink" href="#zlib" title="Permanent link">&para;</a></h4>
+<p><strong>Works:</strong> <code>compress</code> / <code>decompress</code> with every <code>wbits</code> container, <code>crc32</code> /
+<code>adler32</code>, <code>compressobj</code> / <code>decompressobj</code> with <code>flush</code>, <code>eof</code>, <code>unused_data</code>
+and <code>unconsumed_tail</code>, <code>zlib.error</code>, and the constants. A bundled zlib is
+linked by default; <code>--zlib system</code> links the system library instead.</p>
+<p><strong>Not yet:</strong> <code>zdict=</code> and <code>copy()</code> on the stream objects. <code>crc32</code> / <code>adler32</code>
+return <code>uint32</code>, so arithmetic on the result past the 32-bit range panics
+rather than growing.</p>
+<h4 id="gzip"><code>gzip</code> — Partial<a class="headerlink" href="#gzip" title="Permanent link">&para;</a></h4>
+<p><strong>Works:</strong> <code>compress</code> / <code>decompress</code> (multi-member streams included),
+<code>BadGzipFile</code>, and reading through <code>gzip.open(path)</code> / <code>GzipFile(path)</code>, with
+no mode argument: <code>read</code>, <code>readline</code>, iteration, <code>with</code>.</p>
+<p><strong>Not yet:</strong> writing (<code>mode="wb"</code> and the <code>GzipFile</code> writer), text modes,
+<code>fileobj=</code>, and <code>seek</code> / <code>tell</code>.</p>
 <h4 id="string"><code>string</code> — Not yet<a class="headerlink" href="#string" title="Permanent link">&para;</a></h4>
 <h4 id="textwrap"><code>textwrap</code> — Not yet<a class="headerlink" href="#textwrap" title="Permanent link">&para;</a></h4>
 <h3 id="collections-functional-typing">Collections, functional &amp; typing<a class="headerlink" href="#collections-functional-typing" title="Permanent link">&para;</a></h3>
 <h4 id="collections"><code>collections</code> — Partial<a class="headerlink" href="#collections" title="Permanent link">&para;</a></h4>
-<p><strong>Works:</strong> <code>Counter</code> (construction, <code>[]</code>, <code>len</code>, <code>in</code>, <code>total</code>,
-<code>most_common(n)</code>, <code>update</code>, <code>subtract</code>).</p>
+<p><strong>Works:</strong> <code>Counter</code>, imported by name (construction, <code>[]</code>, <code>len</code>, <code>in</code>,
+<code>total</code>, <code>most_common(n)</code>, <code>update</code> / <code>subtract</code> with another <code>Counter</code>).</p>
 <p><strong>Not yet:</strong> <code>deque</code>, <code>defaultdict</code>, <code>namedtuple</code>, <code>OrderedDict</code>,
 <code>Counter.elements</code> and the <code>+ - &amp; |</code> operators.</p>
 <h4 id="itertools"><code>itertools</code> — Partial<a class="headerlink" href="#itertools" title="Permanent link">&para;</a></h4>
 <p><strong>Works:</strong> <code>count</code>, <code>repeat</code>, <code>cycle</code>, <code>islice(it, stop)</code>, <code>takewhile</code>,
 <code>dropwhile</code>, <code>filterfalse</code>.</p>
 <p><strong>Not yet:</strong> <code>chain</code>, <code>product</code>, <code>starmap</code>, <code>accumulate</code>, <code>pairwise</code>,
-<code>compress</code>, <code>tee</code>, <code>groupby</code>, <code>batched</code> (each blocked on a distinct compiler
-gap — variadic tuples, buffering).</p>
+<code>compress</code>, <code>tee</code>, <code>groupby</code>, <code>batched</code>, <code>combinations</code>, <code>permutations</code>,
+<code>zip_longest</code> (each blocked on a distinct compiler gap — variadic tuples,
+buffering).</p>
 <h4 id="functools"><code>functools</code> — Partial<a class="headerlink" href="#functools" title="Permanent link">&para;</a></h4>
 <p><strong>Works:</strong> <code>reduce(func, iterable[, initial])</code>, <code>total_ordering</code>.</p>
 <p><strong>Not yet:</strong> <code>lru_cache</code>, <code>partial</code>, <code>partialmethod</code>, <code>wraps</code>, <code>cmp_to_key</code>,
@@ -1321,27 +1361,38 @@ gap — variadic tuples, buffering).</p>
 <h4 id="bisect"><code>bisect</code> — Works<a class="headerlink" href="#bisect" title="Permanent link">&para;</a></h4>
 <p>All four functions (<code>bisect_left</code> / <code>bisect_right</code> / <code>insort_left</code> /
 <code>insort_right</code>), generic over <code>Comparable</code>.</p>
+<p><strong>Not yet:</strong> the <code>lo</code> / <code>hi</code> / <code>key</code> keyword arguments.</p>
 <h4 id="heapq"><code>heapq</code> — Works<a class="headerlink" href="#heapq" title="Permanent link">&para;</a></h4>
 <p>All non-variadic operations plus <code>merge</code> (lazy, stable n-way).</p>
 <p><strong>Not yet:</strong> <code>merge</code> over arbitrary iterables (inputs must be <code>list[T]</code>),
-<code>key=</code> / <code>reverse=</code> on <code>merge</code>.</p>
+<code>key=</code> / <code>reverse=</code> on <code>merge</code>, <code>key=</code> on <code>nsmallest</code> / <code>nlargest</code>.</p>
 <h4 id="dataclasses"><code>dataclasses</code> — Partial<a class="headerlink" href="#dataclasses" title="Permanent link">&para;</a></h4>
 <p><strong>Works:</strong> field declarations, the generated <code>__init__</code>, <code>frozen</code> / <code>order</code>,
-inheritance, <code>asdict</code> / <code>astuple</code>, <code>__post_init__</code>.</p>
-<p><strong>Not yet:</strong> <code>InitVar</code>, <code>replace()</code>, field <code>metadata</code>.</p>
+inheritance, <code>asdict</code> / <code>astuple</code>, <code>__post_init__</code>,
+<code>field(default_factory=...)</code>.</p>
+<p><strong>Not yet:</strong> <code>InitVar</code>, <code>replace()</code>, <code>fields()</code>, <code>kw_only</code> / <code>slots</code>, field
+<code>metadata</code>.</p>
 <h4 id="enum"><code>enum</code> — Works<a class="headerlink" href="#enum" title="Permanent link">&para;</a></h4>
 <p><code>Enum</code> / <code>IntEnum</code>, <code>auto()</code>, <code>.name</code> / <code>.value</code>, <code>==</code> / <code>is</code>, iteration
 (<code>for c in Color</code>), value lookup (<code>Color(0)</code>), name lookup (<code>Color["red"]</code>),
-<code>try_parse</code>, <code>match</code> on members, a configurable underlying type via mixin
-(<code>(Int8, Enum)</code>), and <code>@native</code> binding to a C++ <code>enum class</code>.</p>
-<p><strong>Not yet:</strong> the functional API (<code>Enum("Color", [...])</code>).</p>
+<code>tpy.try_parse</code>, <code>match</code> on members, a configurable underlying type via mixin
+(<code>(int8, Enum)</code>), methods on the enum class (instance methods, <code>@property</code>,
+<code>@staticmethod</code>, <code>@classmethod</code>), and <code>@native</code> binding to a C++ <code>enum class</code>.</p>
+<p><strong>Not yet:</strong> <code>StrEnum</code> / <code>Flag</code>, non-integer member values, <code>str(Color.red)</code>
+and f-string formatting of a member, <code>len(Color)</code>, the functional API
+(<code>Enum("Color", [...])</code>), dunder methods and property setters on an enum, and
+methods on a <code>@native</code> enum.</p>
 <h4 id="typing"><code>typing</code> — Partial<a class="headerlink" href="#typing" title="Permanent link">&para;</a></h4>
 <p><strong>Works:</strong> <code>Protocol</code>, <code>Self</code>, <code>overload</code>, <code>override</code>, <code>Sized</code>, <code>Iterable</code>,
 <code>Iterator</code>, <code>Sequence</code>, <code>Optional</code>, <code>Final</code>, <code>Callable</code>, <code>Literal</code>,
 <code>TypedDict</code>, <code>Unpack</code>, <code>ClassVar</code>, <code>Any</code>, <code>cast</code>. Most operations on an <code>Any</code>
-value require narrowing with <code>isinstance</code> or extraction with <code>cast</code> first.</p>
+value require narrowing with <code>isinstance</code> or extraction with <code>cast</code> first.
+<code>overload</code> takes CPython's form only: bodyless stubs followed by one
+implementation. A set of variants that each carry their own body is written
+with <code>tpy.dispatch</code> instead.</p>
 <p><strong>Not yet:</strong> <code>Generic</code>, <code>TypeVar</code>, <code>ParamSpec</code>, <code>NewType</code> — use PEP 695
-syntax (<code>class C[T]</code>, <code>def f[T]</code>) for generics.</p>
+syntax (<code>class C[T]</code>, <code>def f[T]</code>) for generics; bare <code>Final</code> (write
+<code>Final[int]</code>); <code>Mapping</code>, <code>NamedTuple</code>, <code>Generator</code>.</p>
 <h4 id="copy"><code>copy</code> — Not yet<a class="headerlink" href="#copy" title="Permanent link">&para;</a></h4>
 <p>TurboPython has its own <a href="../guide/ownership/"><code>copy()</code></a>.</p>
 <h3 id="files-os-runtime">Files, OS &amp; runtime<a class="headerlink" href="#files-os-runtime" title="Permanent link">&para;</a></h3>
@@ -1349,9 +1400,10 @@ syntax (<code>class C[T]</code>, <code>def f[T]</code>) for generics.</p>
 <p><strong>Works:</strong> filesystem queries (<code>getcwd</code>, <code>chdir</code>, <code>listdir</code>, <code>scandir</code> -&gt;
 <code>DirEntry</code>, <code>stat</code> / <code>lstat</code> / <code>fstat</code> -&gt; <code>stat_result</code>, <code>walk</code>); mutating
 operations (<code>mkdir</code> / <code>makedirs</code>, <code>rmdir</code>, <code>remove</code> / <code>unlink</code>, <code>rename</code> /
-<code>replace</code>, <code>symlink</code> / <code>readlink</code> / <code>link</code>, <code>chmod</code> / <code>chown</code>, <code>utime</code>,
-<code>truncate</code>); low-level fd I/O (<code>open</code> / <code>close</code> / <code>read</code> / <code>write</code> / <code>lseek</code> /
-<code>pipe</code> / <code>dup</code> / <code>dup2</code>, the <code>O_*</code> / <code>SEEK_*</code> constants); <code>access</code>; <code>urandom</code>;
+<code>replace</code>, <code>symlink</code> / <code>readlink</code> / <code>link</code>, <code>chmod</code> / <code>chown</code>, <code>utime</code> (with
+a times tuple), <code>truncate</code>); low-level fd I/O (<code>open</code> / <code>close</code> / <code>read</code> /
+<code>write</code> / <code>lseek</code> / <code>pipe</code> / <code>dup</code> / <code>dup2</code>, <code>get_blocking</code> / <code>set_blocking</code>,
+<code>openpty</code>, the <code>O_*</code> / <code>SEEK_*</code> constants); <code>access</code>; <code>urandom</code>;
 process and system queries (<code>getpid</code> / <code>getppid</code>, the <code>getuid</code> family,
 <code>umask</code>, <code>cpu_count</code>, <code>isatty</code>, <code>get_terminal_size</code>); <code>environ</code> (a snapshot
 mapping) with <code>putenv</code> / <code>unsetenv</code>; module constants (<code>name</code>, <code>sep</code>, ...).
@@ -1370,13 +1422,25 @@ queries <code>exists</code> / <code>lexists</code> / <code>isfile</code> / <code
 fd); <code>BufferedReader</code>; the <code>Readable</code> / <code>Writable</code> / <code>BinaryReadable</code> /
 <code>BinaryWritable</code> protocols; <code>SEEK_*</code> and <code>DEFAULT_BUFFER_SIZE</code>.</p>
 <p><strong>Not yet:</strong> <code>TextIOWrapper</code>, the <code>IOBase</code> ABC hierarchy, <code>BufferedReader.peek</code>
-/ <code>readinto</code>, encoding / newline / errors kwargs.</p>
+/ <code>readinto</code>, encoding / newline / errors kwargs, iterating an <code>open()</code> file
+object directly (<code>for line in f</code>; <code>readlines()</code> works).</p>
 <h4 id="sys"><code>sys</code> — Partial<a class="headerlink" href="#sys" title="Permanent link">&para;</a></h4>
-<p><strong>Works:</strong> <code>argv</code>, <code>stdout</code>, <code>stderr</code>, <code>exit</code>, <code>maxsize</code>.</p>
-<p><strong>Not yet:</strong> <code>stdin</code>, <code>path</code>, <code>version_info</code>.</p>
+<p><strong>Works:</strong> <code>argv</code>, <code>stdout</code>, <code>stderr</code>, <code>exit</code>, <code>maxsize</code>, <code>byteorder</code>.</p>
+<p><strong>Not yet:</strong> <code>stdin</code>, <code>path</code>, <code>version_info</code>, <code>platform</code>.</p>
 <h4 id="signal"><code>signal</code> — Partial<a class="headerlink" href="#signal" title="Permanent link">&para;</a></h4>
-<p><strong>Works:</strong> <code>raise_signal</code>, the <code>SIGINT</code> / <code>SIGTERM</code> constants.</p>
+<p><strong>Works:</strong> <code>raise_signal</code> (the default action runs, so <code>SIGINT</code> terminates the
+process rather than raising <code>KeyboardInterrupt</code>), the <code>SIGINT</code> / <code>SIGTERM</code>
+constants.</p>
 <p><strong>Not yet:</strong> <code>signal.signal</code> handler registration.</p>
+<h4 id="termios"><code>termios</code> — Partial<a class="headerlink" href="#termios" title="Permanent link">&para;</a></h4>
+<p><strong>Works:</strong> <code>tcgetattr</code> / <code>tcsetattr</code> with <code>TCSANOW</code> / <code>TCSADRAIN</code> /
+<code>TCSAFLUSH</code>, <code>VMIN</code> / <code>VTIME</code>, and <code>termios.error</code>. <code>tcgetattr</code> returns an
+opaque record rather than a list, so indexing it and editing single flags are
+not available.</p>
+<p><strong>Not yet:</strong> <code>tcdrain</code> / <code>tcflush</code> / <code>tcflow</code> / <code>tcsendbreak</code>, <code>tcgetwinsize</code>.</p>
+<h4 id="tty"><code>tty</code> — Works<a class="headerlink" href="#tty" title="Permanent link">&para;</a></h4>
+<p><code>setraw</code> / <code>setcbreak</code>, returning the previous attributes, and <code>cfmakeraw</code> /
+<code>cfmakecbreak</code>.</p>
 <h4 id="errno"><code>errno</code> — Partial<a class="headerlink" href="#errno" title="Permanent link">&para;</a></h4>
 <p><strong>Works:</strong> the constants TurboPython's stdlib maps to <code>OSError</code> subclasses —
 the network domain (<code>EAGAIN</code>, <code>EWOULDBLOCK</code>, <code>EINPROGRESS</code>, <code>EPIPE</code>,
@@ -1392,7 +1456,8 @@ from the platform headers so values are host-correct. Enables
 <h4 id="tempfile"><code>tempfile</code> — Not yet<a class="headerlink" href="#tempfile" title="Permanent link">&para;</a></h4>
 <h3 id="date-time">Date &amp; time<a class="headerlink" href="#date-time" title="Permanent link">&para;</a></h3>
 <h4 id="datetime"><code>datetime</code> — Works<a class="headerlink" href="#datetime" title="Permanent link">&para;</a></h4>
-<p><code>timedelta</code>, <code>date</code>, <code>time</code>, <code>datetime</code>; fixed-offset <code>timezone</code> and
+<p><code>timedelta</code>, <code>date</code>, <code>time</code>, <code>datetime</code>; fixed-offset <code>timezone</code> (UTC as
+<code>datetime.UTC</code>; <code>timezone.utc</code> is not available) and
 <code>ZoneInfo</code>-aware values; PEP 495 fold; <code>strftime</code> / <code>strptime</code> /
 <code>fromisoformat</code>; <code>timestamp</code> / <code>astimezone</code>; <code>date()</code> / <code>time()</code> accessors;
 <code>timedelta</code> float operators.</p>
@@ -1465,14 +1530,16 @@ with <code>params</code> / <code>headers</code> / <code>data</code> / <code>file
 <code>allow_redirects</code> / <code>cookies</code>; a <code>data=</code> body as raw <code>bytes</code> or a urlencoded
 <code>dict</code>; <code>files=</code> multipart uploads; <code>Response</code> (<code>.status_code</code> / <code>.ok</code> /
 <code>.text</code> / <code>.content</code> / <code>.json()</code> / <code>.headers</code> (a <code>CaseInsensitiveDict</code>) /
-<code>.cookies</code> / <code>.url</code> / <code>.history</code> / <code>.raise_for_status()</code>); redirect following
+<code>.cookies</code> / <code>.url</code> (without the query string) / <code>.history</code> /
+<code>.raise_for_status()</code>); redirect following
 (301/302/303/307/308); <code>stream=True</code> (<code>iter_content</code> / <code>iter_lines</code> / <code>.raw</code> /
 <code>.close()</code>); a <code>Session</code> with default headers, connection pooling, and
 persistent cookies; HTTPS verification (<code>verify=True | "&lt;ca&gt;" | False</code>);
 exceptions rooted at <code>OSError</code> (<code>HTTPError</code> / <code>ConnectionError</code> / <code>Timeout</code> /
-<code>TooManyRedirects</code>).</p>
-<p><strong>Not yet:</strong> <code>(connect, read)</code> timeout tuples, an untyped <code>.json()</code> return,
-<code>asctime</code> cookie-expiry parsing.</p>
+<code>TooManyRedirects</code>), caught by the names imported from <code>tplib.requests</code>.</p>
+<p><strong>Not yet:</strong> <code>(connect, read)</code> timeout tuples, a <code>Timeout</code> on an HTTPS read
+timeout (it surfaces as <code>SSLError</code>), an untyped <code>.json()</code> return, <code>asctime</code>
+cookie-expiry parsing.</p>
 <p>This is a TurboPython-native client, not the PyPI <code>requests</code> package.</p>
 <h3 id="concurrency">Concurrency<a class="headerlink" href="#concurrency" title="Permanent link">&para;</a></h3>
 <h4 id="threads">Threads (<code>tpy.thread</code>) — Works<a class="headerlink" href="#threads" title="Permanent link">&para;</a></h4>
@@ -1499,12 +1566,14 @@ explicit <code>close()</code>, after which <code>recv</code> raises <code>Channe
 empty.</p>
 <h4 id="asyncio"><code>asyncio</code> — Partial<a class="headerlink" href="#asyncio" title="Permanent link">&para;</a></h4>
 <p><strong>Works:</strong> <code>run</code>, <code>sleep</code>, <code>create_task</code>, <code>Task[T]</code> / <code>Future[T]</code>, <code>Event</code>,
-<code>CancelledError</code>; <code>gather(*tasks)</code> and <code>gather_list(tasks)</code>; <code>async with</code> /
+<code>CancelledError</code>; <code>gather(*tasks)</code> and <code>gather_list(tasks)</code> over tasks from
+<code>create_task</code> (not bare coroutines); <code>async with</code> /
 <code>async for</code> + <code>StopAsyncIteration</code>; <code>wait_for</code> / <code>TimeoutError</code>; the sync
 primitives <code>Lock</code> / <code>Semaphore</code> / <code>BoundedSemaphore</code> / <code>Queue</code>; an epoll/kqueue
 reactor with <code>sock_recv</code> / <code>sock_sendall</code> / <code>sock_accept</code> / <code>sock_connect</code>;
 streams (<code>open_connection</code> -&gt; <code>StreamReader</code> / <code>StreamWriter</code>, <code>start_server</code> -&gt;
-<code>Server</code>); SIGINT graceful shutdown.</p>
+<code>Server</code>, with handler parameters declared <code>Own[StreamReader]</code> /
+<code>Own[StreamWriter]</code>); SIGINT graceful shutdown.</p>
 <p><strong>Not yet:</strong> the heterogeneous <code>gather[*Ts](*coros) -&gt; tuple[*Ts]</code> form, a
 multi-threaded executor, graceful SIGTERM.</p>
 <h4 id="data-race-detection">Data-race detection through <code>Arc</code> — Not yet<a class="headerlink" href="#data-race-detection" title="Permanent link">&para;</a></h4>
@@ -1519,16 +1588,18 @@ multi-threaded executor, graceful SIGTERM.</p>
 <p>Needs process spawning.</p>
 <h3 id="development-introspection">Development &amp; introspection<a class="headerlink" href="#development-introspection" title="Permanent link">&para;</a></h3>
 <h4 id="argparse"><code>argparse</code> — Partial<a class="headerlink" href="#argparse" title="Permanent link">&para;</a></h4>
-<p><strong>Works:</strong> positionals and optional flags; all seven actions and all four
-<code>nargs</code> forms; <code>type=</code> (<code>int</code> / <code>float</code> / <code>str</code>, the fixed-width ints,
-<code>Float32</code>, custom records via <code>from_arg</code>); <code>choices</code> / <code>required</code> / <code>dest</code> /
+<p><strong>Works:</strong> positionals and optional flags; the <code>store</code> / <code>store_true</code> /
+<code>store_false</code> / <code>store_const</code> / <code>append</code> / <code>extend</code> / <code>count</code> actions and all
+four <code>nargs</code> forms; <code>type=</code> (<code>int</code> / <code>float</code> / <code>str</code>, the fixed-width ints,
+<code>float32</code>, custom records via <code>from_arg</code>); <code>choices</code> / <code>required</code> / <code>dest</code> /
 <code>help</code> / <code>metavar</code>; <code>Optional[T]</code> / <code>Optional[list[T]]</code> for absent flags;
 list-literal defaults; bare <code>parse_args()</code> reading <code>sys.argv[1:]</code>; <code>--help</code> /
 <code>-h</code> auto-generation and <code>add_help=False</code>; <code>prog=</code> / <code>usage=</code> / <code>epilog=</code>;
 subparsers (flat namespace).</p>
-<p><strong>Not yet:</strong> mutually-exclusive groups, argument groups, terminal-width help
-wrapping, <code>BooleanOptionalAction</code>, <code>parents=</code>, <code>allow_abbrev</code>, custom formatter
-classes, <code>action=&lt;callable&gt;</code>.</p>
+<p><strong>Not yet:</strong> <code>append_const</code> / <code>version</code> actions, combined short flags (<code>-ab</code>),
+<code>const=</code> for a valueless <code>nargs="?"</code> flag, mutually-exclusive groups, argument
+groups, terminal-width help wrapping, <code>BooleanOptionalAction</code>, <code>parents=</code>,
+<code>allow_abbrev</code>, custom formatter classes, <code>action=&lt;callable&gt;</code>.</p>
 <h4 id="logging"><code>logging</code> — Not yet<a class="headerlink" href="#logging" title="Permanent link">&para;</a></h4>
 <h4 id="configparser"><code>configparser</code> — Not yet<a class="headerlink" href="#configparser" title="Permanent link">&para;</a></h4>
 <h4 id="inspect"><code>inspect</code> — Not yet<a class="headerlink" href="#inspect" title="Permanent link">&para;</a></h4>
@@ -1578,7 +1649,7 @@ do not import. TurboPython-native libraries live under <code>tplib</code> (for e
       <div class="md-copyright">
   
     <div class="md-copyright__highlight">
-      These docs describe <span class="tpy-version">TurboPython 0.5.1</span> (v0.5.1).
+      These docs describe <span class="tpy-version">TurboPython 0.6.1</span> (v0.6.1).
     </div>
   
   

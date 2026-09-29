@@ -1,7 +1,7 @@
 # expect: error Unpack[TypedDict]
-from tpy import Int32
+from tpy import int32
 
-def show(**opts: Int32) -> None:
+def show(**opts: int32) -> None:
     print(len(opts))
 
 def main():

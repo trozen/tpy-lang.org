@@ -84,7 +84,8 @@ main()
 
 `match` also destructures classes, binding the fields a pattern names
 (`case Circle(radius=r)`), and branches on the members of a union, where the
-compiler checks that every member is covered. [Data modeling](data-modeling.md)
+compiler warns about a member no case covers, and rejects the function when
+the gap would let it end without a return value. [Data modeling](data-modeling.md)
 shows both forms. A pattern can bind the whole value with `as`, as in
 `case Circle() as c`.
 
@@ -193,15 +194,15 @@ same class runs unchanged under CPython:
 
 <!-- tpy: run -->
 ```python
-from tpy import Int32
+from tpy import int32
 
 class Countdown:
-    n: Int32
-    def __init__(self, n: Int32):
+    n: int32
+    def __init__(self, n: int32):
         self.n = n
     def __iter__(self) -> "Countdown":
         return self
-    def __next__(self) -> Int32:
+    def __next__(self) -> int32:
         if self.n == 0:
             raise StopIteration
         self.n -= 1
@@ -237,6 +238,11 @@ def main():
 
 main()
 ```
+
+A generator is one object, as in Python: a second name bound to it aliases
+it. A name that holds a generator is bound once, so a second `squares(3)`
+needs a new name. Advancing a generator by hand with `next(g)` is written
+inside a `try` that handles `StopIteration`.
 
 The next page consolidates all of this into performance guidance:
 [Writing efficient TPy](efficiency.md).

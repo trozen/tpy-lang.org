@@ -14,7 +14,7 @@ make this possible.
 
 First, TurboPython (like C#, Java, Swift, or Rust) separates **value types**
 from **reference types**. Value types are the simple data: `int` and the
-fixed-width integers, `float`, `bool`, `str`, `Char`, and tuples of these. A
+fixed-width integers, `float`, `bool`, `str`, `char`, and tuples of these. A
 value lives directly in its variable and is copied on assignment -- the way
 numbers already appear to behave in Python. Value types have no lifecycle to
 manage; nothing on this page applies to them.
@@ -28,8 +28,8 @@ its owner:
 - An object stored in a **container** or a **field** is owned by that storage.
   This *durable storage* (the compiler's diagnostics call it *owned storage*)
   holds its own value, not a shared reference. A module **global** also owns
-  its value; a reference-type global is assigned once, at module scope, and
-  cannot be reassigned later.
+  its value; a reference-type global is assigned at module scope and cannot
+  be reassigned from inside a function.
 - **Local variables and parameters own nothing.** The frame owns what the
   call creates; the names only *borrow* -- in Python terms, they alias: two
   names can refer to the same object, exactly as in Python.
@@ -61,12 +61,12 @@ this page.
 
 <!-- tpy: prelude run -->
 ```python
-from tpy import Own, copy, readonly, Float64
+from tpy import Own, copy, readonly, float64
 
 class Reading:
     sensor: str
-    values: list[Float64]
-    def __init__(self, sensor: str, values: Own[list[Float64]]):
+    values: list[float64]
+    def __init__(self, sensor: str, values: Own[list[float64]]):
         self.sensor = sensor
         self.values = values
 
@@ -103,7 +103,7 @@ def make() -> Reading:
 ```
 
 ```
-error: Cannot return local or temporary as reference. Object type 'Reading'
+error: Cannot return local or temporary as reference. Reference type 'Reading'
 is returned by reference. Use Own[Reading] to return by value.
 ```
 
@@ -260,7 +260,7 @@ main()
 
 ## In practice
 
-Value types (`Int32`, `str`, ...) always stay plain: they copy, and ownership
+Value types (`int32`, `str`, ...) always stay plain: they copy, and ownership
 does not concern them. For reference types:
 
 | Situation | Annotation |
@@ -369,7 +369,7 @@ through it is a compile error:
 
 <!-- tpy: cont -->
 ```python
-def first_value(r: readonly[Reading]) -> Float64:
+def first_value(r: readonly[Reading]) -> float64:
     return r.values[0]
 ```
 

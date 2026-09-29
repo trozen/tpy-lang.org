@@ -1,13 +1,13 @@
 # expect: ok
-from tpy import Int32
+from tpy import int32
 
 class Countdown:
-    n: Int32
-    def __init__(self, n: Int32):
+    n: int32
+    def __init__(self, n: int32):
         self.n = n
     def __iter__(self) -> "Countdown":
         return self
-    def __next__(self) -> Int32:
+    def __next__(self) -> int32:
         if self.n == 0:
             raise StopIteration
         self.n -= 1

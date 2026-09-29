@@ -1,12 +1,12 @@
 # expect: ok
 from tpy.thread import spawn
-from tpy import Int32
+from tpy import int32
 
 class Job:
-    n: Int32
-    def __init__(self, n: Int32):
+    n: int32
+    def __init__(self, n: int32):
         self.n = n
-    def run(self) -> Int32:
+    def run(self) -> int32:
         return self.n * 2
 
 def main():

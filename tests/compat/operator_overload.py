@@ -1,10 +1,10 @@
 # expect: ok
-from tpy import Float64, Own
+from tpy import float64, Own
 
 class Vec:
-    x: Float64
-    y: Float64
-    def __init__(self, x: Float64, y: Float64):
+    x: float64
+    y: float64
+    def __init__(self, x: float64, y: float64):
         self.x = x
         self.y = y
     def __add__(self, o: "Vec") -> "Own[Vec]":

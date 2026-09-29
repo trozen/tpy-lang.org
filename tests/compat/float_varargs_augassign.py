@@ -1,7 +1,7 @@
 # expect: error Augmented assignment
-from tpy import Float64
+from tpy import float64
 
-def total(*values: Float64) -> Float64:
+def total(*values: float64) -> float64:
     t = 0.0
     for v in values:
         t += v

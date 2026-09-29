@@ -5,11 +5,9 @@ The marketing / landing site for **TurboPython**, served at
 build framework -- a single self-contained `index.html` plus generated example
 data.
 
-> **Status:** work in progress, not yet advertised. The full single-page layout
-> is in shape (nav, "early development" banner, hero with the example switcher,
-> install, the "vs Python" / ownership section, footer). Links to pages that
-> don't exist yet (Docs, the guide, a compatibility page) are placeholders that
-> pop a "coming soon" toast (class `soon` in `index.html`).
+> **Status:** live at tpy-lang.org, not yet announced. The landing page links
+> to the docs site (`/docs/`), the guide, and the compatibility page; no
+> placeholder links remain.
 
 ## Files
 
@@ -27,7 +25,7 @@ submodule.
 | `docs/CNAME` | The custom domain (`tpy-lang.org`). |
 | `vendor/tpy-examples/` | **Submodule** (`trozen/tpy-examples`) -- the example gallery. `landing/` in it holds the programs shown on the landing page; `shedskin/` holds the larger ported programs the docs link to. |
 | `build_examples.py` | Reads `vendor/tpy-examples/landing/`, highlights the programs, writes `docs/examples.js`. Pure stdlib -- no `tpy` needed to regenerate. |
-| `verify_examples.py` | Compiles each example with `tpy` (runs the deterministic ones), failing on any that don't. Requires the toolchain; checks against the **published** `tpy`. |
+| `verify_examples.py` | Compiles each example with whatever `tpy` is on PATH (runs the deterministic ones), failing on any that don't. `make check` runs it against the pinned `vendor/tpy`; the pre-announce gate in `CLAUDE.md` runs it against the published package. |
 | `docs-site/` | Source for the docs site: `mkdocs.yml`, `src/` markdown, theme overrides, logo. Built with MkDocs Material into `docs/docs/`. |
 
 ## Docs site
@@ -66,9 +64,8 @@ Workflow when adding/editing an example:
 1. Edit (or add) the `.py` under `vendor/tpy-examples/landing/`, and **commit it
    in that repository** -- it is a separate repo with its own history.
 2. **Verify it compiles with tpy** (this is the bar -- examples must be real).
-   With the toolchain installed (`pip install tpy-lang`), check them all at once:
-   `python3 verify_examples.py` (compiles each; runs the deterministic ones;
-   fails on any that don't). Or check one by hand:
+   `make check` compiles them all against the pinned `vendor/tpy` (runs the
+   deterministic ones; fails on any that don't). Or check one by hand:
    - runnable ones: `diff <(python3 <f>.py) <(tpy <f>.py)` (CPython parity) or just `tpy <f>.py`.
    - tpy-only / network ones (ownership, requests): `tpy -b <f>.py` (compile + link).
 3. Regenerate the data: `python3 build_examples.py`.
@@ -111,11 +108,6 @@ DNS for the apex domain points at GitHub Pages (A/AAAA records at the registrar)
 
 ## Open threads
 
-- **Placeholder links:** the nav "Docs", the hero "Read the guide" button, and
-  the banner "See what works" link carry class `soon` and pop a "coming soon"
-  toast. Replace each with a real destination as those pages get written.
-- **"no GIL" claim:** the hero advertises "no GIL for multithreading"; threading
-  isn't shipped yet. Meant to hold by launch -- soften the wording if it slips.
 - **`http.server`:** no server module yet, so the async example builds HTTP on
   raw asyncio streams.
 - **Playground:** deferred (would need client-side compile -- Pyodide + in-browser

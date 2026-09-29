@@ -26,10 +26,10 @@ test:   ## verify every docs code snippet against the pinned compiler
 # run against the pinned vendor/tpy -- `--project` puts its `tpy` on PATH, which
 # is all verify_examples.py wants.
 #
-# The landing-page examples are NOT checked against the published release, so
-# this gate does not prove a `pip install tpy-lang` user can run them -- today
-# requests_demo.py cannot (it needs tplib.requests, unreleased). That is
-# deliberate while the site is unannounced; see the launch note in CLAUDE.md.
+# The landing-page examples are NOT checked against the published release
+# here, so this gate alone does not prove a `pip install tpy-lang` user can run
+# them whenever the pin runs ahead of PyPI. The announce gate in CLAUDE.md
+# covers that.
 check:  ## verify everything the site shows: docs snippets + landing examples
 	uv run pytest
 	uv run --project vendor/tpy python verify_examples.py

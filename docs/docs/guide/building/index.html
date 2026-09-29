@@ -162,10 +162,10 @@
       <div class="md-header__source">
         <div class="md-source">
           <div class="md-source__repository">
-            TurboPython 0.5.1
+            TurboPython 0.6.1
             
               <ul class="md-source__facts">
-                <li class="md-source__fact md-source__fact--version">v0.5.1</li>
+                <li class="md-source__fact md-source__fact--version">v0.6.1</li>
               </ul>
             
           </div>
@@ -956,16 +956,18 @@ forces it). One-liners run with <code>-c</code>:</p>
 </code></pre></div>
 <h2 id="build-a-standalone-binary">Build a standalone binary<a class="headerlink" href="#build-a-standalone-binary" title="Permanent link">&para;</a></h2>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="gp">$ </span>tpy<span class="w"> </span>-b<span class="w"> </span>-o<span class="w"> </span>build<span class="w"> </span>program.py
-<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="go">Built: build/debug/program</span>
-<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="gp">$ </span>./build/debug/program
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="go">Built: build/release/program</span>
+<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="gp">$ </span>./build/release/program
 </code></pre></div>
-<p>The binary is named after the source file and lands in <code>debug/</code> by default.
-That build is unoptimized and meant for development. The build to ship and to
-measure is <code>-O</code> (or
-<code>--release</code>):</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="gp">$ </span>tpy<span class="w"> </span>-O<span class="w"> </span>-b<span class="w"> </span>-o<span class="w"> </span>build<span class="w"> </span>program.py
-<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="go">Built: build/release/program</span>
+<p>The binary is named after the source file and lands in <code>release/</code>. Every
+build is optimized (<code>-O3</code>) unless <code>--debug</code> is given, so the default binary is
+the one to ship and to measure. The <code>--debug</code> flag builds without optimization
+and with debug information (<code>-g -O0</code>), which compiles faster and lands in
+<code>debug/</code>:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="gp">$ </span>tpy<span class="w"> </span>--debug<span class="w"> </span>-b<span class="w"> </span>-o<span class="w"> </span>build<span class="w"> </span>program.py
+<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="go">Built: build/debug/program</span>
 </code></pre></div>
+<p>Runtime checks such as overflow detection stay on in both variants.</p>
 <p>The result needs no Python installation. It links only the standard system
 libraries (the C++ runtime and libc), so it runs on other machines of the
 same platform with compatible system libraries. Building happens on the
@@ -976,9 +978,9 @@ builds run inside WSL and produce Linux binaries.</p>
 <p>By default the <code>tpyc</code> command emits a C++ project and skips the native build:</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="gp">$ </span>tpyc<span class="w"> </span>-o<span class="w"> </span>build<span class="w"> </span>program.py
 </code></pre></div>
-<p>The generated <code>.hpp</code> and <code>.cpp</code> files land in a <code>program.d/</code> directory under
-the output path, so this run writes <code>build/program.d/</code>. Omitting <code>-o</code> writes
-to <code>__tpyc__/</code> next to the source instead.</p>
+<p>The generated project lands directly in the output directory: <code>build/src/</code>,
+<code>build/include/</code>, the bundled runtime, and <code>build/sources.cmake</code>. Omitting
+<code>-o</code> writes to <code>__tpyc__/program.d/</code> next to the source instead.</p>
 <p>Skipping the native build also makes <code>tpyc</code> the fast way to check a change. The
 front end still parses, type-checks, and runs ownership analysis, so type and
 ownership errors surface without waiting for the C++ compiler.</p>
@@ -991,17 +993,19 @@ happens, and what a class compiles to:</p>
 <p>Each project carries a <code>sources.cmake</code> that defines the generated sources, the
 include directories, the link libraries, and the required C++ standard. A CMake
 target consumes them directly:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="nb">include</span><span class="p">(</span><span class="s">build/program.d/sources.cmake</span><span class="p">)</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="nb">include</span><span class="p">(</span><span class="s">build/sources.cmake</span><span class="p">)</span>
 <a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="nb">add_executable</span><span class="p">(</span><span class="s">app</span><span class="w"> </span><span class="o">${</span><span class="nv">TPYC_SOURCES</span><span class="o">}</span><span class="p">)</span>
 <a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a><span class="nb">target_include_directories</span><span class="p">(</span><span class="s">app</span><span class="w"> </span><span class="s">PRIVATE</span><span class="w"> </span><span class="o">${</span><span class="nv">TPYC_INCLUDE_DIRS</span><span class="o">}</span><span class="p">)</span>
 <a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a><span class="nb">target_link_libraries</span><span class="p">(</span><span class="s">app</span><span class="w"> </span><span class="s">PRIVATE</span><span class="w"> </span><span class="o">${</span><span class="nv">TPYC_LIBRARIES</span><span class="o">}</span><span class="p">)</span>
 <a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a><span class="nb">set_target_properties</span><span class="p">(</span><span class="s">app</span><span class="w"> </span><span class="s">PROPERTIES</span><span class="w"> </span><span class="s">CXX_STANDARD</span><span class="w"> </span><span class="o">${</span><span class="nv">TPYC_CXX_STANDARD</span><span class="o">}</span><span class="p">)</span>
 </code></pre></div>
 <p>The <code>--no-main</code> flag omits the generated <code>main()</code> so the compiled code links
-into an existing C++ program rather than running on its own. The runtime
-headers are bundled into the output directory by default, which keeps the
-project self-contained and safe to commit or copy to another machine. The
-<code>--no-bundle-runtime</code> flag skips that copy.</p>
+into an existing C++ program rather than running on its own. When <code>tpyc</code>
+emits a project to an explicit <code>-o</code> directory, the runtime headers are bundled
+into it, which keeps the project self-contained and safe to commit or copy to
+another machine; the <code>--no-bundle-runtime</code> flag skips that copy. A native
+build (<code>-b</code>) and the default <code>__tpyc__/</code> output reference the installed
+runtime instead.</p>
 <h2 id="build-a-cpython-extension">Build a CPython extension<a class="headerlink" href="#build-a-cpython-extension" title="Permanent link">&para;</a></h2>
 <p>A module marked <code># tpy: ext_module</code> compiles into a regular CPython extension.
 Functions marked <code>@export</code> become the module's public API:</p>
@@ -1013,8 +1017,8 @@ Functions marked <code>@export</code> become the module's public API:</p>
 <a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a>    <span class="k">return</span> <span class="n">x</span> <span class="o">*</span> <span class="mi">3</span>
 </code></pre></div>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="gp">$ </span>tpyc<span class="w"> </span>-b<span class="w"> </span>-o<span class="w"> </span>build<span class="w"> </span>fastmod.py
-<a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a><span class="go">Built extension: build/debug/fastmod.so</span>
-<a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a><span class="gp">$ </span>cp<span class="w"> </span>build/debug/fastmod.so<span class="w"> </span>.
+<a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a><span class="go">Built extension: build/release/fastmod.so</span>
+<a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a><span class="gp">$ </span>cp<span class="w"> </span>build/release/fastmod.so<span class="w"> </span>.
 <a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a><span class="gp">$ </span>python3<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;import fastmod; print(fastmod.triple(14))&quot;</span>
 <a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a><span class="go">42</span>
 </code></pre></div>
@@ -1038,9 +1042,15 @@ to the entry file resolve as in Python, and all of it is compiled together:</p>
 <h2 id="toolchain-notes">Toolchain notes<a class="headerlink" href="#toolchain-notes" title="Permanent link">&para;</a></h2>
 <p>The build uses the system C++ compiler, and <code>--cxx</code> selects a different one.
 C++23 support is required, so GCC 13 or newer, or Clang 19 or newer, works;
-<code>g++ --version</code> reports the installed version. The build also uses <code>ccache</code>
+<code>g++ --version</code> reports the installed version. An auto-detected compiler that
+fails the C++23 check is skipped; one named with <code>--cxx</code> is used after a
+warning. The build also uses <code>ccache</code>
 when available, precompiled headers (<code>--no-pch</code> turns them off), and parallel
-compilation (<code>-j N</code>).</p>
+compilation (<code>-j N</code>). Builds are cached by content, and <code>--rebuild</code> ignores
+the cache and rebuilds everything, the precompiled header included.</p>
+<p>The <code>zlib</code> and <code>gzip</code> modules link a bundled zlib by default; <code>--zlib system</code>
+links the system library instead, and <code>--zlib none</code> makes importing either
+module a compile error.</p>
 <div class="admonition info">
 <p class="admonition-title">Planned</p>
 <p><code>pyproject.toml</code> integration — project-level configuration, dependencies,
@@ -1086,7 +1096,7 @@ command-line flags only.</p>
       <div class="md-copyright">
   
     <div class="md-copyright__highlight">
-      These docs describe <span class="tpy-version">TurboPython 0.5.1</span> (v0.5.1).
+      These docs describe <span class="tpy-version">TurboPython 0.6.1</span> (v0.6.1).
     </div>
   
   

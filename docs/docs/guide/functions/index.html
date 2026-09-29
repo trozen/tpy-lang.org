@@ -162,10 +162,10 @@
       <div class="md-header__source">
         <div class="md-source">
           <div class="md-source__repository">
-            TurboPython 0.5.1
+            TurboPython 0.6.1
             
               <ul class="md-source__facts">
-                <li class="md-source__fact md-source__fact--version">v0.5.1</li>
+                <li class="md-source__fact md-source__fact--version">v0.6.1</li>
               </ul>
             
           </div>
@@ -864,7 +864,8 @@
 <p>A function signature in TurboPython is a contract the compiler enforces. Where
 Python treats an annotation as a hint the runtime ignores, a TurboPython
 annotation is binding. A function accepts and returns only the types its
-signature allows, and a call that passes anything else does not compile. The
+signature allows, apart from the conversions Python itself makes
+(<a href="../types/">Types</a>); a call that passes anything else does not compile. The
 compiler generates the calling code from that same signature, which also fixes
 how each argument is represented. That is where the ownership model becomes
 visible. A call either copies its argument, mutates it, or keeps it. This page
@@ -881,17 +882,20 @@ the <code>Reading</code> class from the <a href="../types/">Types page</a>.</p>
 <a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">values</span> <span class="o">=</span> <span class="n">values</span>
 </code></pre></div>
 <h2 id="signatures-must-be-fully-typed">Signatures must be fully typed<a class="headerlink" href="#signatures-must-be-fully-typed" title="Permanent link">&para;</a></h2>
-<p>Parameter and return types are mandatory; the compiler rejects an unannotated
-signature. Default values, keyword arguments, and annotated <code>*args</code> work as in
-Python:</p>
+<p>Parameter types are mandatory; the compiler rejects an unannotated parameter.
+A missing return annotation means <code>-&gt; None</code>. Default values, keyword
+arguments, and annotated <code>*args</code> work as in Python, with one restriction: a
+default is a constant expression (a literal, <code>None</code>, a fixed-width constructor
+such as <code>int32(5)</code>, an enum member, or a <code>Final</code> module constant), and it is
+checked against the parameter's type:</p>
 <!-- tpy: run -->
-<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">tpy</span><span class="w"> </span><span class="kn">import</span> <span class="n">Int32</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">tpy</span><span class="w"> </span><span class="kn">import</span> <span class="n">int32</span>
 <a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>
 <a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="k">def</span><span class="w"> </span><span class="nf">scale</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">factor</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">2.0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
 <a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>    <span class="k">return</span> <span class="n">x</span> <span class="o">*</span> <span class="n">factor</span>
 <a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>
-<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="k">def</span><span class="w"> </span><span class="nf">total</span><span class="p">(</span><span class="o">*</span><span class="n">xs</span><span class="p">:</span> <span class="n">Int32</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Int32</span><span class="p">:</span>
-<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a>    <span class="n">t</span><span class="p">:</span> <span class="n">Int32</span> <span class="o">=</span> <span class="mi">0</span>
+<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="k">def</span><span class="w"> </span><span class="nf">total</span><span class="p">(</span><span class="o">*</span><span class="n">xs</span><span class="p">:</span> <span class="n">int32</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">int32</span><span class="p">:</span>
+<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a>    <span class="n">t</span><span class="p">:</span> <span class="n">int32</span> <span class="o">=</span> <span class="mi">0</span>
 <a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a>    <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">xs</span><span class="p">:</span>
 <a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a>        <span class="n">t</span> <span class="o">+=</span> <span class="n">x</span>
 <a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a>    <span class="k">return</span> <span class="n">t</span>
@@ -923,18 +927,19 @@ borrowing in full.)</p>
 <p>Methods follow the same rules. <code>self</code> is a borrowed parameter, and a mutation
 through it is visible to the caller. Classes have their own page:
 <a href="../data-modeling/">Data modeling</a>.</p>
-<p>Value types (<code>Int32</code>, <code>float</code>, <code>str</code>, ...) are passed as copies. Reassigning
-the parameter changes the copy, never the caller's variable — observably the
-same as Python:</p>
+<p>Value types (<code>int32</code>, <code>float</code>, <code>str</code>, ...) are passed as copies, and the
+parameter keeps its declared type, so an <code>int32</code> parameter cannot be rebound to
+a float or to a wider value. Reassigning the parameter changes the copy, never
+the caller's variable — observably the same as Python:</p>
 <!-- tpy: run -->
-<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">tpy</span><span class="w"> </span><span class="kn">import</span> <span class="n">Int32</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">tpy</span><span class="w"> </span><span class="kn">import</span> <span class="n">int32</span>
 <a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>
-<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="k">def</span><span class="w"> </span><span class="nf">bump</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">Int32</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Int32</span><span class="p">:</span>
+<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="k">def</span><span class="w"> </span><span class="nf">bump</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">int32</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">int32</span><span class="p">:</span>
 <a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>    <span class="n">x</span> <span class="o">+=</span> <span class="mi">1</span>        <span class="c1"># changes the local copy only</span>
 <a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a>    <span class="k">return</span> <span class="n">x</span>
 <a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a>
 <a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a><span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">():</span>
-<a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a>    <span class="n">n</span><span class="p">:</span> <span class="n">Int32</span> <span class="o">=</span> <span class="mi">5</span>
+<a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a>    <span class="n">n</span><span class="p">:</span> <span class="n">int32</span> <span class="o">=</span> <span class="mi">5</span>
 <a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a>    <span class="n">m</span> <span class="o">=</span> <span class="n">bump</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
 <a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a>    <span class="nb">print</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">m</span><span class="p">)</span>   <span class="c1"># 5 6</span>
 <a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a>
@@ -958,7 +963,7 @@ as always.)</p>
 <h2 id="taking-ownership-at-the-boundary">Taking ownership at the boundary<a class="headerlink" href="#taking-ownership-at-the-boundary" title="Permanent link">&para;</a></h2>
 <p>An <code>Own[T]</code> parameter declares that the function keeps the object — typically
 to store it. <code>Reading</code>'s own constructor does this with its list:
-<code>values: Own[list[Float64]]</code> moves the caller's list into the field.</p>
+<code>values: Own[list[float]]</code> moves the caller's list into the field.</p>
 <p>At the call site the caller writes nothing extra. An <code>Own</code> return is used like
 any other object, and passing to an <code>Own</code> parameter at the argument's last use
 hands the object over with no copy:</p>
@@ -1037,7 +1042,7 @@ storage; a plain <code>T</code> parameter and return cover everything else. The 
       <div class="md-copyright">
   
     <div class="md-copyright__highlight">
-      These docs describe <span class="tpy-version">TurboPython 0.5.1</span> (v0.5.1).
+      These docs describe <span class="tpy-version">TurboPython 0.6.1</span> (v0.6.1).
     </div>
   
   

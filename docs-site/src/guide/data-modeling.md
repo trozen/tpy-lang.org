@@ -12,13 +12,14 @@ Fields are declared as annotations and form a fixed set. Methods are written as
 in Python, and `self` is a borrowed parameter
 ([Functions and API boundaries](functions.md) covers borrowing). Dunder methods
 work too -- `__str__` drives `print` and f-strings, and `__eq__` drives `==`.
-Class-level field defaults, `@property`, and `@staticmethod` all work.
+Class-level field defaults, `@property`, `@staticmethod`, and `@classmethod`
+all work.
 
 The `Reading` example from the earlier pages, extended to a full class:
 
 <!-- tpy: prelude -->
 ```python
-from tpy import Own, Int32
+from tpy import Own, int32
 
 class Reading:
     sensor: str
@@ -35,7 +36,7 @@ class Reading:
         return sum(self.values) / len(self.values)
 
     @property
-    def count(self) -> Int32:
+    def count(self) -> int32:
         return len(self.values)
 
     def __str__(self) -> str:
@@ -49,6 +50,32 @@ def main():
     r.add(21.7)
     print(r)                  # __str__: Reading(boiler-3, n=3)
     print(r.count, r.mean())  # 3 21.066...
+
+main()
+```
+
+A `@classmethod` receives the defining class as `cls` and serves as an
+alternate constructor. The instance it builds is returned as `Own[Self]`:
+
+<!-- tpy: run -->
+```python
+from typing import Self
+from tpy import Own
+
+class Point:
+    x: int
+    y: int
+    def __init__(self, x: int, y: int):
+        self.x = x
+        self.y = y
+
+    @classmethod
+    def origin(cls) -> Own[Self]:
+        return cls(0, 0)
+
+def main():
+    p = Point.origin()
+    print(p.x, p.y)           # 0 0
 
 main()
 ```
@@ -87,6 +114,11 @@ dispatch); make 'Animal' a @dynamic protocol for runtime dispatch
     override with the `hides ... differs from Python's dynamic dispatch`
     warning shown above. The fix is a `@dynamic` protocol, which restores
     runtime dispatch where a design needs it ([Beyond the core](beyond.md)).
+
+A subclass `__init__` calls `super().__init__(...)` as its first statement.
+Skipping the call is a warning, and the base part is then default-constructed,
+so its fields hold empty values; placing the call after another statement or
+inside a branch is an error.
 
 In TurboPython, polymorphism is usually modeled without inheritance: a
 protocol when several types share behavior, a union when a value is one of a

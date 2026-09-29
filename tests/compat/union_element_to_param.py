@@ -1,9 +1,9 @@
-# expect: build-error
-from tpy import Float64
+# expect: ok
+from tpy import float64
 
 class Sample:
-    value: Float64
-    def __init__(self, value: Float64):
+    value: float64
+    def __init__(self, value: float64):
         self.value = value
 
 class Gap:

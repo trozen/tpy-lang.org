@@ -3,7 +3,8 @@
 A function signature in TurboPython is a contract the compiler enforces. Where
 Python treats an annotation as a hint the runtime ignores, a TurboPython
 annotation is binding. A function accepts and returns only the types its
-signature allows, and a call that passes anything else does not compile. The
+signature allows, apart from the conversions Python itself makes
+([Types](types.md)); a call that passes anything else does not compile. The
 compiler generates the calling code from that same signature, which also fixes
 how each argument is represented. That is where the ownership model becomes
 visible. A call either copies its argument, mutates it, or keeps it. This page
@@ -24,19 +25,22 @@ class Reading:
 
 ## Signatures must be fully typed
 
-Parameter and return types are mandatory; the compiler rejects an unannotated
-signature. Default values, keyword arguments, and annotated `*args` work as in
-Python:
+Parameter types are mandatory; the compiler rejects an unannotated parameter.
+A missing return annotation means `-> None`. Default values, keyword
+arguments, and annotated `*args` work as in Python, with one restriction: a
+default is a constant expression (a literal, `None`, a fixed-width constructor
+such as `int32(5)`, an enum member, or a `Final` module constant), and it is
+checked against the parameter's type:
 
 <!-- tpy: run -->
 ```python
-from tpy import Int32
+from tpy import int32
 
 def scale(x: float, factor: float = 2.0) -> float:
     return x * factor
 
-def total(*xs: Int32) -> Int32:
-    t: Int32 = 0
+def total(*xs: int32) -> int32:
+    t: int32 = 0
     for x in xs:
         t += x
     return t
@@ -74,20 +78,21 @@ Methods follow the same rules. `self` is a borrowed parameter, and a mutation
 through it is visible to the caller. Classes have their own page:
 [Data modeling](data-modeling.md).
 
-Value types (`Int32`, `float`, `str`, ...) are passed as copies. Reassigning
-the parameter changes the copy, never the caller's variable -- observably the
-same as Python:
+Value types (`int32`, `float`, `str`, ...) are passed as copies, and the
+parameter keeps its declared type, so an `int32` parameter cannot be rebound to
+a float or to a wider value. Reassigning the parameter changes the copy, never
+the caller's variable -- observably the same as Python:
 
 <!-- tpy: run -->
 ```python
-from tpy import Int32
+from tpy import int32
 
-def bump(x: Int32) -> Int32:
+def bump(x: int32) -> int32:
     x += 1        # changes the local copy only
     return x
 
 def main():
-    n: Int32 = 5
+    n: int32 = 5
     m = bump(n)
     print(n, m)   # 5 6
 
@@ -118,7 +123,7 @@ Returning a local by plain reference is a compile error, covered by
 
 An `Own[T]` parameter declares that the function keeps the object -- typically
 to store it. `Reading`'s own constructor does this with its list:
-`values: Own[list[Float64]]` moves the caller's list into the field.
+`values: Own[list[float]]` moves the caller's list into the field.
 
 At the call site the caller writes nothing extra. An `Own` return is used like
 any other object, and passing to an `Own` parameter at the argument's last use

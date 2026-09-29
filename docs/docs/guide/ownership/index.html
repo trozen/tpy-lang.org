@@ -162,10 +162,10 @@
       <div class="md-header__source">
         <div class="md-source">
           <div class="md-source__repository">
-            TurboPython 0.5.1
+            TurboPython 0.6.1
             
               <ul class="md-source__facts">
-                <li class="md-source__fact md-source__fact--version">v0.5.1</li>
+                <li class="md-source__fact md-source__fact--version">v0.6.1</li>
               </ul>
             
           </div>
@@ -939,7 +939,7 @@ cycles.</p>
 make this possible.</p>
 <p>First, TurboPython (like C#, Java, Swift, or Rust) separates <strong>value types</strong>
 from <strong>reference types</strong>. Value types are the simple data: <code>int</code> and the
-fixed-width integers, <code>float</code>, <code>bool</code>, <code>str</code>, <code>Char</code>, and tuples of these. A
+fixed-width integers, <code>float</code>, <code>bool</code>, <code>str</code>, <code>char</code>, and tuples of these. A
 value lives directly in its variable and is copied on assignment — the way
 numbers already appear to behave in Python. Value types have no lifecycle to
 manage; nothing on this page applies to them.</p>
@@ -952,8 +952,8 @@ its owner:</p>
 <li>An object stored in a <strong>container</strong> or a <strong>field</strong> is owned by that storage.
   This <em>durable storage</em> (the compiler's diagnostics call it <em>owned storage</em>)
   holds its own value, not a shared reference. A module <strong>global</strong> also owns
-  its value; a reference-type global is assigned once, at module scope, and
-  cannot be reassigned later.</li>
+  its value; a reference-type global is assigned at module scope and cannot
+  be reassigned from inside a function.</li>
 <li><strong>Local variables and parameters own nothing.</strong> The frame owns what the
   call creates; the names only <em>borrow</em> — in Python terms, they alias: two
   names can refer to the same object, exactly as in Python.</li>
@@ -979,12 +979,12 @@ made through one name is visible through every other.</p>
 <a href="../types/">Types page</a>; the <code>Own[...]</code> in its constructor is taught later on
 this page.</p>
 <!-- tpy: prelude run -->
-<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">tpy</span><span class="w"> </span><span class="kn">import</span> <span class="n">Own</span><span class="p">,</span> <span class="n">copy</span><span class="p">,</span> <span class="n">readonly</span><span class="p">,</span> <span class="n">Float64</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">tpy</span><span class="w"> </span><span class="kn">import</span> <span class="n">Own</span><span class="p">,</span> <span class="n">copy</span><span class="p">,</span> <span class="n">readonly</span><span class="p">,</span> <span class="n">float64</span>
 <a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>
 <a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="k">class</span><span class="w"> </span><span class="nc">Reading</span><span class="p">:</span>
 <a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>    <span class="n">sensor</span><span class="p">:</span> <span class="nb">str</span>
-<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>    <span class="n">values</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Float64</span><span class="p">]</span>
-<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sensor</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">values</span><span class="p">:</span> <span class="n">Own</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">Float64</span><span class="p">]]):</span>
+<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>    <span class="n">values</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">float64</span><span class="p">]</span>
+<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sensor</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">values</span><span class="p">:</span> <span class="n">Own</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">float64</span><span class="p">]]):</span>
 <a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">sensor</span> <span class="o">=</span> <span class="n">sensor</span>
 <a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">values</span> <span class="o">=</span> <span class="n">values</span>
 <a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>
@@ -1013,7 +1013,7 @@ freed when that function returns. It therefore cannot be returned by reference
 <a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>    <span class="n">r</span> <span class="o">=</span> <span class="n">Reading</span><span class="p">(</span><span class="s2">&quot;boiler-3&quot;</span><span class="p">,</span> <span class="p">[</span><span class="mf">20.5</span><span class="p">])</span>
 <a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>    <span class="k">return</span> <span class="n">r</span>     <span class="c1"># error: r is a local, freed when make() returns</span>
 </code></pre></div>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>error: Cannot return local or temporary as reference. Object type &#39;Reading&#39;
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>error: Cannot return local or temporary as reference. Reference type &#39;Reading&#39;
 <a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>is returned by reference. Use Own[Reading] to return by value.
 </code></pre></div>
 <p>The diagnostic names a rule the page has not stated yet: a plain <code>Reading</code>
@@ -1136,7 +1136,7 @@ the argument must be copied, or the compiler warns:</p>
 <a id="__codelineno-12-7" name="__codelineno-12-7" href="#__codelineno-12-7"></a><span class="n">main</span><span class="p">()</span>
 </code></pre></div>
 <h2 id="in-practice">In practice<a class="headerlink" href="#in-practice" title="Permanent link">&para;</a></h2>
-<p>Value types (<code>Int32</code>, <code>str</code>, ...) always stay plain: they copy, and ownership
+<p>Value types (<code>int32</code>, <code>str</code>, ...) always stay plain: they copy, and ownership
 does not concern them. For reference types:</p>
 <table>
 <thead>
@@ -1255,7 +1255,7 @@ state that intent in the signature.</p>
 <p><code>readonly[T]</code> declares a parameter the function does not mutate; mutating
 through it is a compile error:</p>
 <!-- tpy: cont -->
-<div class="highlight"><pre><span></span><code><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a><span class="k">def</span><span class="w"> </span><span class="nf">first_value</span><span class="p">(</span><span class="n">r</span><span class="p">:</span> <span class="n">readonly</span><span class="p">[</span><span class="n">Reading</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Float64</span><span class="p">:</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a><span class="k">def</span><span class="w"> </span><span class="nf">first_value</span><span class="p">(</span><span class="n">r</span><span class="p">:</span> <span class="n">readonly</span><span class="p">[</span><span class="n">Reading</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">float64</span><span class="p">:</span>
 <a id="__codelineno-17-2" name="__codelineno-17-2" href="#__codelineno-17-2"></a>    <span class="k">return</span> <span class="n">r</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 </code></pre></div>
 <p><code>Ptr[T]</code> is an explicit pointer, for the uncommon case one is needed (an
@@ -1321,7 +1321,7 @@ compile time.</p>
       <div class="md-copyright">
   
     <div class="md-copyright__highlight">
-      These docs describe <span class="tpy-version">TurboPython 0.5.1</span> (v0.5.1).
+      These docs describe <span class="tpy-version">TurboPython 0.6.1</span> (v0.6.1).
     </div>
   
   

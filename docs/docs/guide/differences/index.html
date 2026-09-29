@@ -162,10 +162,10 @@
       <div class="md-header__source">
         <div class="md-source">
           <div class="md-source__repository">
-            TurboPython 0.5.1
+            TurboPython 0.6.1
             
               <ul class="md-source__facts">
-                <li class="md-source__fact md-source__fact--version">v0.5.1</li>
+                <li class="md-source__fact md-source__fact--version">v0.6.1</li>
               </ul>
             
           </div>
@@ -1009,9 +1009,12 @@ that come up earliest:</p>
 <ul>
 <li>Functions require type annotations. Parameters and return types are
   mandatory, as are class fields; locals are inferred.</li>
-<li>Integer literals default to <code>Int32</code>. <code>int</code> is arbitrary-precision as in
-  Python, but a bare literal is deduced as fixed-width <code>Int32</code>, which can
+<li>Integer literals default to <code>int32</code>. <code>int</code> is arbitrary-precision as in
+  Python, but a bare literal is deduced as fixed-width <code>int32</code>, which can
   overflow and panic.</li>
+<li>A variable has one numeric type. A local bound to an integer cannot be
+  rebound to a float; the compiler asks for a float literal or a <code>float</code>
+  annotation instead.</li>
 <li>Third-party packages written for regular Python cannot be imported.
   Everything imported is compiled from source with the program, so a module
   is importable only if TurboPython can compile it. Many standard-library
@@ -1039,22 +1042,22 @@ More on designing signatures: <a href="../functions/">Functions and API boundari
 <h2 id="arbitrary-precision-and-fixed-width-integers">Arbitrary-precision and fixed-width integers<a class="headerlink" href="#arbitrary-precision-and-fixed-width-integers" title="Permanent link">&para;</a></h2>
 <p>Like Python, TurboPython's <code>int</code> is arbitrary-precision, so it is always exact
 and is the right type for genuinely unbounded arithmetic. The fixed-width
-integer types — <code>Int8</code> through <code>Int64</code> and their unsigned variants — are
+integer types — <code>int8</code> through <code>int64</code> and their unsigned variants — are
 machine integers that trade that guarantee for speed, and an unannotated integer
-literal infers as <code>Int32</code>. Floating-point works as in Python: <code>float</code> is itself
-a fixed-size machine double (an alias for <code>Float64</code>) and the default for real
-numbers, with <code>Float32</code> available where narrower precision is wanted.</p>
+literal infers as <code>int32</code>. Floating-point works as in Python: <code>float</code> is itself
+a fixed-size machine double (an alias for <code>float64</code>) and the default for real
+numbers, with <code>float32</code> available where narrower precision is wanted.</p>
 <!-- tpy: run -->
 <div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">():</span>
 <a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>    <span class="n">n</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">**</span> <span class="mi">100</span>    <span class="c1"># int is arbitrary-precision</span>
 <a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>    <span class="nb">print</span><span class="p">(</span><span class="n">n</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
-<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>    <span class="n">k</span> <span class="o">=</span> <span class="mi">5</span>                <span class="c1"># an unannotated literal is Int32</span>
+<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>    <span class="n">k</span> <span class="o">=</span> <span class="mi">5</span>                <span class="c1"># an unannotated literal is int32</span>
 <a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>    <span class="nb">print</span><span class="p">(</span><span class="n">k</span> <span class="o">*</span> <span class="n">k</span><span class="p">)</span>         <span class="c1"># 25</span>
 <a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a>
 <a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a><span class="n">main</span><span class="p">()</span>
 </code></pre></div>
 <p>Fixed-width arithmetic does not wrap silently. Overflow stops the program with
-a panic: <code>TurboPython panic: Int32 overflow in addition</code>. A panic is not an
+a panic: <code>TurboPython panic: int32 overflow in addition</code>. A panic is not an
 exception; it cannot be caught.</p>
 <p>Fixed-width types are for computation, and <code>int</code> is for genuinely unbounded
 arithmetic. The details, including literal inference and conversions:
@@ -1163,8 +1166,8 @@ differently:</p>
 <a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">sound</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a>        <span class="k">return</span> <span class="s2">&quot;...&quot;</span>
 <a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a>
-<a id="__codelineno-12-5" name="__codelineno-12-5" href="#__codelineno-12-5"></a><span class="k">class</span><span class="w"> </span><span class="nc">Dog</span><span class="p">(</span><span class="n">Animal</span><span class="p">):</span>
-<a id="__codelineno-12-6" name="__codelineno-12-6" href="#__codelineno-12-6"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">sound</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>      <span class="c1"># warning: hides Animal.sound</span>
+<a id="__codelineno-12-5" name="__codelineno-12-5" href="#__codelineno-12-5"></a><span class="k">class</span><span class="w"> </span><span class="nc">Dog</span><span class="p">(</span><span class="n">Animal</span><span class="p">):</span>               <span class="c1"># warning: hides Animal.sound</span>
+<a id="__codelineno-12-6" name="__codelineno-12-6" href="#__codelineno-12-6"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">sound</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <a id="__codelineno-12-7" name="__codelineno-12-7" href="#__codelineno-12-7"></a>        <span class="k">return</span> <span class="s2">&quot;woof&quot;</span>
 </code></pre></div>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a>warning: Method &#39;Dog.sound&#39; hides &#39;Animal.sound&#39; -- any &#39;Animal&#39; reference
@@ -1259,7 +1262,7 @@ missing, and <a href="../../compatibility/">Compatibility</a> tracks the gaps.</
       <div class="md-copyright">
   
     <div class="md-copyright__highlight">
-      These docs describe <span class="tpy-version">TurboPython 0.5.1</span> (v0.5.1).
+      These docs describe <span class="tpy-version">TurboPython 0.6.1</span> (v0.6.1).
     </div>
   
   

@@ -1,5 +1,5 @@
 # expect: ok
-from tpy import UInt64
+from tpy import uint64
 
 class Tag:
     name: str
@@ -7,7 +7,7 @@ class Tag:
         self.name = name
     def __eq__(self, o: "Tag") -> bool:
         return self.name == o.name
-    def __hash__(self) -> UInt64:
+    def __hash__(self) -> uint64:
         return hash(self.name)
 
 def main():

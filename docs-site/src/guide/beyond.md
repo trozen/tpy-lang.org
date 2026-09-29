@@ -29,9 +29,10 @@ asyncio.run(amain())
 
 !!! info "Limited today"
     The executor is single-threaded. Tasks, timers, `wait_for`, synchronization
-    primitives, socket I/O, and client/server streams work. `gather` infers a
-    common result type and returns a list. It cannot gather heterogeneous
-    result types into a tuple.
+    primitives, socket I/O, and client/server streams work. `gather` takes
+    tasks from `create_task`, infers their common result type, and returns a
+    list; it does not accept bare coroutines, and it cannot gather
+    heterogeneous result types into a tuple.
     [Compatibility](../compatibility.md) tracks the exact boundary.
 
 ## Threads
@@ -44,13 +45,13 @@ to send across threads (`Send`):
 <!-- tpy: run -->
 ```python
 from tpy.thread import spawn
-from tpy import Int32
+from tpy import int32
 
 class Job:
-    n: Int32
-    def __init__(self, n: Int32):
+    n: int32
+    def __init__(self, n: int32):
         self.n = n
-    def run(self) -> Int32:
+    def run(self) -> int32:
         return self.n * 2
 
 def main():
@@ -94,8 +95,8 @@ dispatch -- the compiler's own suggested fix wherever an override would have
 dispatched dynamically under CPython.
 
 !!! info "Limited today"
-    A protocol type cannot yet be a container element (`list[Speaker]` is
-    rejected), which limits the classic heterogeneous-collection pattern.
+    A protocol type, `@dynamic` or not, cannot yet be a container element
+    (`list[Speaker]` is rejected), which limits the classic heterogeneous-collection pattern.
     [Compatibility](../compatibility.md) tracks this.
 
 ## Enums
@@ -103,12 +104,16 @@ dispatched dynamically under CPython.
 `enum.Enum` and `IntEnum` work, with `auto()` values, `.name` and `.value`,
 identity and equality comparison, iteration over the members, and value or
 name lookup (`Color(0)`, `Color["red"]`). A `match` can branch on enum
-members, and an enum compiles to a C++ `enum class`.
+members, and an enum compiles to a C++ `enum class`. Methods are defined on
+the enum class as in Python: instance methods, `@property`, `@staticmethod`,
+and `@classmethod`.
 
 ## Network, processes, and the wider stdlib
 
 An HTTP client exists in early form (`tplib.requests`), and TLS works for both
-HTTPS clients and servers. `subprocess` and `multiprocessing` do not exist.
+HTTPS clients and servers. Compression is available through `zlib` and `gzip`,
+and POSIX terminal control through `termios` and `tty`.
+`subprocess` and `multiprocessing` do not exist.
 For a services stack, the missing pieces are still large;
 [Compatibility](../compatibility.md) is the place to check before planning a
 port.
@@ -116,7 +121,10 @@ port.
 ## Native interop
 
 Native interop runs in two directions. A TurboPython module compiles into a
-CPython extension (`# tpy: ext_module`, [Building](building.md)). Existing C++
+CPython extension (`# tpy: ext_module`, [Building](building.md)). Exported
+functions accept default, keyword-only, and positional-only parameters as well
+as `Optional[T]` arguments and results, and their docstrings cross as
+`__doc__`. Existing C++
 binds into TurboPython with `@native`, mapping a class or function onto a C++
 type or call -- the standard library itself is built this way. `@native` is
 usable but undocumented; the API may change.

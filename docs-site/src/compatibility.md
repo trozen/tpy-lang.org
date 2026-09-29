@@ -15,8 +15,8 @@ surface and the gaps that matter in practice. Each entry carries a status:
 | Feature | Note |
 |---|---|
 | Functions: defaults, keyword arguments, annotated `*args` | [Functions](guide/functions.md) |
-| First-class functions, closures, lambdas | `Fn[...]` (zero-cost) and `Callable[...]` (type-erased); nested `def` with `nonlocal` |
-| Classes: declared fields, methods, `@property`, `@staticmethod`, class-level defaults | [Data modeling](guide/data-modeling.md) |
+| First-class functions, closures, lambdas | `Fn[...]` (zero-cost) and `Callable[...]` (type-erased); nested `def` with `nonlocal`; a lambda needs a typed context (a parameter or an annotated target) |
+| Classes: declared fields, methods, `@property`, `@staticmethod`, `@classmethod` (returning `Own[Self]`), class-level defaults | [Data modeling](guide/data-modeling.md) |
 | `@dataclass` | generates the constructor |
 | Dunder methods: `__str__`, `__eq__`, `__hash__`, `__del__` | `__del__` runs deterministically when the owner frees the object |
 | Operator overloading | `__add__` and friends; fresh results return `Own[T]` |
@@ -29,10 +29,10 @@ surface and the gaps that matter in practice. Each entry carries a status:
 | Comprehensions (list, dict, set) | |
 | Context managers | custom `__enter__` / `__exit__` |
 | Exceptions | hierarchies, base-class catch, `except (A, B)`, bare re-raise, `finally` |
-| `assert` | narrows optionals; kept in `-O` builds |
+| `assert` | narrows optionals; kept in optimized builds |
 | `bytes` literals | |
 | User generics | PEP 695 (`def f[T](...)` / `class C[T]`); compiled once per concrete type |
-| Enums | `Enum` / `IntEnum`, `auto()`, `.name` / `.value`, iteration, value/name lookup, `match` |
+| Enums | `Enum` / `IntEnum`, `auto()`, `.name` / `.value`, iteration, value/name lookup, `match`, methods |
 | Top-level code | works; `main()` is only a convention |
 | Module globals | reference types are assigned once at module scope, by design |
 
@@ -44,28 +44,53 @@ see the `asyncio` entry under [Concurrency](#concurrency).
 **Built-in functions and types.**
 
 **Works:** the common built-ins -- `len`, `range`, `enumerate`, `zip`, `map`,
-`filter`, `sorted`, `sum`, `min` / `max`, `abs`, `round`, `int` / `float` /
-`str`, `list` / `dict` / `set` / `tuple`, `isinstance`, `input()`, and most
-exception types. The `input` function does not accept a prompt argument.
+`filter`, `sorted(xs, key=...)`, `sum`, `min` / `max` over two or more
+arguments, `abs`, `round`, `int` / `float` / `str`, `list` / `dict` / `set`,
+`isinstance`, `input()` with or without a prompt, and most exception types.
 
-**Not yet:** `frozenset`, `complex`, `memoryview`, `format`, `ascii`,
-`callable`, `id`, runtime `type(x)`.
+**Not yet:** `tuple(...)`, `min` / `max` over a single iterable,
+`sorted(reverse=True)`, `next(it, default)`, `slice`, `vars`, `getattr`,
+`print(*xs)`, a built-in passed as a value (`key=len`), `frozenset`,
+`complex`, `memoryview`, `format`, `ascii`, `callable`, `id`, runtime
+`type(x)`.
+
+**`str` methods.** The everyday set works. **Not yet:** `format()` and `%`
+formatting, `center` / `ljust` / `rjust` / `zfill`, `partition`, `rsplit`,
+`casefold`, `expandtabs`, `rstrip(chars)` (the no-argument form works), and
+`endswith` with a tuple.
+
+**Unpacking and splats.** `a, *rest = xs`, `[*a]`, `{**d}`, dict `|`, and
+`del xs[a:b]` are rejected, and `except*` is not available. `raise X from e`
+compiles but drops the cause.
+
+**Module-qualified class names.** Functions are callable as `module.func`.
+Classes and exception types in several modules are reachable only through
+`from module import Name`: `csv.DictReader`, `collections.Counter`,
+`asyncio.Queue` / `asyncio.Future`, and the `tplib.requests` exceptions, where
+a module-qualified `except requests.ConnectionError` compiles but does not
+catch.
 
 **`**kwargs`.** The typed form `**kwargs: Unpack[TypedDict]` works; the untyped
 `**kwargs: T` form is rejected.
 
-**f-strings.** Scalar values and format specs (`f"{x:.2f}"`) work; a `list` or
-`dict` cannot be formatted directly inside the braces.
+**f-strings.** Scalar values, format specs (`f"{x:.2f}"`), and containers with
+a declared type work; a list whose type is still being inferred (an
+unannotated literal or comprehension) cannot be formatted directly inside the
+braces.
 
 **`print(e)` on exceptions.** For built-in exceptions this prints the message,
 matching CPython, and `str(e)` and f-strings return the message on both
 runtimes. For a user-defined exception class, `print(e)` prints the object
-rather than the message, with no diagnostic.
+rather than the message, with no diagnostic; a library exception class caught
+by its own type (`json.JSONDecodeError`, `zlib.error`) behaves the same way.
 
-**Protocol and union types in containers.** Matching on the elements of a
-`list[A | B]` works. `list[SomeProtocol]` is rejected, and passing a
-`list[A | B]` element to a union-typed *parameter* fails in the C++ build
-today.
+**Tuples.** Unpacking works on a call result (`r, ok = pick(items)`); a tuple
+that holds a reference-type element and was stored in a local first cannot be
+unpacked yet.
+
+**Protocol types in containers.** Matching on the elements of a `list[A | B]`
+works, and an element passes to a union-typed parameter. `list[SomeProtocol]`
+is rejected.
 
 ### Not yet
 
@@ -131,23 +156,27 @@ Byte-compatible with CPython.
 
 #### `re` -- Partial { #re }
 
-**Works:** `compile`, `search`, `match`, `fullmatch`, `findall`, `finditer`,
-`sub` (with `count`), `split`; `Pattern` and `Match` objects (`group` / `start`
+**Works:** `compile`, `search`, `match`, `fullmatch`, `findall`, `finditer` on
+a compiled pattern, `sub` (with `count`), `split`; `Pattern` and `Match` objects (`group` / `start`
 / `end` / `span`); the `IGNORECASE` / `MULTILINE` / `DOTALL` / `VERBOSE` /
 `ASCII` flags; `re.error`. Backed by PCRE2 (vendored, bundled by default;
 `--pcre2=` selects the backend).
 
-**Not yet:** named-group accessors, bytes input, the compile cache.
+**Not yet:** named-group accessors, bytes input, the compile cache, `re.finditer`
+as a module function, `sub` with a callable replacement; `groups()` returns a
+list rather than a tuple.
 
 #### `csv` -- Partial { #csv }
 
-**Works:** `reader`, `writer`, `DictReader`, `DictWriter` over the `io`
-`Readable` / `Writable` protocols; the Excel dialect; `delimiter` /
-`quotechar` / `doublequote` / `skipinitialspace` / `lineterminator` kwargs;
-`QUOTE_MINIMAL` writing. Byte-compatible with CPython.
+**Works:** `reader`, `writer`, `DictReader`, `DictWriter` (imported by name)
+over the `io` `Readable` / `Writable` protocols; the Excel dialect;
+`delimiter` / `quotechar` / `doublequote` / `skipinitialspace` /
+`lineterminator` kwargs on `reader` / `writer`; `QUOTE_MINIMAL` writing.
+Byte-compatible with CPython.
 
 **Not yet:** `Sniffer`, `Dialect` objects / `register_dialect`, the quoting
-constants, `escapechar`, `DictReader` `restkey` / `restval`.
+constants and `quoting=`, `escapechar`, dialect kwargs on `DictReader`,
+`DictReader` `restkey` / `restval`, printing a row directly.
 
 #### `base64` -- Works { #base64 }
 
@@ -164,7 +193,27 @@ accepts `bytes` / `bytearray` / `str` on the decoders.
 #### `hashlib` -- Partial { #hashlib }
 
 **Works:** SHA-256 (pure TurboPython). **Not yet:** MD5, SHA-1, SHA-512,
-BLAKE2 / SHA-3, an optional OpenSSL backend.
+BLAKE2 / SHA-3, `hashlib.new`, an optional OpenSSL backend.
+
+#### `zlib` -- Partial { #zlib }
+
+**Works:** `compress` / `decompress` with every `wbits` container, `crc32` /
+`adler32`, `compressobj` / `decompressobj` with `flush`, `eof`, `unused_data`
+and `unconsumed_tail`, `zlib.error`, and the constants. A bundled zlib is
+linked by default; `--zlib system` links the system library instead.
+
+**Not yet:** `zdict=` and `copy()` on the stream objects. `crc32` / `adler32`
+return `uint32`, so arithmetic on the result past the 32-bit range panics
+rather than growing.
+
+#### `gzip` -- Partial { #gzip }
+
+**Works:** `compress` / `decompress` (multi-member streams included),
+`BadGzipFile`, and reading through `gzip.open(path)` / `GzipFile(path)`, with
+no mode argument: `read`, `readline`, iteration, `with`.
+
+**Not yet:** writing (`mode="wb"` and the `GzipFile` writer), text modes,
+`fileobj=`, and `seek` / `tell`.
 
 #### `string` -- Not yet { #string }
 
@@ -174,8 +223,8 @@ BLAKE2 / SHA-3, an optional OpenSSL backend.
 
 #### `collections` -- Partial { #collections }
 
-**Works:** `Counter` (construction, `[]`, `len`, `in`, `total`,
-`most_common(n)`, `update`, `subtract`).
+**Works:** `Counter`, imported by name (construction, `[]`, `len`, `in`,
+`total`, `most_common(n)`, `update` / `subtract` with another `Counter`).
 
 **Not yet:** `deque`, `defaultdict`, `namedtuple`, `OrderedDict`,
 `Counter.elements` and the `+ - & |` operators.
@@ -186,8 +235,9 @@ BLAKE2 / SHA-3, an optional OpenSSL backend.
 `dropwhile`, `filterfalse`.
 
 **Not yet:** `chain`, `product`, `starmap`, `accumulate`, `pairwise`,
-`compress`, `tee`, `groupby`, `batched` (each blocked on a distinct compiler
-gap -- variadic tuples, buffering).
+`compress`, `tee`, `groupby`, `batched`, `combinations`, `permutations`,
+`zip_longest` (each blocked on a distinct compiler gap -- variadic tuples,
+buffering).
 
 #### `functools` -- Partial { #functools }
 
@@ -201,28 +251,36 @@ gap -- variadic tuples, buffering).
 All four functions (`bisect_left` / `bisect_right` / `insort_left` /
 `insort_right`), generic over `Comparable`.
 
+**Not yet:** the `lo` / `hi` / `key` keyword arguments.
+
 #### `heapq` -- Works { #heapq }
 
 All non-variadic operations plus `merge` (lazy, stable n-way).
 
 **Not yet:** `merge` over arbitrary iterables (inputs must be `list[T]`),
-`key=` / `reverse=` on `merge`.
+`key=` / `reverse=` on `merge`, `key=` on `nsmallest` / `nlargest`.
 
 #### `dataclasses` -- Partial { #dataclasses }
 
 **Works:** field declarations, the generated `__init__`, `frozen` / `order`,
-inheritance, `asdict` / `astuple`, `__post_init__`.
+inheritance, `asdict` / `astuple`, `__post_init__`,
+`field(default_factory=...)`.
 
-**Not yet:** `InitVar`, `replace()`, field `metadata`.
+**Not yet:** `InitVar`, `replace()`, `fields()`, `kw_only` / `slots`, field
+`metadata`.
 
 #### `enum` -- Works { #enum }
 
 `Enum` / `IntEnum`, `auto()`, `.name` / `.value`, `==` / `is`, iteration
 (`for c in Color`), value lookup (`Color(0)`), name lookup (`Color["red"]`),
-`try_parse`, `match` on members, a configurable underlying type via mixin
-(`(Int8, Enum)`), and `@native` binding to a C++ `enum class`.
+`tpy.try_parse`, `match` on members, a configurable underlying type via mixin
+(`(int8, Enum)`), methods on the enum class (instance methods, `@property`,
+`@staticmethod`, `@classmethod`), and `@native` binding to a C++ `enum class`.
 
-**Not yet:** the functional API (`Enum("Color", [...])`).
+**Not yet:** `StrEnum` / `Flag`, non-integer member values, `str(Color.red)`
+and f-string formatting of a member, `len(Color)`, the functional API
+(`Enum("Color", [...])`), dunder methods and property setters on an enum, and
+methods on a `@native` enum.
 
 #### `typing` -- Partial { #typing }
 
@@ -230,9 +288,13 @@ inheritance, `asdict` / `astuple`, `__post_init__`.
 `Iterator`, `Sequence`, `Optional`, `Final`, `Callable`, `Literal`,
 `TypedDict`, `Unpack`, `ClassVar`, `Any`, `cast`. Most operations on an `Any`
 value require narrowing with `isinstance` or extraction with `cast` first.
+`overload` takes CPython's form only: bodyless stubs followed by one
+implementation. A set of variants that each carry their own body is written
+with `tpy.dispatch` instead.
 
 **Not yet:** `Generic`, `TypeVar`, `ParamSpec`, `NewType` -- use PEP 695
-syntax (`class C[T]`, `def f[T]`) for generics.
+syntax (`class C[T]`, `def f[T]`) for generics; bare `Final` (write
+`Final[int]`); `Mapping`, `NamedTuple`, `Generator`.
 
 #### `copy` -- Not yet { #copy }
 
@@ -245,9 +307,10 @@ TurboPython has its own [`copy()`](guide/ownership.md).
 **Works:** filesystem queries (`getcwd`, `chdir`, `listdir`, `scandir` ->
 `DirEntry`, `stat` / `lstat` / `fstat` -> `stat_result`, `walk`); mutating
 operations (`mkdir` / `makedirs`, `rmdir`, `remove` / `unlink`, `rename` /
-`replace`, `symlink` / `readlink` / `link`, `chmod` / `chown`, `utime`,
-`truncate`); low-level fd I/O (`open` / `close` / `read` / `write` / `lseek` /
-`pipe` / `dup` / `dup2`, the `O_*` / `SEEK_*` constants); `access`; `urandom`;
+`replace`, `symlink` / `readlink` / `link`, `chmod` / `chown`, `utime` (with
+a times tuple), `truncate`); low-level fd I/O (`open` / `close` / `read` /
+`write` / `lseek` / `pipe` / `dup` / `dup2`, `get_blocking` / `set_blocking`,
+`openpty`, the `O_*` / `SEEK_*` constants); `access`; `urandom`;
 process and system queries (`getpid` / `getppid`, the `getuid` family,
 `umask`, `cpu_count`, `isatty`, `get_terminal_size`); `environ` (a snapshot
 mapping) with `putenv` / `unsetenv`; module constants (`name`, `sep`, ...).
@@ -272,19 +335,36 @@ fd); `BufferedReader`; the `Readable` / `Writable` / `BinaryReadable` /
 `BinaryWritable` protocols; `SEEK_*` and `DEFAULT_BUFFER_SIZE`.
 
 **Not yet:** `TextIOWrapper`, the `IOBase` ABC hierarchy, `BufferedReader.peek`
-/ `readinto`, encoding / newline / errors kwargs.
+/ `readinto`, encoding / newline / errors kwargs, iterating an `open()` file
+object directly (`for line in f`; `readlines()` works).
 
 #### `sys` -- Partial { #sys }
 
-**Works:** `argv`, `stdout`, `stderr`, `exit`, `maxsize`.
+**Works:** `argv`, `stdout`, `stderr`, `exit`, `maxsize`, `byteorder`.
 
-**Not yet:** `stdin`, `path`, `version_info`.
+**Not yet:** `stdin`, `path`, `version_info`, `platform`.
 
 #### `signal` -- Partial { #signal }
 
-**Works:** `raise_signal`, the `SIGINT` / `SIGTERM` constants.
+**Works:** `raise_signal` (the default action runs, so `SIGINT` terminates the
+process rather than raising `KeyboardInterrupt`), the `SIGINT` / `SIGTERM`
+constants.
 
 **Not yet:** `signal.signal` handler registration.
+
+#### `termios` -- Partial { #termios }
+
+**Works:** `tcgetattr` / `tcsetattr` with `TCSANOW` / `TCSADRAIN` /
+`TCSAFLUSH`, `VMIN` / `VTIME`, and `termios.error`. `tcgetattr` returns an
+opaque record rather than a list, so indexing it and editing single flags are
+not available.
+
+**Not yet:** `tcdrain` / `tcflush` / `tcflow` / `tcsendbreak`, `tcgetwinsize`.
+
+#### `tty` -- Works { #tty }
+
+`setraw` / `setcbreak`, returning the previous attributes, and `cfmakeraw` /
+`cfmakecbreak`.
 
 #### `errno` -- Partial { #errno }
 
@@ -311,7 +391,8 @@ Use `os` and `os.path`.
 
 #### `datetime` -- Works { #datetime }
 
-`timedelta`, `date`, `time`, `datetime`; fixed-offset `timezone` and
+`timedelta`, `date`, `time`, `datetime`; fixed-offset `timezone` (UTC as
+`datetime.UTC`; `timezone.utc` is not available) and
 `ZoneInfo`-aware values; PEP 495 fold; `strftime` / `strptime` /
 `fromisoformat`; `timestamp` / `astimezone`; `date()` / `time()` accessors;
 `timedelta` float operators.
@@ -412,15 +493,17 @@ with `params` / `headers` / `data` / `files` / `json` / `auth` / `timeout` /
 `allow_redirects` / `cookies`; a `data=` body as raw `bytes` or a urlencoded
 `dict`; `files=` multipart uploads; `Response` (`.status_code` / `.ok` /
 `.text` / `.content` / `.json()` / `.headers` (a `CaseInsensitiveDict`) /
-`.cookies` / `.url` / `.history` / `.raise_for_status()`); redirect following
+`.cookies` / `.url` (without the query string) / `.history` /
+`.raise_for_status()`); redirect following
 (301/302/303/307/308); `stream=True` (`iter_content` / `iter_lines` / `.raw` /
 `.close()`); a `Session` with default headers, connection pooling, and
 persistent cookies; HTTPS verification (`verify=True | "<ca>" | False`);
 exceptions rooted at `OSError` (`HTTPError` / `ConnectionError` / `Timeout` /
-`TooManyRedirects`).
+`TooManyRedirects`), caught by the names imported from `tplib.requests`.
 
-**Not yet:** `(connect, read)` timeout tuples, an untyped `.json()` return,
-`asctime` cookie-expiry parsing.
+**Not yet:** `(connect, read)` timeout tuples, a `Timeout` on an HTTPS read
+timeout (it surfaces as `SSLError`), an untyped `.json()` return, `asctime`
+cookie-expiry parsing.
 
 This is a TurboPython-native client, not the PyPI `requests` package.
 
@@ -461,12 +544,14 @@ empty.
 #### `asyncio` -- Partial { #asyncio }
 
 **Works:** `run`, `sleep`, `create_task`, `Task[T]` / `Future[T]`, `Event`,
-`CancelledError`; `gather(*tasks)` and `gather_list(tasks)`; `async with` /
+`CancelledError`; `gather(*tasks)` and `gather_list(tasks)` over tasks from
+`create_task` (not bare coroutines); `async with` /
 `async for` + `StopAsyncIteration`; `wait_for` / `TimeoutError`; the sync
 primitives `Lock` / `Semaphore` / `BoundedSemaphore` / `Queue`; an epoll/kqueue
 reactor with `sock_recv` / `sock_sendall` / `sock_accept` / `sock_connect`;
 streams (`open_connection` -> `StreamReader` / `StreamWriter`, `start_server` ->
-`Server`); SIGINT graceful shutdown.
+`Server`, with handler parameters declared `Own[StreamReader]` /
+`Own[StreamWriter]`); SIGINT graceful shutdown.
 
 **Not yet:** the heterogeneous `gather[*Ts](*coros) -> tuple[*Ts]` form, a
 multi-threaded executor, graceful SIGTERM.
@@ -493,17 +578,19 @@ Needs process spawning.
 
 #### `argparse` -- Partial { #argparse }
 
-**Works:** positionals and optional flags; all seven actions and all four
-`nargs` forms; `type=` (`int` / `float` / `str`, the fixed-width ints,
-`Float32`, custom records via `from_arg`); `choices` / `required` / `dest` /
+**Works:** positionals and optional flags; the `store` / `store_true` /
+`store_false` / `store_const` / `append` / `extend` / `count` actions and all
+four `nargs` forms; `type=` (`int` / `float` / `str`, the fixed-width ints,
+`float32`, custom records via `from_arg`); `choices` / `required` / `dest` /
 `help` / `metavar`; `Optional[T]` / `Optional[list[T]]` for absent flags;
 list-literal defaults; bare `parse_args()` reading `sys.argv[1:]`; `--help` /
 `-h` auto-generation and `add_help=False`; `prog=` / `usage=` / `epilog=`;
 subparsers (flat namespace).
 
-**Not yet:** mutually-exclusive groups, argument groups, terminal-width help
-wrapping, `BooleanOptionalAction`, `parents=`, `allow_abbrev`, custom formatter
-classes, `action=<callable>`.
+**Not yet:** `append_const` / `version` actions, combined short flags (`-ab`),
+`const=` for a valueless `nargs="?"` flag, mutually-exclusive groups, argument
+groups, terminal-width help wrapping, `BooleanOptionalAction`, `parents=`,
+`allow_abbrev`, custom formatter classes, `action=<callable>`.
 
 #### `logging` -- Not yet { #logging }
 

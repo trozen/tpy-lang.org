@@ -11,31 +11,28 @@ be inspected directly to confirm how a value is represented
 
 ## Keep arithmetic fixed-width
 
-The `int` type is exact and allocates as it grows; the fixed-width types are
-fixed-size machine numbers ([Types](types.md)). The trap is silent promotion.
-One `int` operand converts a whole expression to big-integer arithmetic. A stray `int`
-usually comes from a literal past the `Int32` range or a value built with
-`int()`. The fix is an explicit conversion at the boundary:
+The fixed-width types are machine numbers; `int` is exact and allocates as it
+grows ([Types](types.md)). Hot arithmetic stays fast when every operand is
+fixed-width. Two habits keep it that way: annotate accumulators and fields
+with a fixed-width type, and convert an `int` once where it enters a hot path,
+with `int32(n)` or by assigning it to a declared `int32` slot. An `int` that
+reaches an operation makes the result an `int`, and everything computed from
+it after that.
 
 <!-- tpy: run -->
 ```python
-from tpy import Int32
+from tpy import int32
 
 def main():
     n: int = 100            # arrives as int, e.g. from int(...)
-    k = Int32(n)            # converted once, at the boundary
-    total: Int32 = 0
+    k = int32(n)            # converted once, at the boundary
+    total: int32 = 0
     for i in range(3):
         total += k + i      # stays fixed-width all the way
     print(total)            # 303
 
 main()
 ```
-
-Promotion has no diagnostic today. The first check is the arithmetic itself:
-any `int` operand converts the whole expression. For confirmation, the
-generated C++ shows a promoted loop directly ([Building](building.md)) -- no
-C++ fluency is needed to spot a big-integer type where `int32_t` was expected.
 
 ## Move instead of copying
 
@@ -64,20 +61,22 @@ warning.
 
 ## Borrow instead of copying
 
-Passing never copies: parameters borrow, and non-mutating parameters are
-passed read-only automatically ([Functions](functions.md)). Slices of `str`
-are views, not copies, and `StrView` makes the no-copy view part of a
-signature ([Types](types.md)). A plain reference return gives the caller a
-borrowed object with no transfer at all. None of this needs annotations; the
-gain comes from the copies that are never written.
+Passing a reference type never copies: parameters borrow, and non-mutating
+parameters are passed read-only automatically ([Functions](functions.md)). A
+`str` argument is passed as a view as well. Slices of `str` are views, not
+copies, and `StrView` makes the no-copy view part of a signature
+([Types](types.md)). A plain reference return gives the caller a borrowed
+object with no transfer at all. None of this needs annotations; the gain comes
+from the copies that are never written.
 
 Beyond copies, allocations come from growing containers, strings, and big
 integers.
 
 ## Keep dispatch static
 
-Structural protocols and unions resolve at compile time, with no runtime
-dispatch cost ([Data modeling](data-modeling.md)). The dynamic escape hatches
+Structural protocols resolve at compile time, with no runtime dispatch cost,
+and a `match` on a union is a branch on a tag with no indirect call
+([Data modeling](data-modeling.md)). The dynamic escape hatches
 trade that away. A `@dynamic` protocol dispatches every method call through a
 vtable, and `Any` holds a value of statically unknown type, checking or casting
 it against a runtime type tag on each use. `Any` is supported but slow, and it
@@ -168,7 +167,9 @@ Exceptions are the throw-and-catch tier of a two-tier model; `@error_return` is
 the explicit-propagation tier for hot paths. A function marked
 `@error_return(E)` returns its error as a value instead of throwing, so raising
 `E` costs nothing while the caller still writes ordinary `try`/`except`. The
-error class mixes in `ReturnException`:
+error class mixes in `ReturnException` and derives from `Exception` directly.
+It carries only the fields it declares, so a message is a declared
+`message: str` field.
 
 <!-- tpy: run -->
 ```python

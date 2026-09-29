@@ -35,18 +35,18 @@ something that will be freed once the call ends.
 | `Span[readonly[T]]` | `std::span<const T>` | `&[T]` |
 | `copy()` | copy constructor | `.clone()` |
 | `@nocopy` | deleted copy ctor | no `Clone` |
-| `A \| B` | `std::variant` | `enum` |
-| `T \| None` | `std::optional<T>` | `Option<T>` |
+| `A \| B` | `::tpy::Union` over `std::variant` | `enum` |
+| `T \| None` | `std::optional<T>` for a value type, a pointer for a reference type | `Option<T>` |
 | `match` | tag dispatch | `match` |
 | `int` | `BigInt` (arbitrary precision) | `num-bigint` |
-| `Int32` / `Int64` | `int32_t` / `int64_t` | `i32` / `i64` |
+| `int32` / `int64` | `int32_t` / `int64_t` | `i32` / `i64` |
 | `str` | `std::string_view` / `std::string` | `Cow<str>` |
-| `String` | `std::string` | `String` |
+| `String` | `std::string` (a subclass) | `String` |
 | `StrView` | `std::string_view` | `&str` |
 | class | `struct` | `struct` |
 | `raise` / `except` | exceptions | (no analog) |
 | panic | `std::exit(1)` | `panic!` |
-| `Rc` / `Arc` | `shared_ptr` / `weak_ptr` | `Rc` / `Arc` |
+| `Rc` / `Arc` / `Weak` | `shared_ptr` (non-atomic / atomic) / `weak_ptr` | `Rc` / `Arc` / `Weak` |
 | `Send` | -- | `Send` |
 
 ## Behavior worth knowing
@@ -84,20 +84,20 @@ without spelling it out ([Functions](functions.md)).
 arbitrary-precision integer, the kind C++ and Rust reach for a library to get.
 A value that fits in 63 bits stays inline in a single word, so ordinary-sized
 integers allocate nothing; only larger values move to the heap. The
-fixed-width machine types are `Int32`, `Int64`, and their unsigned siblings,
+fixed-width machine types are `int32`, `int64`, and their unsigned siblings,
 which map to `int32_t`/`int64_t` and `i32`/`i64` ([Types](types.md)).
 
 **No null dereference.** `T | None` is an explicit option type
-(`std::optional<T>` / `Option<T>`). A value that might be `None` must be
-narrowed before its `T` operations are allowed, and the compiler enforces
-that -- there is no null pointer to forget to check
+(`std::optional<T>` / `Option<T>`). A value that might be `None` is narrowed
+before its `T` operations; an unnarrowed use draws a warning and a runtime
+null check that panics rather than dereferencing a null pointer
 ([Control flow](control-flow.md)).
 
 **Static dispatch.** Method calls bind at compile time. A call through a
 base-class reference does not dispatch virtually; it calls the static type's
 method, and an override that hides a base method warns. Runtime polymorphism is
-opt-in, through structural protocols (TurboPython's interfaces), not through
-class inheritance ([Data modeling](data-modeling.md)).
+opt-in, through `@dynamic` structural protocols (TurboPython's interfaces),
+not through class inheritance ([Data modeling](data-modeling.md)).
 
 **Deterministic destruction.** An object is destroyed when its owner releases
 it, as with C++ RAII or Rust's `Drop`. `__del__` is that destructor: it runs at
@@ -117,7 +117,7 @@ exception-throwing cost. Panics are separate -- overflow, a failed narrowing,
 and similar unrecoverable errors print a message and exit the process, like a
 Rust `panic!` with no `catch_unwind` ([Control flow](control-flow.md)).
 
-**Predictable codegen.** A class becomes a plain struct; `list[Float64]`
+**Predictable codegen.** A class becomes a plain struct; `list[float64]`
 becomes a contiguous `std::vector<double>`; an `Own[T]` parameter becomes an
 rvalue reference. `tpyc --dump-code` prints the generated C++, which shows
 exactly what each construct became ([Building](building.md)).

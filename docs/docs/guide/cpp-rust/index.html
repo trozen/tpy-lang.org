@@ -162,10 +162,10 @@
       <div class="md-header__source">
         <div class="md-source">
           <div class="md-source__repository">
-            TurboPython 0.5.1
+            TurboPython 0.6.1
             
               <ul class="md-source__facts">
-                <li class="md-source__fact md-source__fact--version">v0.5.1</li>
+                <li class="md-source__fact md-source__fact--version">v0.6.1</li>
               </ul>
             
           </div>
@@ -896,12 +896,12 @@ something that will be freed once the call ends.</p>
 </tr>
 <tr>
 <td><code>A \| B</code></td>
-<td><code>std::variant</code></td>
+<td><code>::tpy::Union</code> over <code>std::variant</code></td>
 <td><code>enum</code></td>
 </tr>
 <tr>
 <td><code>T \| None</code></td>
-<td><code>std::optional&lt;T&gt;</code></td>
+<td><code>std::optional&lt;T&gt;</code> for a value type, a pointer for a reference type</td>
 <td><code>Option&lt;T&gt;</code></td>
 </tr>
 <tr>
@@ -915,7 +915,7 @@ something that will be freed once the call ends.</p>
 <td><code>num-bigint</code></td>
 </tr>
 <tr>
-<td><code>Int32</code> / <code>Int64</code></td>
+<td><code>int32</code> / <code>int64</code></td>
 <td><code>int32_t</code> / <code>int64_t</code></td>
 <td><code>i32</code> / <code>i64</code></td>
 </tr>
@@ -926,7 +926,7 @@ something that will be freed once the call ends.</p>
 </tr>
 <tr>
 <td><code>String</code></td>
-<td><code>std::string</code></td>
+<td><code>std::string</code> (a subclass)</td>
 <td><code>String</code></td>
 </tr>
 <tr>
@@ -950,9 +950,9 @@ something that will be freed once the call ends.</p>
 <td><code>panic!</code></td>
 </tr>
 <tr>
-<td><code>Rc</code> / <code>Arc</code></td>
-<td><code>shared_ptr</code> / <code>weak_ptr</code></td>
-<td><code>Rc</code> / <code>Arc</code></td>
+<td><code>Rc</code> / <code>Arc</code> / <code>Weak</code></td>
+<td><code>shared_ptr</code> (non-atomic / atomic) / <code>weak_ptr</code></td>
+<td><code>Rc</code> / <code>Arc</code> / <code>Weak</code></td>
 </tr>
 <tr>
 <td><code>Send</code></td>
@@ -990,18 +990,18 @@ without spelling it out (<a href="../functions/">Functions</a>).</p>
 arbitrary-precision integer, the kind C++ and Rust reach for a library to get.
 A value that fits in 63 bits stays inline in a single word, so ordinary-sized
 integers allocate nothing; only larger values move to the heap. The
-fixed-width machine types are <code>Int32</code>, <code>Int64</code>, and their unsigned siblings,
+fixed-width machine types are <code>int32</code>, <code>int64</code>, and their unsigned siblings,
 which map to <code>int32_t</code>/<code>int64_t</code> and <code>i32</code>/<code>i64</code> (<a href="../types/">Types</a>).</p>
 <p><strong>No null dereference.</strong> <code>T | None</code> is an explicit option type
-(<code>std::optional&lt;T&gt;</code> / <code>Option&lt;T&gt;</code>). A value that might be <code>None</code> must be
-narrowed before its <code>T</code> operations are allowed, and the compiler enforces
-that — there is no null pointer to forget to check
+(<code>std::optional&lt;T&gt;</code> / <code>Option&lt;T&gt;</code>). A value that might be <code>None</code> is narrowed
+before its <code>T</code> operations; an unnarrowed use draws a warning and a runtime
+null check that panics rather than dereferencing a null pointer
 (<a href="../control-flow/">Control flow</a>).</p>
 <p><strong>Static dispatch.</strong> Method calls bind at compile time. A call through a
 base-class reference does not dispatch virtually; it calls the static type's
 method, and an override that hides a base method warns. Runtime polymorphism is
-opt-in, through structural protocols (TurboPython's interfaces), not through
-class inheritance (<a href="../data-modeling/">Data modeling</a>).</p>
+opt-in, through <code>@dynamic</code> structural protocols (TurboPython's interfaces),
+not through class inheritance (<a href="../data-modeling/">Data modeling</a>).</p>
 <p><strong>Deterministic destruction.</strong> An object is destroyed when its owner releases
 it, as with C++ RAII or Rust's <code>Drop</code>. <code>__del__</code> is that destructor: it runs at
 a defined point, not whenever a garbage collector chooses.</p>
@@ -1017,7 +1017,7 @@ automatically to every <code>__next__</code>, so a loop ends on <code>StopIterat
 exception-throwing cost. Panics are separate — overflow, a failed narrowing,
 and similar unrecoverable errors print a message and exit the process, like a
 Rust <code>panic!</code> with no <code>catch_unwind</code> (<a href="../control-flow/">Control flow</a>).</p>
-<p><strong>Predictable codegen.</strong> A class becomes a plain struct; <code>list[Float64]</code>
+<p><strong>Predictable codegen.</strong> A class becomes a plain struct; <code>list[float64]</code>
 becomes a contiguous <code>std::vector&lt;double&gt;</code>; an <code>Own[T]</code> parameter becomes an
 rvalue reference. <code>tpyc --dump-code</code> prints the generated C++, which shows
 exactly what each construct became (<a href="../building/">Building</a>).</p>
@@ -1071,7 +1071,7 @@ support.</p>
       <div class="md-copyright">
   
     <div class="md-copyright__highlight">
-      These docs describe <span class="tpy-version">TurboPython 0.5.1</span> (v0.5.1).
+      These docs describe <span class="tpy-version">TurboPython 0.6.1</span> (v0.6.1).
     </div>
   
   

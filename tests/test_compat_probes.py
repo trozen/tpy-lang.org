@@ -32,9 +32,9 @@ PROBES = sorted(COMPAT_DIR.glob("*.py"))
 STDLIB_BUNDLED = [
     "argparse", "asyncio", "base64", "bisect", "collections", "csv",
     "dataclasses", "datetime", "enum", "errno", "functools", "hashlib",
-    "heapq", "http", "io", "itertools", "json", "math", "os", "random",
-    "re", "signal", "socket", "ssl", "struct", "sys", "time", "typing",
-    "urllib", "zoneinfo",
+    "gzip", "heapq", "http", "io", "itertools", "json", "math", "os", "random",
+    "re", "signal", "socket", "ssl", "struct", "sys", "termios", "time",
+    "tty", "typing", "urllib", "zlib", "zoneinfo",
 ]
 STDLIB_ABSENT = [
     "abc", "contextlib", "copy", "glob", "logging", "multiprocessing",

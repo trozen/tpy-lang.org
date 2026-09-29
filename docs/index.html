@@ -278,8 +278,9 @@
 <div class="topbanner">
   <div class="wrap">
     <span class="dot"></span>
-    <span><b>Early development.</b> Most of Python's syntax works&mdash;the parts that can be compiled
-    statically&mdash;but there are gaps in the standard library and rough edges. <a href="/docs/compatibility/">See what works &rarr;</a></span>
+    <span><b>Early development.</b> The core language compiles and runs real programs, but some ordinary
+    Python constructs are still rejected, the standard library is a subset, and known bugs can produce wrong
+    results silently. <a href="/docs/compatibility/">See what works &rarr;</a></span>
   </div>
 </div>
 
@@ -379,7 +380,7 @@
         <span class="stepn">3</span>
         <div class="stepbody">
           <h3>Or build a standalone binary</h3>
-          <div class="cmd-line"><span class="p">$</span> tpyc -b -O hello.py   <span class="o"># optimized binary at __tpyc__/hello.d/release/hello</span></div>
+          <div class="cmd-line"><span class="p">$</span> tpyc -b hello.py   <span class="o"># optimized binary at __tpyc__/hello.d/release/hello</span></div>
         </div>
       </div>
     </div>
@@ -393,9 +394,15 @@
     <div class="eyebrow">How it differs from Python</div>
     <h2>Python syntax with static types and a strict ownership model.</h2>
     <p class="lead"><b>Type annotations are required on function parameters, return types, and class
-      fields</b>; an unannotated integer literal defaults to a 32-bit <code>Int32</code>. Beyond these
+      fields</b>; an unannotated integer literal defaults to a 32-bit <code>int32</code>. Beyond these
       rules, most code reads like standard Python&mdash;minus Python's dynamic runtime features. Where a construct diverges from the static type and
       ownership model, the compiler reports it, and its diagnostics name the required change.</p>
+
+    <h3 class="ownhead">No pip packages</h3>
+    <p class="prose">Packages written for CPython, such as <code>numpy</code> or <code>requests</code>, cannot be
+      imported. Everything a program imports is compiled together with it. A dependency has to be written in
+      TurboPython or ported to it. What ships today is a subset of the standard library and TurboPython's own
+      <code>tplib</code> libraries; <a href="/docs/compatibility/#third-party-packages">Compatibility</a> lists them.</p>
 
     <h3 class="ownhead">Ownership</h3>
     <p class="prose">Python reclaims objects automatically through reference counting, so a name is just a
@@ -411,7 +418,7 @@
 <pre><span class="k">def</span> <span class="fn">make</span>() -> <span class="t">Obj</span>:
     <span class="n">o</span> = <span class="fn">Obj</span>(<span class="num">1</span>)
     <span class="k">return</span> <span class="n">o</span>   <span class="c"># freed when make returns</span></pre>
-        <div class="diag err"><span class="lbl">error:</span><span class="msg">Cannot return local or temporary as reference. Object type 'Obj' is returned by reference. Use Own[Obj] to return by value.</span></div>
+        <div class="diag err"><span class="lbl">error:</span><span class="msg">Cannot return local or temporary as reference. Reference type 'Obj' is returned by reference. Use Own[Obj] to return by value.</span></div>
       </div>
       <div class="codecard">
         <div class="cap"><span class="d green"></span>Transfer ownership out &mdash; compiles</div>
@@ -453,7 +460,7 @@
     <div class="pair">
       <div class="codecard">
         <div class="cap"><span class="d amber"></span>Keep using a value after storing it &mdash; compiles with a warning</div>
-<pre><span class="n">l</span> = []
+<pre><span class="n">l</span>: <span class="t">list</span>[<span class="t">Obj</span>] = []
 <span class="n">o</span> = <span class="fn">Obj</span>(<span class="num">1</span>)
 <span class="n">l</span>.<span class="fn">append</span>(<span class="n">o</span>)   <span class="c"># implicit copy: o is used below</span>
 <span class="n">o</span>.<span class="n">x</span> = <span class="num">99</span></pre>
@@ -461,7 +468,7 @@
       </div>
       <div class="codecard">
         <div class="cap"><span class="d green"></span>Make the copy explicit &mdash; compiles clean</div>
-<pre><span class="n">l</span> = []
+<pre><span class="n">l</span>: <span class="t">list</span>[<span class="t">Obj</span>] = []
 <span class="n">o</span> = <span class="fn">Obj</span>(<span class="num">1</span>)
 <span class="n">l</span>.<span class="fn">append</span>(<span class="fn">copy</span>(<span class="n">o</span>))
 <span class="n">o</span>.<span class="n">x</span> = <span class="num">99</span>      <span class="c"># the list holds its own copy</span></pre>
@@ -485,8 +492,8 @@
       </div>
       <div class="card">
         <div class="ic">&#128290;</div>
-        <h3>Int32 by default</h3>
-        <p>A bare integer is a 32-bit <code>Int32</code>. <code>Int64</code>/<code>UInt32</code>/... pick a width; <code>int</code> is arbitrary-precision (heap-allocated for large values).</p>
+        <h3>int32 by default</h3>
+        <p>A bare integer is a 32-bit <code>int32</code>. <code>int64</code>/<code>uint32</code>/... pick a width; <code>int</code> is arbitrary-precision (heap-allocated for large values).</p>
       </div>
       <div class="card">
         <div class="ic">&#128230;</div>
@@ -506,7 +513,7 @@
       <div class="card">
         <div class="ic">&#129520;</div>
         <h3>Core types in <code>tpy</code></h3>
-        <p>TurboPython's own types (<code>Own</code>, <code>Int32</code>, <code>Span</code>, ...) live in the <code>tpy</code> module &mdash; a file can pull them all in with <code>from tpy import *</code>.</p>
+        <p>TurboPython's own types (<code>Own</code>, <code>int32</code>, <code>Span</code>, ...) live in the <code>tpy</code> module &mdash; a file can pull them all in with <code>from tpy import *</code>.</p>
       </div>
     </div>
 
