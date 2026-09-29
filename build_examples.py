@@ -34,7 +34,14 @@ def esc(s):
     return s.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
 
 
+# Python 3.12 (PEP 701) tokenizes an f-string in pieces; all three are string
+# text for highlighting purposes. Absent on older interpreters.
+FSTRING_PARTS = {getattr(tokenize, n) for n in ("FSTRING_START", "FSTRING_MIDDLE", "FSTRING_END")
+                 if hasattr(tokenize, n)}
+
+
 def highlight(src):
+    lines = src.splitlines(keepends=True)
     toks = list(tokenize.generate_tokens(io.StringIO(src).readline))
     out = []
     prow, pcol = 1, 0
@@ -51,8 +58,16 @@ def highlight(src):
         cls = None
         if ttype == tokenize.COMMENT:
             cls = "c"
-        elif ttype == tokenize.STRING:
+        elif ttype == tokenize.STRING or ttype in FSTRING_PARTS:
             cls = "s"
+            if ttype in FSTRING_PARTS and ttype != tokenize.STRING:
+                # A doubled brace ({{ or }}) is reported as one brace with a
+                # one-column gap before the next token; the source slice up to
+                # that token has the brace twice, as written.
+                nxt = toks[i + 1] if i + 1 < len(toks) else None
+                if nxt and nxt[2][0] == srow and nxt[2][1] > ecol:
+                    tstr = lines[srow - 1][scol:nxt[2][1]]
+                    ecol = nxt[2][1]
         elif ttype == tokenize.NUMBER:
             cls = "num"
         elif ttype == tokenize.NAME:
