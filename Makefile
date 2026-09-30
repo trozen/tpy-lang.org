@@ -2,7 +2,7 @@
 # pyproject.toml on first run -- no manual setup.
 
 .DEFAULT_GOAL := help
-.PHONY: help serve site docs test check examples
+.PHONY: help serve site docs test check examples og
 
 help:  ## list available targets
 	@grep -E '^[a-zA-Z_-]+:.*?## ' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "  make %-10s %s\n", $$1, $$2}'
@@ -36,3 +36,11 @@ check:  ## verify everything the site shows: docs snippets + landing examples
 
 examples:  ## regenerate docs/examples.js from the tpy-examples submodule
 	python3 build_examples.py
+
+# The card is a screenshot rather than a hand-drawn PNG so it can reuse the
+# landing page's CSS verbatim. Needs a Chrome/Chromium binary on PATH.
+CHROME ?= $(shell command -v google-chrome chromium chromium-browser 2>/dev/null | head -1)
+og:  ## regenerate docs/og.png, the social-share card, from og-card.html
+	@test -n "$(CHROME)" || { echo "make og: no Chrome/Chromium found; set CHROME=/path/to/binary" >&2; exit 1; }
+	$(CHROME) --headless=new --disable-gpu --hide-scrollbars \
+	  --window-size=1200,630 --screenshot=docs/og.png file://$(CURDIR)/og-card.html

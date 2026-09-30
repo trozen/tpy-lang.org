@@ -22,6 +22,8 @@ submodule.
 | `docs/index.html` | The landing page -- inline CSS + JS, no dependencies. Loads `examples.js` via `<script src>`. |
 | `docs/examples.js` | **Generated** into `docs/` by `build_examples.py`. A `const EXAMPLES = [...]` array (per example: `label`, `file`, raw `src`, highlighted `code`). Do not edit by hand. |
 | `docs/docs/` | **Generated** docs site -- the `mkdocs build` output, served at `tpy-lang.org/docs/`. Do not edit by hand. |
+| `docs/og.png` | **Generated** by `make og` from `og-card.html` -- the 1200x630 preview card that link unfurls (X, Slack, Discord, LinkedIn...) show for the landing page. Do not edit by hand. |
+| `docs/robots.txt`, `docs/sitemap.xml` | Crawler hints for the landing page; the docs site has its own sitemap under `docs/docs/`. |
 | `docs/CNAME` | The custom domain (`tpy-lang.org`). |
 | `vendor/tpy-examples/` | **Submodule** (`trozen/tpy-examples`) -- the example gallery. `landing/` in it holds the programs shown on the landing page; `shedskin/` holds the larger ported programs the docs link to. |
 | `build_examples.py` | Reads `vendor/tpy-examples/landing/`, highlights the programs, writes `docs/examples.js`. Pure stdlib -- no `tpy` needed to regenerate. |
