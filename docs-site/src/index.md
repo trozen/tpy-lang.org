@@ -1,8 +1,8 @@
 # TurboPython documentation
 
-TurboPython is a programming language and a compiler based on Python. It
-keeps Python's familiar syntax and adds a few extensions that let a program
-be statically compiled into a fast native binary. These docs cover how to
+TurboPython is a high-performance dialect of Python. It keeps Python's
+familiar syntax and adds a few extensions that let a program be compiled
+through C++ into a fast native binary. These docs cover how to
 write TurboPython and what works today.
 
 - **[Getting started](getting-started.md)** -- installation, a first program,
