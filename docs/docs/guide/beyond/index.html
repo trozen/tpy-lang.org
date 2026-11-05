@@ -162,10 +162,10 @@
       <div class="md-header__source">
         <div class="md-source">
           <div class="md-source__repository">
-            TurboPython 0.6.2
+            TurboPython 0.7.0
             
               <ul class="md-source__facts">
-                <li class="md-source__fact md-source__fact--version">v0.6.2</li>
+                <li class="md-source__fact md-source__fact--version">v0.7.0</li>
               </ul>
             
           </div>
@@ -1044,16 +1044,17 @@ and <code>@classmethod</code>.</p>
 <p>An HTTP client exists in early form (<code>tplib.requests</code>), and TLS works for both
 HTTPS clients and servers. Compression is available through <code>zlib</code> and <code>gzip</code>,
 and POSIX terminal control through <code>termios</code> and <code>tty</code>.
-<code>subprocess</code> and <code>multiprocessing</code> do not exist.
+<code>subprocess</code> provides <code>Popen</code> for spawning processes over pipes;
+<code>multiprocessing</code> does not exist.
 For a services stack, the missing pieces are still large;
 <a href="../../compatibility/">Compatibility</a> is the place to check before planning a
 port.</p>
 <h2 id="native-interop">Native interop<a class="headerlink" href="#native-interop" title="Permanent link">&para;</a></h2>
 <p>Native interop runs in two directions. A TurboPython module compiles into a
-CPython extension (<code># tpy: ext_module</code>, <a href="../building/">Building</a>). Exported
-functions accept default, keyword-only, and positional-only parameters as well
-as <code>Optional[T]</code> arguments and results, and their docstrings cross as
-<code>__doc__</code>. Existing C++
+CPython extension (<code>__tpy__ = {"mod": "ext"}</code>, <a href="../building/">Building</a>).
+Exported functions accept default, keyword-only, and positional-only
+parameters as well as <code>Optional[T]</code> arguments and results, and their
+docstrings cross as <code>__doc__</code>. Existing C++
 binds into TurboPython with <code>@native</code>, mapping a class or function onto a C++
 type or call — the standard library itself is built this way. <code>@native</code> is
 usable but undocumented; the API may change.</p>
@@ -1104,7 +1105,7 @@ records its status.</p>
       <div class="md-copyright">
   
     <div class="md-copyright__highlight">
-      These docs describe <span class="tpy-version">TurboPython 0.6.2</span> (v0.6.2).
+      These docs describe <span class="tpy-version">TurboPython 0.7.0</span> (v0.7.0).
     </div>
   
   

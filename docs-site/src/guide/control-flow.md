@@ -182,9 +182,11 @@ hot-path control flow -- which is why `__next__` gets special treatment below.
     f-string formatting (`f"failed: {e}"`) return the message on both
     runtimes, as in the example above.
 
-Exceptions are for failures the program can handle. They are distinct from
-*panics* -- integer overflow, a failed narrowing conversion -- which stop the
-program and cannot be caught ([the types page](types.md) covers them).
+Exceptions are for failures the program can handle. Fixed-width overflow and
+a failed narrowing conversion are among them: both raise `OverflowError`
+([the types page](types.md) covers them). Exceptions are distinct from
+*panics*, which signal a violated runtime invariant rather than a failure the
+program could handle; a panic stops the program and cannot be caught.
 
 ## Iterators
 
@@ -242,7 +244,8 @@ main()
 A generator is one object, as in Python: a second name bound to it aliases
 it. A name that holds a generator is bound once, so a second `squares(3)`
 needs a new name. Advancing a generator by hand with `next(g)` is written
-inside a `try` that handles `StopIteration`.
+inside a `try` that handles `StopIteration`; `next(g, default)` returns the
+default instead and needs no `try`.
 
 The next page consolidates all of this into performance guidance:
 [Writing efficient TPy](efficiency.md).

@@ -75,34 +75,59 @@ main()
 
 ## Mixing fixed-width types
 
-Two different fixed widths cannot be combined in one expression. The compiler
-rejects the expression rather than converting one side:
+An operator whose operands have different fixed widths converts the narrower
+operand to the wider type, and the result has the wider type. A conversion
+exists where no value can be lost: to a wider type of the same signedness, or
+from an unsigned type into a strictly wider signed one (`uint16` into
+`int32`). The operation is the wider type's, so its overflow check applies
+at that width:
 
-<!-- tpy: expect-error="Invalid operand types" -->
+<!-- tpy: run -->
 ```python
 from tpy import int32, int64
 
 def main():
     a: int32 = 5
-    b: int64 = 10
-    print(a + b)         # error: int32 and int64 cannot mix
+    b: int64 = 9_000_000_000
+    print(a + b)         # int64: 9000000005
+
+main()
+```
+
+A pair with no such direction, such as `int32` with `uint32`, has no common
+fixed-width type, and the compiler rejects the expression rather than
+choosing one:
+
+<!-- tpy: expect-error="Invalid operand types" -->
+```python
+from tpy import int32, uint32
+
+def main():
+    a: int32 = 5
+    b: uint32 = 10
+    print(a + b)         # error: neither type holds the other
 
 main()
 ```
 
 ```
-error: Invalid operand types for '+': int32 and int64
+error: Invalid operand types for '+': int32 and uint32
 ```
 
-!!! note
-    This strictness is not final. A future version may allow some mixed-width
-    expressions, where the widening is unambiguous, to improve ergonomics.
+Arithmetic on 8- and 16-bit operands computes in the default integer type, as
+CPython's unbounded integers would: two `uint8` values of 200 and 100 add to
+300, an `int32`. Bitwise operators (`&`, `|`, `^`, `>>`) keep the narrow
+type.
 
-Narrowing between fixed widths is written explicitly. A wider slot accepts a
-narrower value, and an `int` slot accepts any fixed-width value, with no
-conversion; an `int` value at a fixed-width slot narrows with a runtime range
-check. Mixing an integer with a float needs no conversion; as in Python, the
-result is a float:
+A fixed-width slot accepts any integer. A value that widens into the slot is
+stored as it is; any other value -- a wider or differently signed fixed
+width, or an `int` -- passes a runtime range check that raises
+`OverflowError` when it does not fit. The rule holds at every slot:
+assignment, argument, return, field, and container element. The type's
+constructor, as in `int32(b)`, spells the same checked conversion explicitly.
+An integer literal that does not fit the slot is rejected at compile time.
+Mixing an integer with a float needs no conversion; as in Python, the result
+is a float:
 
 <!-- tpy: run -->
 ```python
@@ -110,9 +135,9 @@ from tpy import int32, int64
 
 def main():
     b: int64 = 10
-    a = int32(b)             # explicit narrowing
+    a: int32 = b             # checked narrowing at the slot
     n = int(a)               # fixed-width to int
-    print(a, int64(a), n, int32(n))
+    print(a, int32(b), n, int32(n))
     print(a + 0.5)           # int-float mix gives a float: 10.5
 
 main()
@@ -142,8 +167,8 @@ x: float
 ```
 
 A conversion checks its range at runtime. `int32(n)` with a value outside the
-`int32` range does not truncate; it panics:
-`TurboPython panic: int32 overflow: value out of range`.
+`int32` range does not truncate; it raises
+`OverflowError: int32 overflow: value out of range`.
 
 Mixing a fixed-width type with `int` promotes silently. The expression
 `int32 + int` compiles, and the result is `int`. One `int` in a hot loop turns
@@ -169,29 +194,51 @@ def main():
 main()
 ```
 
-Overflow panics rather than wrapping. Fixed-width arithmetic that exceeds the
-type's range stops the program, in optimized builds too. A panic is not an
-exception: `try`/`except` cannot catch it. Where the range of a value is not
+Overflow raises rather than wrapping. Fixed-width arithmetic that exceeds the
+type's range raises `OverflowError`, in optimized builds too, and the program
+can catch it like any other exception. Where the range of a value is not
 certain, a wider type or `int` is the right choice.
 
+<!-- tpy: run -->
 ```python
 from tpy import int32
 
 def main():
     k: int32 = 2147483647
-    print(k + 1)          # panics: int32 overflow
+    try:
+        print(k + 1)
+    except OverflowError as e:
+        print("caught:", e)  # caught: int32 overflow in addition
 
 main()
 ```
 
-```
-TurboPython panic: int32 overflow in addition
-```
+Where wrapping is the intended arithmetic, as in hashing and checksums, each
+fixed-width type provides it explicitly. `T.wrap(x)` converts modulo 2**bits
+into the type's range instead of checking, and `T.wrap_add`, `T.wrap_sub`,
+`T.wrap_mul`, `T.wrap_shl` and `T.wrap_shr` compute the wrapped result of one
+operation. They are static methods rather than methods on the value, so the
+same code runs under CPython, where a fixed-width value is often a plain
+`int`:
 
-!!! note "Overflow behavior"
-    Fixed-width overflow currently panics and stops the program. This is not
-    yet configurable; a future version may offer other behavior, such as
-    wrapping or a catchable exception.
+<!-- tpy: run -->
+```python
+from tpy import int32, uint32
+
+def fnv1a(data: bytes) -> uint32:
+    h: uint32 = 2166136261
+    for b in data:
+        h = uint32.wrap_mul(h ^ b, 16777619)
+    return h
+
+def main():
+    k: int32 = 2147483647
+    print(int32.wrap_add(k, 1))    # -2147483648
+    print(uint32.wrap(-1))         # 4294967295
+    print(fnv1a(b"tpy"))           # 2820810480
+
+main()
+```
 
 ## Strings
 

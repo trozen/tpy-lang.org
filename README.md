@@ -19,14 +19,14 @@ submodule.
 | Path | What |
 |------|------|
 | `docs/` | **The served site** -- GitHub Pages publishes this folder. |
-| `docs/index.html` | The landing page -- inline CSS + JS, no dependencies. Loads `examples.js` via `<script src>`. |
+| `docs/index.html` | The landing page -- inline CSS + JS, no dependencies. Loads `examples.js` via `<script src>`. The first example's code inside `<pre id="exCode">`, the no-JavaScript fallback, is written by `build_examples.py`; do not edit it by hand. |
 | `docs/examples.js` | **Generated** into `docs/` by `build_examples.py`. A `const EXAMPLES = [...]` array (per example: `label`, `file`, raw `src`, highlighted `code`). Do not edit by hand. |
 | `docs/docs/` | **Generated** docs site -- the `mkdocs build` output, served at `tpy-lang.org/docs/`. Do not edit by hand. |
 | `docs/og.png` | **Generated** by `make og` from `og-card.html` -- the 1200x630 preview card that link unfurls (X, Slack, Discord, LinkedIn...) show for the landing page. Do not edit by hand. |
 | `docs/robots.txt`, `docs/sitemap.xml` | Crawler hints for the landing page; the docs site has its own sitemap under `docs/docs/`. |
 | `docs/CNAME` | The custom domain (`tpy-lang.org`). |
 | `vendor/tpy-examples/` | **Submodule** (`trozen/tpy-examples`) -- the example gallery. `landing/` in it holds the programs shown on the landing page; `shedskin/` holds the larger ported programs the docs link to. |
-| `build_examples.py` | Reads `vendor/tpy-examples/landing/`, highlights the programs, writes `docs/examples.js`. Pure stdlib -- no `tpy` needed to regenerate. |
+| `build_examples.py` | Reads `vendor/tpy-examples/landing/`, highlights the programs, writes `docs/examples.js` and the first example's static fallback into `docs/index.html`. Pure stdlib -- no `tpy` needed to regenerate. |
 | `verify_examples.py` | Compiles each example with whatever `tpy` is on PATH (runs the deterministic ones), failing on any that don't. `make check` runs it against the pinned `vendor/tpy`; the pre-announce gate in `CLAUDE.md` runs it against the published package. |
 | `docs-site/` | Source for the docs site: `mkdocs.yml`, `src/` markdown, theme overrides, logo. Built with MkDocs Material into `docs/docs/`. |
 

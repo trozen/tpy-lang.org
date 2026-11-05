@@ -1,4 +1,4 @@
-# expect: error Unknown function or type: 'tuple'
+# expect: error cannot build a tuple from a sequence
 def main():
     xs: list[int] = [1, 2]
     print(tuple(xs))

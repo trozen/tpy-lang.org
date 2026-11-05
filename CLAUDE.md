@@ -15,7 +15,10 @@ experienced Python developers.
 - **Never push, and never deploy.** The user controls every push and the live
   site. Commit only when explicitly asked.
 - **Never hand-edit `docs/examples.js`** -- it is generated. Edit the programs
-  in `vendor/tpy-examples/landing/` and run `python3 build_examples.py`.
+  in `vendor/tpy-examples/landing/` and run `python3 build_examples.py`. The
+  same script writes the first example into `<pre id="exCode">` in
+  `index.html` (the no-JavaScript fallback); don't edit that block by hand
+  either.
 - **The example sources are in another repository.** `vendor/tpy-examples` is a
   submodule (`trozen/tpy-examples`). Editing an example means a commit there and
   a pointer bump here, and the pointer must reference a commit that has been

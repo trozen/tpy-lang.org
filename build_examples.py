@@ -1,4 +1,4 @@
-"""Fold the example programs into examples.js.
+"""Fold the example programs into examples.js, and the first into index.html.
 
 Reads each program from the tpy-examples submodule and emits a JS array with a
 display label, the filename (for the run line), the raw source (Copy button),
@@ -8,7 +8,7 @@ still compile -- see README). Run from the repo root:
 
     python build_examples.py
 """
-import io, json, keyword, sys, tokenize
+import io, json, keyword, re, sys, tokenize
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
@@ -16,6 +16,7 @@ ROOT = Path(__file__).resolve().parent
 # submodule, so that every published example has one home.
 SRC_DIR = ROOT / "vendor" / "tpy-examples" / "landing"
 OUT = ROOT / "docs" / "examples.js"  # output: into the Pages-served folder
+PAGE = ROOT / "docs" / "index.html"  # carries a static copy of the first example
 # (filename, dropdown label) -- controls order and what the selector shows.
 ORDER = [
     ("mandelbrot.py", "mandelbrot"),
@@ -96,3 +97,22 @@ for filename, label in ORDER:
 js = "const EXAMPLES = " + json.dumps(examples, separators=(",", ":")) + ";\n"
 OUT.write_text(js)
 print(f"wrote {OUT.relative_to(ROOT)} ({len(js)} bytes, {len(examples)} examples)")
+
+
+# The page ships the first example as static markup too, shown when examples.js
+# does not load (no JavaScript, crawlers, link previews). Writing it from the
+# same source keeps it from drifting behind the generated array.
+def fill(html, pattern, body, what):
+    found = re.compile(pattern, re.DOTALL)
+    if len(found.findall(html)) != 1:
+        sys.exit(f"error: {PAGE.relative_to(ROOT)}: expected exactly one {what}")
+    return found.sub(lambda m: m.group(1) + body + m.group(2), html)
+
+
+first = examples[0]
+page = PAGE.read_text()
+page = fill(page, r'(<pre id="exCode">).*?(</pre>)', first["code"], '<pre id="exCode">')
+page = fill(page, r'(<div class="run" id="exRun">.*?<span class="cmd">tpy ).*?(</span>)',
+            esc(first["file"]), 'run line in #exRun')
+PAGE.write_text(page)
+print(f"wrote the {first['file']} fallback into {PAGE.relative_to(ROOT)}")

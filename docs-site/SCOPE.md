@@ -208,8 +208,9 @@ from the snippet above it.
 
 Work **today**, via public flags: run (`tpy foo.py`), REPL, inline snippet
 (`-c`), emit C++ only (`tpyc`), **standalone native binary** (`tpy -b` /
-`tpyc --build`), build-and-run (`-x`), optimized build (`-O`/`--release`),
-**CPython extension `.so`** (`# tpy: ext_module` + `tpyc -b`), `--dump-code`,
+`tpyc --build`), build-and-run (`-x`), debug build (`--debug`; optimized
+otherwise), **CPython extension `.so`** (`__tpy__ = {"mod": "ext"}` +
+`tpyc -b`), `--dump-code`,
 **CMake integration** of the emitted C++ (a `sources.cmake` is generated
 alongside; `--no-main` links into an existing C++ program; runtime headers
 bundled by default, `--no-bundle-runtime` to skip), toolchain knobs (`--cxx`,

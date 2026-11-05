@@ -90,8 +90,8 @@ which map to `int32_t`/`int64_t` and `i32`/`i64` ([Types](types.md)).
 **No null dereference.** `T | None` is an explicit option type
 (`std::optional<T>` / `Option<T>`). A value that might be `None` is narrowed
 before its `T` operations; an unnarrowed use draws a warning and a runtime
-null check that panics rather than dereferencing a null pointer
-([Control flow](control-flow.md)).
+null check that raises `AttributeError`, as CPython does, rather than
+dereferencing a null pointer ([Control flow](control-flow.md)).
 
 **Static dispatch.** Method calls bind at compile time. A call through a
 base-class reference does not dispatch virtually; it calls the static type's
@@ -113,9 +113,14 @@ the non-throwing path costs nothing, and a `raise` unwinds the stack. The
 `@error_return` decorator instead propagates errors as values, compiling to
 `std::expected` -- Rust's `Result` -- for hot paths. The compiler applies it
 automatically to every `__next__`, so a loop ends on `StopIteration` with no
-exception-throwing cost. Panics are separate -- overflow, a failed narrowing,
-and similar unrecoverable errors print a message and exit the process, like a
-Rust `panic!` with no `catch_unwind` ([Control flow](control-flow.md)).
+exception-throwing cost. Integer overflow is an exception too: fixed-width
+arithmetic is checked and raises `OverflowError`, where Rust panics in debug
+builds and wraps in release. Wrapping arithmetic is explicit: `int32.wrap_add`
+and its siblings correspond to Rust's `wrapping_add` family
+([Types](types.md)). Panics are separate -- a violated runtime invariant, such
+as an exception escaping a `__del__` (a destructor cannot throw), prints a
+message and exits the process, like a Rust `panic!` with no `catch_unwind`
+([Control flow](control-flow.md)).
 
 **Predictable codegen.** A class becomes a plain struct; `list[float64]`
 becomes a contiguous `std::vector<double>`; an `Own[T]` parameter becomes an

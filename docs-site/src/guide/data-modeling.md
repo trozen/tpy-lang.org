@@ -94,10 +94,10 @@ class Animal:
     def sound(self) -> str:
         return "..."
 
-class Dog(Animal):
+class Dog(Animal):   # warning: hides Animal.sound
     def __init__(self, name: str):
         super().__init__(name)
-    def sound(self) -> str:   # warning: hides Animal.sound (bound statically)
+    def sound(self) -> str:
         return "woof"
 ```
 

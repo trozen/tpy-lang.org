@@ -162,10 +162,10 @@
       <div class="md-header__source">
         <div class="md-source">
           <div class="md-source__repository">
-            TurboPython 0.6.2
+            TurboPython 0.7.0
             
               <ul class="md-source__facts">
-                <li class="md-source__fact md-source__fact--version">v0.6.2</li>
+                <li class="md-source__fact md-source__fact--version">v0.7.0</li>
               </ul>
             
           </div>
@@ -1004,8 +1004,8 @@ and <code>@hotpath</code> are planned.</p>
 <div class="admonition warning">
 <p class="admonition-title">Not available yet</p>
 <p><code>@noalloc</code> (a function must not allocate) and <code>@hotpath</code> (code that must
-stay on the fast path) are accepted but not enforced today, and enforcement
-will not land in the next release. <a href="../../compatibility/">Compatibility</a>
+stay on the fast path) are accepted but not enforced in 0.7.
+<a href="../../compatibility/">Compatibility</a>
 tracks their status.</p>
 </div>
 <p>The <code>@nocopy</code> decorator on a class forbids every implicit copy of that type.
@@ -1029,9 +1029,9 @@ Code that would have compiled with a copy warning becomes an error:</p>
 <a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a><span class="n">main</span><span class="p">()</span>
 </code></pre></div>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>error: @nocopy type &#39;Frame&#39; is used after this point and cannot be moved
-<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>into &#39;value: Own[Frame]&#39;. Remove later uses or restructure the code.
+<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>into &#39;object: Own[Frame]&#39;. Remove later uses or restructure the code.
 </code></pre></div>
-<p>(The <code>value: Own[Frame]</code> named in the error is <code>append</code>'s own parameter.)
+<p>(The <code>object: Own[Frame]</code> named in the error is <code>append</code>'s own parameter.)
 The error names the fix, and the move forms compile unchanged:</p>
 <!-- tpy: cont run -->
 <div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">():</span>
@@ -1175,7 +1175,7 @@ a script, inspecting the generated C++, and producing a standalone binary.</p>
       <div class="md-copyright">
   
     <div class="md-copyright__highlight">
-      These docs describe <span class="tpy-version">TurboPython 0.6.2</span> (v0.6.2).
+      These docs describe <span class="tpy-version">TurboPython 0.7.0</span> (v0.7.0).
     </div>
   
   

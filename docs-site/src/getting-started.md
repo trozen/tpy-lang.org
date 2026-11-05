@@ -34,8 +34,9 @@ or pip:
 
 Compilation needs a C++23 compiler: g++ 13 or newer, or clang++ 19 or newer.
 An installed system compiler is detected automatically, and its C++23 support
-is checked before the build; one that fails the check is skipped, with the
-version floors and a suggested fix, rather than failing partway through. If
+is checked before the build. A compiler that fails the check is skipped, and
+when none passes, the error names the version floors and a suggested fix
+rather than the build failing partway through. If
 no suitable compiler is present, the `[bundled]` extra installs a C++ compiler
 (zig)
 together with the package and needs no other setup:

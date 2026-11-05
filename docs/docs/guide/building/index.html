@@ -162,10 +162,10 @@
       <div class="md-header__source">
         <div class="md-source">
           <div class="md-source__repository">
-            TurboPython 0.6.2
+            TurboPython 0.7.0
             
               <ul class="md-source__facts">
-                <li class="md-source__fact md-source__fact--version">v0.6.2</li>
+                <li class="md-source__fact md-source__fact--version">v0.7.0</li>
               </ul>
             
           </div>
@@ -692,6 +692,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#run-under-cpython" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Run under CPython
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#toolchain-notes" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -911,6 +922,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#run-under-cpython" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Run under CPython
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#toolchain-notes" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -991,25 +1013,30 @@ happens, and what a class compiles to:</p>
 </code></pre></div>
 <h3 id="integrate-with-a-cmake-build">Integrate with a CMake build<a class="headerlink" href="#integrate-with-a-cmake-build" title="Permanent link">&para;</a></h3>
 <p>Each project carries a <code>sources.cmake</code> that defines the generated sources, the
-include directories, the link libraries, and the required C++ standard. A CMake
+include directories, the link libraries, the compile definitions for the
+selected build options, and the required C++ standard. A CMake
 target consumes them directly:</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="nb">include</span><span class="p">(</span><span class="s">build/sources.cmake</span><span class="p">)</span>
 <a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="nb">add_executable</span><span class="p">(</span><span class="s">app</span><span class="w"> </span><span class="o">${</span><span class="nv">TPYC_SOURCES</span><span class="o">}</span><span class="p">)</span>
 <a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a><span class="nb">target_include_directories</span><span class="p">(</span><span class="s">app</span><span class="w"> </span><span class="s">PRIVATE</span><span class="w"> </span><span class="o">${</span><span class="nv">TPYC_INCLUDE_DIRS</span><span class="o">}</span><span class="p">)</span>
 <a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a><span class="nb">target_link_libraries</span><span class="p">(</span><span class="s">app</span><span class="w"> </span><span class="s">PRIVATE</span><span class="w"> </span><span class="o">${</span><span class="nv">TPYC_LIBRARIES</span><span class="o">}</span><span class="p">)</span>
-<a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a><span class="nb">set_target_properties</span><span class="p">(</span><span class="s">app</span><span class="w"> </span><span class="s">PROPERTIES</span><span class="w"> </span><span class="s">CXX_STANDARD</span><span class="w"> </span><span class="o">${</span><span class="nv">TPYC_CXX_STANDARD</span><span class="o">}</span><span class="p">)</span>
+<a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a><span class="nb">target_compile_definitions</span><span class="p">(</span><span class="s">app</span><span class="w"> </span><span class="s">PRIVATE</span><span class="w"> </span><span class="o">${</span><span class="nv">TPYC_COMPILE_DEFINITIONS</span><span class="o">}</span><span class="p">)</span>
+<a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a><span class="nb">set_target_properties</span><span class="p">(</span><span class="s">app</span><span class="w"> </span><span class="s">PROPERTIES</span><span class="w"> </span><span class="s">CXX_STANDARD</span><span class="w"> </span><span class="o">${</span><span class="nv">TPYC_CXX_STANDARD</span><span class="o">}</span><span class="p">)</span>
 </code></pre></div>
 <p>The <code>--no-main</code> flag omits the generated <code>main()</code> so the compiled code links
-into an existing C++ program rather than running on its own. When <code>tpyc</code>
+into an existing C++ program rather than running on its own, and
+<code>--no-signals</code> leaves Ctrl-C handling to the host program. When <code>tpyc</code>
 emits a project to an explicit <code>-o</code> directory, the runtime headers are bundled
 into it, which keeps the project self-contained and safe to commit or copy to
 another machine; the <code>--no-bundle-runtime</code> flag skips that copy. A native
 build (<code>-b</code>) and the default <code>__tpyc__/</code> output reference the installed
 runtime instead.</p>
 <h2 id="build-a-cpython-extension">Build a CPython extension<a class="headerlink" href="#build-a-cpython-extension" title="Permanent link">&para;</a></h2>
-<p>A module marked <code># tpy: ext_module</code> compiles into a regular CPython extension.
-Functions marked <code>@export</code> become the module's public API:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="c1"># tpy: ext_module</span>
+<p>A module whose <code>__tpy__</code> setting declares <code>"mod": "ext"</code> compiles into a
+regular CPython extension. The setting is an ordinary assignment placed after
+the module docstring, so the source remains valid Python. Functions marked
+<code>@export</code> become the module's public API:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="n">__tpy__</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;mod&quot;</span><span class="p">:</span> <span class="s2">&quot;ext&quot;</span><span class="p">}</span>
 <a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="kn">from</span><span class="w"> </span><span class="nn">tpy.extern</span><span class="w"> </span><span class="kn">import</span> <span class="n">export</span>
 <a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a>
 <a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a><span class="nd">@export</span>
@@ -1039,6 +1066,25 @@ to the entry file resolve as in Python, and all of it is compiled together:</p>
 <a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a>    __init__.py
 <a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a>    scale.py    # from pkg.scale import to_f
 </code></pre></div>
+<h2 id="run-under-cpython">Run under CPython<a class="headerlink" href="#run-under-cpython" title="Permanent link">&para;</a></h2>
+<p>A TurboPython program is valid Python, and most programs also run under
+CPython 3.12 or later, or PyPy. The <code>tpy-lang</code> package ships, alongside the
+compiler, the <code>tpy</code> and <code>tplib</code> modules that programs import, so with the
+package installed in the interpreter's environment (<code>pip install tpy-lang</code>;
+<code>uv tool install</code> keeps it in an isolated environment of its own) the same
+source runs with the interpreter:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="gp">$ </span>python3<span class="w"> </span>program.py
+</code></pre></div>
+<p>By default the <code>tpy</code> types behave as they do in compiled code while values
+stay in range: <code>int8(300)</code> raises <code>OverflowError</code>, <code>uint32.wrap(-1)</code> is
+4294967295, and <code>Own[T]</code> holds a plain value. Out of range, the interpreter's
+arithmetic keeps growing where the compiled program raises <code>OverflowError</code>.
+Setting <code>TPY_CPYTHON_FAST=1</code> maps the fixed-width types to <code>int</code> and
+<code>float32</code> to <code>float</code>, which removes the cost of the stand-ins when CPython or
+PyPy serves as a benchmark baseline; the width helpers such as <code>wrap</code> are not
+available in that mode. Type checkers such as mypy read the same packages.</p>
+<p>Code bound to C++ with <code>@native</code> has no CPython implementation, and
+<code>tplib.requests</code> and <code>tplib.json.model</code> do not import under CPython.</p>
 <h2 id="toolchain-notes">Toolchain notes<a class="headerlink" href="#toolchain-notes" title="Permanent link">&para;</a></h2>
 <p>The build uses the system C++ compiler, and <code>--cxx</code> selects a different one.
 C++23 support is required, so GCC 13 or newer, or Clang 19 or newer, works;
@@ -1096,7 +1142,7 @@ command-line flags only.</p>
       <div class="md-copyright">
   
     <div class="md-copyright__highlight">
-      These docs describe <span class="tpy-version">TurboPython 0.6.2</span> (v0.6.2).
+      These docs describe <span class="tpy-version">TurboPython 0.7.0</span> (v0.7.0).
     </div>
   
   

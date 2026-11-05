@@ -93,8 +93,8 @@ and `@hotpath` are planned.
 
 !!! warning "Not available yet"
     `@noalloc` (a function must not allocate) and `@hotpath` (code that must
-    stay on the fast path) are accepted but not enforced today, and enforcement
-    will not land in the next release. [Compatibility](../compatibility.md)
+    stay on the fast path) are accepted but not enforced in 0.7.
+    [Compatibility](../compatibility.md)
     tracks their status.
 
 The `@nocopy` decorator on a class forbids every implicit copy of that type.
@@ -124,10 +124,10 @@ main()
 
 ```
 error: @nocopy type 'Frame' is used after this point and cannot be moved
-into 'value: Own[Frame]'. Remove later uses or restructure the code.
+into 'object: Own[Frame]'. Remove later uses or restructure the code.
 ```
 
-(The `value: Own[Frame]` named in the error is `append`'s own parameter.)
+(The `object: Own[Frame]` named in the error is `append`'s own parameter.)
 The error names the fix, and the move forms compile unchanged:
 
 <!-- tpy: cont run -->

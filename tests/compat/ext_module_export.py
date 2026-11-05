@@ -1,5 +1,5 @@
 # expect: ok
-# tpy: ext_module
+__tpy__ = {"mod": "ext"}
 from tpy.extern import export
 
 @export

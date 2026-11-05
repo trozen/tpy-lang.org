@@ -80,7 +80,7 @@ through it is visible to the caller. Classes have their own page:
 
 Value types (`int32`, `float`, `str`, ...) are passed as copies, and the
 parameter keeps its declared type, so an `int32` parameter cannot be rebound to
-a float or to a wider value. Reassigning the parameter changes the copy, never
+a float, and a wider integer assigned to it is range-checked. Reassigning the parameter changes the copy, never
 the caller's variable -- observably the same as Python:
 
 <!-- tpy: run -->

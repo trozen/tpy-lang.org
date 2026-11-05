@@ -1,4 +1,4 @@
-# expect: error Cannot iterate over type TextIO
+# expect: ok
 def main():
     with open("probe.txt") as f:
         for line in f:

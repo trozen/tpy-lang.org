@@ -377,8 +377,8 @@ def first_value(r: readonly[Reading]) -> float64:
 optional reference, or C++ interop). Ordinary code does not use it.
 
 !!! note "Coming from C++/Rust"
-    `Own[T]` is pass or return by value with move semantics -- like handing
-    off a `std::unique_ptr<T>`, or Rust's by-value `T`. `readonly[T]` is
+    `Own[T]` is pass or return by value with move semantics -- a C++ `T&&`
+    parameter or `T` return, or Rust's by-value `T`; nothing is boxed. `readonly[T]` is
     `const T&`, and `Ptr[T]` is a raw `T*`. A plain `T` parameter -- and a
     plain `T` *return type* -- is a reference, never a copy; reference returns
     by default are the biggest single departure from C++. Storage is

@@ -113,7 +113,8 @@ and `@classmethod`.
 An HTTP client exists in early form (`tplib.requests`), and TLS works for both
 HTTPS clients and servers. Compression is available through `zlib` and `gzip`,
 and POSIX terminal control through `termios` and `tty`.
-`subprocess` and `multiprocessing` do not exist.
+`subprocess` provides `Popen` for spawning processes over pipes;
+`multiprocessing` does not exist.
 For a services stack, the missing pieces are still large;
 [Compatibility](../compatibility.md) is the place to check before planning a
 port.
@@ -121,10 +122,10 @@ port.
 ## Native interop
 
 Native interop runs in two directions. A TurboPython module compiles into a
-CPython extension (`# tpy: ext_module`, [Building](building.md)). Exported
-functions accept default, keyword-only, and positional-only parameters as well
-as `Optional[T]` arguments and results, and their docstrings cross as
-`__doc__`. Existing C++
+CPython extension (`__tpy__ = {"mod": "ext"}`, [Building](building.md)).
+Exported functions accept default, keyword-only, and positional-only
+parameters as well as `Optional[T]` arguments and results, and their
+docstrings cross as `__doc__`. Existing C++
 binds into TurboPython with `@native`, mapping a class or function onto a C++
 type or call -- the standard library itself is built this way. `@native` is
 usable but undocumented; the API may change.

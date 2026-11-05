@@ -1,4 +1,4 @@
-# expect: error Module 'csv' has no function 'DictReader'
+# expect: error not yet supported by C++ code generation
 import csv
 import io
 

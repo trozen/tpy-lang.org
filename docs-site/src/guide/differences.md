@@ -21,7 +21,7 @@ that come up earliest:
   mandatory, as are class fields; locals are inferred.
 - Integer literals default to `int32`. `int` is arbitrary-precision as in
   Python, but a bare literal is deduced as fixed-width `int32`, which can
-  overflow and panic.
+  overflow and raise `OverflowError`.
 - A variable has one numeric type. A local bound to an integer cannot be
   rebound to a float; the compiler asks for a float literal or a `float`
   annotation instead.
@@ -78,9 +78,9 @@ def main():
 main()
 ```
 
-Fixed-width arithmetic does not wrap silently. Overflow stops the program with
-a panic: `TurboPython panic: int32 overflow in addition`. A panic is not an
-exception; it cannot be caught.
+Fixed-width arithmetic does not wrap silently. Overflow raises
+`OverflowError: int32 overflow in addition`, an ordinary exception the program
+can catch.
 
 Fixed-width types are for computation, and `int` is for genuinely unbounded
 arithmetic. The details, including literal inference and conversions:

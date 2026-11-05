@@ -162,10 +162,10 @@
       <div class="md-header__source">
         <div class="md-source">
           <div class="md-source__repository">
-            TurboPython 0.6.2
+            TurboPython 0.7.0
             
               <ul class="md-source__facts">
-                <li class="md-source__fact md-source__fact--version">v0.6.2</li>
+                <li class="md-source__fact md-source__fact--version">v0.7.0</li>
               </ul>
             
           </div>
@@ -1011,7 +1011,7 @@ that come up earliest:</p>
   mandatory, as are class fields; locals are inferred.</li>
 <li>Integer literals default to <code>int32</code>. <code>int</code> is arbitrary-precision as in
   Python, but a bare literal is deduced as fixed-width <code>int32</code>, which can
-  overflow and panic.</li>
+  overflow and raise <code>OverflowError</code>.</li>
 <li>A variable has one numeric type. A local bound to an integer cannot be
   rebound to a float; the compiler asks for a float literal or a <code>float</code>
   annotation instead.</li>
@@ -1056,9 +1056,9 @@ numbers, with <code>float32</code> available where narrower precision is wanted.
 <a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a>
 <a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a><span class="n">main</span><span class="p">()</span>
 </code></pre></div>
-<p>Fixed-width arithmetic does not wrap silently. Overflow stops the program with
-a panic: <code>TurboPython panic: int32 overflow in addition</code>. A panic is not an
-exception; it cannot be caught.</p>
+<p>Fixed-width arithmetic does not wrap silently. Overflow raises
+<code>OverflowError: int32 overflow in addition</code>, an ordinary exception the program
+can catch.</p>
 <p>Fixed-width types are for computation, and <code>int</code> is for genuinely unbounded
 arithmetic. The details, including literal inference and conversions:
 <a href="../types/">Types, inference and values</a>.</p>
@@ -1262,7 +1262,7 @@ missing, and <a href="../../compatibility/">Compatibility</a> tracks the gaps.</
       <div class="md-copyright">
   
     <div class="md-copyright__highlight">
-      These docs describe <span class="tpy-version">TurboPython 0.6.2</span> (v0.6.2).
+      These docs describe <span class="tpy-version">TurboPython 0.7.0</span> (v0.7.0).
     </div>
   
   

@@ -162,10 +162,10 @@
       <div class="md-header__source">
         <div class="md-source">
           <div class="md-source__repository">
-            TurboPython 0.6.2
+            TurboPython 0.7.0
             
               <ul class="md-source__facts">
-                <li class="md-source__fact md-source__fact--version">v0.6.2</li>
+                <li class="md-source__fact md-source__fact--version">v0.7.0</li>
               </ul>
             
           </div>
@@ -1058,9 +1058,11 @@ Built-in exceptions print the message, matching CPython. <code>str(e)</code> and
 f-string formatting (<code>f"failed: {e}"</code>) return the message on both
 runtimes, as in the example above.</p>
 </div>
-<p>Exceptions are for failures the program can handle. They are distinct from
-<em>panics</em> — integer overflow, a failed narrowing conversion — which stop the
-program and cannot be caught (<a href="../types/">the types page</a> covers them).</p>
+<p>Exceptions are for failures the program can handle. Fixed-width overflow and
+a failed narrowing conversion are among them: both raise <code>OverflowError</code>
+(<a href="../types/">the types page</a> covers them). Exceptions are distinct from
+<em>panics</em>, which signal a violated runtime invariant rather than a failure the
+program could handle; a panic stops the program and cannot be caught.</p>
 <h2 id="iterators">Iterators<a class="headerlink" href="#iterators" title="Permanent link">&para;</a></h2>
 <p>A custom iterator is written exactly as in Python: <code>__iter__</code> returns the
 iterator, <code>__next__</code> returns the next value or raises <code>StopIteration</code>. The
@@ -1108,7 +1110,8 @@ concise form of the iterator above, with no explicit <code>__next__</code>:</p>
 <p>A generator is one object, as in Python: a second name bound to it aliases
 it. A name that holds a generator is bound once, so a second <code>squares(3)</code>
 needs a new name. Advancing a generator by hand with <code>next(g)</code> is written
-inside a <code>try</code> that handles <code>StopIteration</code>.</p>
+inside a <code>try</code> that handles <code>StopIteration</code>; <code>next(g, default)</code> returns the
+default instead and needs no <code>try</code>.</p>
 <p>The next page consolidates all of this into performance guidance:
 <a href="../efficiency/">Writing efficient TPy</a>.</p>
 
@@ -1148,7 +1151,7 @@ inside a <code>try</code> that handles <code>StopIteration</code>.</p>
       <div class="md-copyright">
   
     <div class="md-copyright__highlight">
-      These docs describe <span class="tpy-version">TurboPython 0.6.2</span> (v0.6.2).
+      These docs describe <span class="tpy-version">TurboPython 0.7.0</span> (v0.7.0).
     </div>
   
   

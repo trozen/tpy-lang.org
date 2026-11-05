@@ -331,27 +331,30 @@
         </div>
         <button class="copybtn" id="exCopy" type="button">Copy</button>
       </div>
-<pre id="exCode"><span class="n">WIDTH</span>, <span class="n">HEIGHT</span>, <span class="n">MAX_ITER</span> = <span class="num">64</span>, <span class="num">28</span>, <span class="num">90</span>
-<span class="n">CHARS</span> = <span class="s">" .:-=+*#%@"</span>
+<pre id="exCode"><span class="c"># Many ordinary Python programs run as-is under</span>
+<span class="c"># TurboPython -- compiled native, often more than</span>
+<span class="c"># an order of magnitude faster than CPython.</span>
+WIDTH, HEIGHT, MAX_ITER = <span class="num">64</span>, <span class="num">28</span>, <span class="num">90</span>
+CHARS = <span class="s">" .:-=+*#%@"</span>
 
-<span class="k">def</span> <span class="fn">escape</span>(<span class="n">cx</span>: <span class="n">float</span>, <span class="n">cy</span>: <span class="n">float</span>) -> <span class="n">int</span>:
-    <span class="n">x</span>, <span class="n">y</span> = <span class="num">0.0</span>, <span class="num">0.0</span>
-    <span class="k">for</span> <span class="n">i</span> <span class="k">in</span> <span class="fn">range</span>(<span class="n">MAX_ITER</span>):
-        <span class="k">if</span> <span class="n">x</span>*<span class="n">x</span> + <span class="n">y</span>*<span class="n">y</span> > <span class="num">4.0</span>:
-            <span class="k">return</span> <span class="n">i</span>
-        <span class="n">x</span>, <span class="n">y</span> = <span class="n">x</span>*<span class="n">x</span> - <span class="n">y</span>*<span class="n">y</span> + <span class="n">cx</span>, <span class="num">2.0</span>*<span class="n">x</span>*<span class="n">y</span> + <span class="n">cy</span>
-    <span class="k">return</span> <span class="n">MAX_ITER</span>
+<span class="k">def</span> <span class="fn">escape</span>(cx: <span class="fn">float</span>, cy: <span class="fn">float</span>) -&gt; <span class="fn">int</span>:
+    x, y = <span class="num">0.0</span>, <span class="num">0.0</span>
+    <span class="k">for</span> i <span class="k">in</span> <span class="fn">range</span>(MAX_ITER):
+        <span class="k">if</span> x * x + y * y &gt; <span class="num">4.0</span>:
+            <span class="k">return</span> i
+        x, y = x * x - y * y + cx, <span class="num">2.0</span> * x * y + cy
+    <span class="k">return</span> MAX_ITER
 
-<span class="k">def</span> <span class="fn">main</span>() -> <span class="n">None</span>:
-    <span class="k">for</span> <span class="n">row</span> <span class="k">in</span> <span class="fn">range</span>(<span class="n">HEIGHT</span>):
-        <span class="n">cy</span> = -<span class="num">1.2</span> + <span class="num">2.4</span> * <span class="n">row</span> / <span class="n">HEIGHT</span>
-        <span class="k">for</span> <span class="n">col</span> <span class="k">in</span> <span class="fn">range</span>(<span class="n">WIDTH</span>):
-            <span class="n">cx</span> = -<span class="num">2.4</span> + <span class="num">3.2</span> * <span class="n">col</span> / <span class="n">WIDTH</span>
-            <span class="n">idx</span> = <span class="fn">escape</span>(<span class="n">cx</span>, <span class="n">cy</span>) % <span class="fn">len</span>(<span class="n">CHARS</span>)
-            <span class="fn">print</span>(<span class="n">CHARS</span>[<span class="n">idx</span>], <span class="n">end</span>=<span class="s">""</span>)
+<span class="k">def</span> <span class="fn">main</span>() -&gt; <span class="k">None</span>:
+    <span class="k">for</span> row <span class="k">in</span> <span class="fn">range</span>(HEIGHT):
+        cy = -<span class="num">1.2</span> + <span class="num">2.4</span> * row / HEIGHT
+        <span class="k">for</span> col <span class="k">in</span> <span class="fn">range</span>(WIDTH):
+            cx = -<span class="num">2.4</span> + <span class="num">3.2</span> * col / WIDTH
+            idx = <span class="fn">escape</span>(cx, cy) % <span class="fn">len</span>(CHARS)
+            <span class="fn">print</span>(CHARS[idx], end=<span class="s">""</span>)
         <span class="fn">print</span>(<span class="s">""</span>)
 
-<span class="n">main</span>()</pre>
+<span class="fn">main</span>()</pre>
       <div class="run" id="exRun"><span class="p">$</span> <span class="cmd">tpy mandelbrot.py</span></div>
       <div class="winfoot"><a href="https://github.com/trozen/tpy-examples" target="_blank" rel="noopener">See these and more examples &rarr;</a></div>
     </div>

@@ -160,10 +160,10 @@
       <div class="md-header__source">
         <div class="md-source">
           <div class="md-source__repository">
-            TurboPython 0.6.2
+            TurboPython 0.7.0
             
               <ul class="md-source__facts">
-                <li class="md-source__fact md-source__fact--version">v0.6.2</li>
+                <li class="md-source__fact md-source__fact--version">v0.7.0</li>
               </ul>
             
           </div>
@@ -1149,7 +1149,7 @@ surface and the gaps that matter in practice. Each entry carries a status:</p>
 </tr>
 <tr>
 <td>Comprehensions (list, dict, set)</td>
-<td></td>
+<td>several <code>for</code> / <code>if</code> clauses in one comprehension</td>
 </tr>
 <tr>
 <td>Context managers</td>
@@ -1190,41 +1190,41 @@ surface and the gaps that matter in practice. Each entry carries a status:</p>
 see the <code>asyncio</code> entry under <a href="#concurrency">Concurrency</a>.</p>
 <p><strong>Built-in functions and types.</strong></p>
 <p><strong>Works:</strong> the common built-ins — <code>len</code>, <code>range</code>, <code>enumerate</code>, <code>zip</code>, <code>map</code>,
-<code>filter</code>, <code>sorted(xs, key=...)</code>, <code>sum</code>, <code>min</code> / <code>max</code> over two or more
-arguments, <code>abs</code>, <code>round</code>, <code>int</code> / <code>float</code> / <code>str</code>, <code>list</code> / <code>dict</code> / <code>set</code>,
-<code>isinstance</code>, <code>input()</code> with or without a prompt, and most exception types.</p>
-<p><strong>Not yet:</strong> <code>tuple(...)</code>, <code>min</code> / <code>max</code> over a single iterable,
-<code>sorted(reverse=True)</code>, <code>next(it, default)</code>, <code>slice</code>, <code>vars</code>, <code>getattr</code>,
-<code>print(*xs)</code>, a built-in passed as a value (<code>key=len</code>), <code>frozenset</code>,
-<code>complex</code>, <code>memoryview</code>, <code>format</code>, <code>ascii</code>, <code>callable</code>, <code>id</code>, runtime
-<code>type(x)</code>.</p>
+<code>filter</code>, <code>sorted(xs, key=..., reverse=...)</code>, <code>sum</code>, <code>min</code> / <code>max</code> over two or
+more arguments or over one iterable (with <code>key=</code>), <code>next(it, default)</code>,
+<code>print(*xs)</code>, <code>slice(start, stop, step)</code>, <code>abs</code>, <code>round</code>, <code>int</code> / <code>float</code> / <code>str</code>, <code>list</code> / <code>dict</code> /
+<code>set</code>, <code>isinstance</code>, <code>input()</code> with or without a prompt, and most exception
+types.</p>
+<p><strong>By design:</strong> <code>tuple(xs)</code> over a list or another sequence is rejected. A
+tuple's length is part of its type, so a variable-length sequence stays a
+list, and a tuple is written out element by element.</p>
+<p><strong>Not yet:</strong> <code>vars</code>, <code>getattr</code>, a built-in passed as a value
+(<code>key=len</code>), <code>frozenset</code>, <code>complex</code>, <code>memoryview</code>, <code>format</code>, <code>ascii</code>,
+<code>callable</code>, <code>id</code>, runtime <code>type(x)</code>.</p>
 <p><strong><code>str</code> methods.</strong> The everyday set works. <strong>Not yet:</strong> <code>format()</code> and <code>%</code>
 formatting, <code>center</code> / <code>ljust</code> / <code>rjust</code> / <code>zfill</code>, <code>partition</code>, <code>rsplit</code>,
 <code>casefold</code>, <code>expandtabs</code>, <code>rstrip(chars)</code> (the no-argument form works), and
 <code>endswith</code> with a tuple.</p>
 <p><strong>Unpacking and splats.</strong> <code>a, *rest = xs</code>, <code>[*a]</code>, <code>{**d}</code>, dict <code>|</code>, and
 <code>del xs[a:b]</code> are rejected, and <code>except*</code> is not available. <code>raise X from e</code>
-compiles but drops the cause.</p>
-<p><strong>Module-qualified class names.</strong> Functions are callable as <code>module.func</code>.
-Classes and exception types in several modules are reachable only through
-<code>from module import Name</code>: <code>csv.DictReader</code>, <code>collections.Counter</code>,
-<code>asyncio.Queue</code> / <code>asyncio.Future</code>, and the <code>tplib.requests</code> exceptions, where
-a module-qualified <code>except requests.ConnectionError</code> compiles but does not
-catch.</p>
+compiles with a warning and drops the cause.</p>
+<p><strong>Module-qualified class names.</strong> Functions, classes and exception types are
+reachable as <code>module.Name</code> (<code>collections.Counter</code>, <code>asyncio.Queue</code>,
+<code>except requests.ConnectionError</code>). One exception remains: a loop over
+<code>csv.DictReader(...)</code> spelled module-qualified does not compile yet, while
+<code>from csv import DictReader</code> works.</p>
 <p><strong><code>**kwargs</code>.</strong> The typed form <code>**kwargs: Unpack[TypedDict]</code> works; the untyped
 <code>**kwargs: T</code> form is rejected.</p>
-<p><strong>f-strings.</strong> Scalar values, format specs (<code>f"{x:.2f}"</code>), and containers with
-a declared type work; a list whose type is still being inferred (an
-unannotated literal or comprehension) cannot be formatted directly inside the
-braces.</p>
+<p><strong>f-strings.</strong> Scalar values, format specs (<code>f"{x:.2f}"</code>), and containers
+work, including an unannotated list literal or comprehension.</p>
 <p><strong><code>print(e)</code> on exceptions.</strong> For built-in exceptions this prints the message,
 matching CPython, and <code>str(e)</code> and f-strings return the message on both
 runtimes. For a user-defined exception class, <code>print(e)</code> prints the object
 rather than the message, with no diagnostic; a library exception class caught
 by its own type (<code>json.JSONDecodeError</code>, <code>zlib.error</code>) behaves the same way.</p>
-<p><strong>Tuples.</strong> Unpacking works on a call result (<code>r, ok = pick(items)</code>); a tuple
-that holds a reference-type element and was stored in a local first cannot be
-unpacked yet.</p>
+<p><strong>Tuples.</strong> Unpacking works on a call result (<code>r, ok = pick(items)</code>) and on a
+tuple stored in a local first. Iterating over a tuple (<code>for v in (a, b)</code>) is
+not available yet.</p>
 <p><strong>Protocol types in containers.</strong> Matching on the elements of a <code>list[A | B]</code>
 works, and an element passes to a union-typed parameter. <code>list[SomeProtocol]</code>
 is rejected.</p>
@@ -1307,8 +1307,7 @@ a compiled pattern, <code>sub</code> (with <code>count</code>), <code>split</cod
 as a module function, <code>sub</code> with a callable replacement; <code>groups()</code> returns a
 list rather than a tuple.</p>
 <h4 id="csv"><code>csv</code> — Partial<a class="headerlink" href="#csv" title="Permanent link">&para;</a></h4>
-<p><strong>Works:</strong> <code>reader</code>, <code>writer</code>, <code>DictReader</code>, <code>DictWriter</code> (imported by name)
-over the <code>io</code> <code>Readable</code> / <code>Writable</code> protocols; the Excel dialect;
+<p><strong>Works:</strong> <code>reader</code>, <code>writer</code>, <code>DictReader</code>, <code>DictWriter</code> over the <code>io</code> <code>Readable</code> / <code>Writable</code> protocols; the Excel dialect;
 <code>delimiter</code> / <code>quotechar</code> / <code>doublequote</code> / <code>skipinitialspace</code> /
 <code>lineterminator</code> kwargs on <code>reader</code> / <code>writer</code>; <code>QUOTE_MINIMAL</code> writing.
 Byte-compatible with CPython.</p>
@@ -1331,8 +1330,8 @@ BLAKE2 / SHA-3, <code>hashlib.new</code>, an optional OpenSSL backend.</p>
 and <code>unconsumed_tail</code>, <code>zlib.error</code>, and the constants. A bundled zlib is
 linked by default; <code>--zlib system</code> links the system library instead.</p>
 <p><strong>Not yet:</strong> <code>zdict=</code> and <code>copy()</code> on the stream objects. <code>crc32</code> / <code>adler32</code>
-return <code>uint32</code>, so arithmetic on the result past the 32-bit range panics
-rather than growing.</p>
+return <code>uint32</code>, so arithmetic on the result past the 32-bit range raises
+<code>OverflowError</code> rather than growing.</p>
 <h4 id="gzip"><code>gzip</code> — Partial<a class="headerlink" href="#gzip" title="Permanent link">&para;</a></h4>
 <p><strong>Works:</strong> <code>compress</code> / <code>decompress</code> (multi-member streams included),
 <code>BadGzipFile</code>, and reading through <code>gzip.open(path)</code> / <code>GzipFile(path)</code>, with
@@ -1343,7 +1342,7 @@ no mode argument: <code>read</code>, <code>readline</code>, iteration, <code>wit
 <h4 id="textwrap"><code>textwrap</code> — Not yet<a class="headerlink" href="#textwrap" title="Permanent link">&para;</a></h4>
 <h3 id="collections-functional-typing">Collections, functional &amp; typing<a class="headerlink" href="#collections-functional-typing" title="Permanent link">&para;</a></h3>
 <h4 id="collections"><code>collections</code> — Partial<a class="headerlink" href="#collections" title="Permanent link">&para;</a></h4>
-<p><strong>Works:</strong> <code>Counter</code>, imported by name (construction, <code>[]</code>, <code>len</code>, <code>in</code>,
+<p><strong>Works:</strong> <code>Counter</code> (construction, <code>[]</code>, <code>len</code>, <code>in</code>,
 <code>total</code>, <code>most_common(n)</code>, <code>update</code> / <code>subtract</code> with another <code>Counter</code>).</p>
 <p><strong>Not yet:</strong> <code>deque</code>, <code>defaultdict</code>, <code>namedtuple</code>, <code>OrderedDict</code>,
 <code>Counter.elements</code> and the <code>+ - &amp; |</code> operators.</p>
@@ -1376,17 +1375,18 @@ inheritance, <code>asdict</code> / <code>astuple</code>, <code>__post_init__</co
 <p><code>Enum</code> / <code>IntEnum</code>, <code>auto()</code>, <code>.name</code> / <code>.value</code>, <code>==</code> / <code>is</code>, iteration
 (<code>for c in Color</code>), value lookup (<code>Color(0)</code>), name lookup (<code>Color["red"]</code>),
 <code>tpy.try_parse</code>, <code>match</code> on members, a configurable underlying type via mixin
-(<code>(int8, Enum)</code>), methods on the enum class (instance methods, <code>@property</code>,
+(<code>(int8, Enum)</code>), <code>str()</code>, <code>repr()</code> and f-string formatting of a member,
+methods on the enum class (instance methods, <code>@property</code>,
 <code>@staticmethod</code>, <code>@classmethod</code>), and <code>@native</code> binding to a C++ <code>enum class</code>.</p>
-<p><strong>Not yet:</strong> <code>StrEnum</code> / <code>Flag</code>, non-integer member values, <code>str(Color.red)</code>
-and f-string formatting of a member, <code>len(Color)</code>, the functional API
+<p><strong>Not yet:</strong> <code>StrEnum</code> / <code>Flag</code>, non-integer member values, <code>len(Color)</code>, the functional API
 (<code>Enum("Color", [...])</code>), dunder methods and property setters on an enum, and
 methods on a <code>@native</code> enum.</p>
 <h4 id="typing"><code>typing</code> — Partial<a class="headerlink" href="#typing" title="Permanent link">&para;</a></h4>
 <p><strong>Works:</strong> <code>Protocol</code>, <code>Self</code>, <code>overload</code>, <code>override</code>, <code>Sized</code>, <code>Iterable</code>,
 <code>Iterator</code>, <code>Sequence</code>, <code>Optional</code>, <code>Final</code>, <code>Callable</code>, <code>Literal</code>,
-<code>TypedDict</code>, <code>Unpack</code>, <code>ClassVar</code>, <code>Any</code>, <code>cast</code>. Most operations on an <code>Any</code>
-value require narrowing with <code>isinstance</code> or extraction with <code>cast</code> first.
+<code>TypedDict</code>, <code>Unpack</code>, <code>ClassVar</code>, <code>Any</code>, <code>cast</code>, <code>runtime_checkable</code>. Most
+operations on an <code>Any</code> value require narrowing with <code>isinstance</code> or
+extraction with <code>cast</code> first.
 <code>overload</code> takes CPython's form only: bodyless stubs followed by one
 implementation. A set of variants that each carry their own body is written
 with <code>tpy.dispatch</code> instead.</p>
@@ -1405,7 +1405,8 @@ a times tuple), <code>truncate</code>); low-level fd I/O (<code>open</code> / <c
 <code>write</code> / <code>lseek</code> / <code>pipe</code> / <code>dup</code> / <code>dup2</code>, <code>get_blocking</code> / <code>set_blocking</code>,
 <code>openpty</code>, the <code>O_*</code> / <code>SEEK_*</code> constants); <code>access</code>; <code>urandom</code>;
 process and system queries (<code>getpid</code> / <code>getppid</code>, the <code>getuid</code> family,
-<code>umask</code>, <code>cpu_count</code>, <code>isatty</code>, <code>get_terminal_size</code>); <code>environ</code> (a snapshot
+<code>umask</code>, <code>cpu_count</code>, <code>isatty</code>, <code>get_terminal_size</code>); process control (<code>kill</code>,
+<code>waitpid</code> with <code>WNOHANG</code>, <code>waitstatus_to_exitcode</code>); <code>environ</code> (a snapshot
 mapping) with <code>putenv</code> / <code>unsetenv</code>; module constants (<code>name</code>, <code>sep</code>, ...).
 Errors carry structured <code>.errno</code> / <code>.strerror</code> / <code>.filename</code> with CPython-exact
 <code>str(e)</code>.</p>
@@ -1418,20 +1419,36 @@ queries <code>exists</code> / <code>lexists</code> / <code>isfile</code> / <code
 <code>expandvars</code> / <code>expanduser</code>. Byte-compatible with CPython's <code>posixpath</code>.</p>
 <h4 id="io"><code>io</code> — Partial<a class="headerlink" href="#io" title="Permanent link">&para;</a></h4>
 <p><strong>Works:</strong> <code>StringIO</code>, <code>BytesIO</code> (read / write / <code>read(size)</code> / <code>readline</code> /
-<code>seek</code> / <code>tell</code> / <code>truncate</code> / iteration / context manager); <code>FileIO</code> (raw
-fd); <code>BufferedReader</code>; the <code>Readable</code> / <code>Writable</code> / <code>BinaryReadable</code> /
-<code>BinaryWritable</code> protocols; <code>SEEK_*</code> and <code>DEFAULT_BUFFER_SIZE</code>.</p>
+<code>seek</code> / <code>tell</code> / <code>truncate</code> / iteration / context manager); iterating an
+<code>open()</code> text file line by line (<code>for line in f</code>); <code>FileIO</code> (raw fd);
+<code>BufferedReader</code> and <code>BufferedWriter</code>; the <code>Readable</code> / <code>Writable</code> /
+<code>BinaryReadable</code> / <code>BinaryWritable</code> protocols; <code>SEEK_*</code> and
+<code>DEFAULT_BUFFER_SIZE</code>.</p>
 <p><strong>Not yet:</strong> <code>TextIOWrapper</code>, the <code>IOBase</code> ABC hierarchy, <code>BufferedReader.peek</code>
-/ <code>readinto</code>, encoding / newline / errors kwargs, iterating an <code>open()</code> file
-object directly (<code>for line in f</code>; <code>readlines()</code> works).</p>
+/ <code>readinto</code>, encoding / newline / errors kwargs.</p>
 <h4 id="sys"><code>sys</code> — Partial<a class="headerlink" href="#sys" title="Permanent link">&para;</a></h4>
-<p><strong>Works:</strong> <code>argv</code>, <code>stdout</code>, <code>stderr</code>, <code>exit</code>, <code>maxsize</code>, <code>byteorder</code>.</p>
-<p><strong>Not yet:</strong> <code>stdin</code>, <code>path</code>, <code>version_info</code>, <code>platform</code>.</p>
+<p><strong>Works:</strong> <code>argv</code>, <code>stdout</code>, <code>stderr</code>, <code>exit</code> (raising <code>SystemExit</code>, which
+the program can catch), <code>maxsize</code>, <code>byteorder</code>, <code>platform</code>.</p>
+<p><strong>Not yet:</strong> <code>stdin</code>, <code>path</code>, <code>version_info</code>.</p>
+<h4 id="platform"><code>platform</code> — Partial<a class="headerlink" href="#platform" title="Permanent link">&para;</a></h4>
+<p><strong>Works:</strong> <code>system()</code> and <code>machine()</code>, which report the build target, so a
+cross build answers for the machine it targets.</p>
+<p><strong>Not yet:</strong> <code>node()</code>, <code>release()</code>, <code>version()</code>, <code>uname()</code>, <code>processor()</code>,
+<code>python_implementation()</code> and the rest of the module.</p>
 <h4 id="signal"><code>signal</code> — Partial<a class="headerlink" href="#signal" title="Permanent link">&para;</a></h4>
-<p><strong>Works:</strong> <code>raise_signal</code> (the default action runs, so <code>SIGINT</code> terminates the
-process rather than raising <code>KeyboardInterrupt</code>), the <code>SIGINT</code> / <code>SIGTERM</code>
-constants.</p>
-<p><strong>Not yet:</strong> <code>signal.signal</code> handler registration.</p>
+<p><strong>Works:</strong> <code>signal.signal</code> with a module-level handler function (annotated
+<code>frame: FrameType | None</code>, with <code>FrameType</code> from <code>types</code>),
+<code>default_int_handler</code>, <code>raise_signal</code>, and the common signal numbers
+(<code>SIGINT</code>, <code>SIGTERM</code>, <code>SIGHUP</code>, <code>SIGKILL</code>, <code>SIGCHLD</code>, ...). A Ctrl-C raises
+<code>KeyboardInterrupt</code>, and inside <code>asyncio.run</code> the first one cancels the main
+task, as in CPython.</p>
+<p>Handlers run as in CPython, on the main thread at the next check point: a
+<code>print</code>, <code>time.sleep</code>, <code>input()</code>, a socket or subprocess wait. A loop that
+only computes reaches no check point, so a signal stays pending until it
+does. A handler's <code>frame</code> argument is always <code>None</code>, and <code>signal.signal</code>
+returns <code>None</code> rather than the previous handler.</p>
+<p><strong>Not yet:</strong> <code>SIG_DFL</code> / <code>SIG_IGN</code>, <code>getsignal</code>, the <code>Handlers</code> enum, and
+restoring a previous handler through the <code>signal.signal</code> return value.</p>
 <h4 id="termios"><code>termios</code> — Partial<a class="headerlink" href="#termios" title="Permanent link">&para;</a></h4>
 <p><strong>Works:</strong> <code>tcgetattr</code> / <code>tcsetattr</code> with <code>TCSANOW</code> / <code>TCSADRAIN</code> /
 <code>TCSAFLUSH</code>, <code>VMIN</code> / <code>VTIME</code>, and <code>termios.error</code>. <code>tcgetattr</code> returns an
@@ -1583,9 +1600,15 @@ multi-threaded executor, graceful SIGTERM.</p>
 <p>TurboPython has <a href="../guide/beyond/">its own threads</a> (<code>tpy.thread</code>); the CPython
 <code>threading</code> module is not ported.</p>
 <h4 id="multiprocessing"><code>multiprocessing</code> — Not yet<a class="headerlink" href="#multiprocessing" title="Permanent link">&para;</a></h4>
-<p>Needs process spawning.</p>
-<h4 id="subprocess"><code>subprocess</code> — Not yet<a class="headerlink" href="#subprocess" title="Permanent link">&para;</a></h4>
-<p>Needs process spawning.</p>
+<p>Not ported.</p>
+<h4 id="subprocess"><code>subprocess</code> — Partial<a class="headerlink" href="#subprocess" title="Permanent link">&para;</a></h4>
+<p><strong>Works:</strong> <code>Popen(args, *, stdin=..., stdout=..., stderr=...)</code> with <code>PIPE</code>,
+<code>DEVNULL</code>, <code>STDOUT</code> or a file descriptor; the pipe streams as buffered binary
+readers and writers; <code>pid</code>, <code>returncode</code>, <code>poll</code>, <code>wait</code>, <code>send_signal</code>,
+<code>terminate</code>, <code>kill</code>; the context manager. A Ctrl-C ends a blocked <code>wait()</code> or
+pipe read with <code>KeyboardInterrupt</code>.</p>
+<p><strong>Not yet:</strong> <code>run</code>, <code>call</code>, <code>check_output</code> and the other convenience
+functions, <code>communicate</code>, text mode, <code>cwd=</code> / <code>env=</code>, <code>shell=True</code>.</p>
 <h3 id="development-introspection">Development &amp; introspection<a class="headerlink" href="#development-introspection" title="Permanent link">&para;</a></h3>
 <h4 id="argparse"><code>argparse</code> — Partial<a class="headerlink" href="#argparse" title="Permanent link">&para;</a></h4>
 <p><strong>Works:</strong> positionals and optional flags; the <code>store</code> / <code>store_true</code> /
@@ -1649,7 +1672,7 @@ do not import. TurboPython-native libraries live under <code>tplib</code> (for e
       <div class="md-copyright">
   
     <div class="md-copyright__highlight">
-      These docs describe <span class="tpy-version">TurboPython 0.6.2</span> (v0.6.2).
+      These docs describe <span class="tpy-version">TurboPython 0.7.0</span> (v0.7.0).
     </div>
   
   

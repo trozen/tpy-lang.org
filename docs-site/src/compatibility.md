@@ -26,7 +26,7 @@ surface and the gaps that matter in practice. Each entry carries a status:
 | Unions `A \| B` + `match` | guards, `case _`, `isinstance`; every path must return |
 | Generators and generator expressions | `-> Iterator[T]` annotation required |
 | Hand-written iterators | `StopIteration` compiled away, no throw cost |
-| Comprehensions (list, dict, set) | |
+| Comprehensions (list, dict, set) | several `for` / `if` clauses in one comprehension |
 | Context managers | custom `__enter__` / `__exit__` |
 | Exceptions | hierarchies, base-class catch, `except (A, B)`, bare re-raise, `finally` |
 | `assert` | narrows optionals; kept in optimized builds |
@@ -44,15 +44,19 @@ see the `asyncio` entry under [Concurrency](#concurrency).
 **Built-in functions and types.**
 
 **Works:** the common built-ins -- `len`, `range`, `enumerate`, `zip`, `map`,
-`filter`, `sorted(xs, key=...)`, `sum`, `min` / `max` over two or more
-arguments, `abs`, `round`, `int` / `float` / `str`, `list` / `dict` / `set`,
-`isinstance`, `input()` with or without a prompt, and most exception types.
+`filter`, `sorted(xs, key=..., reverse=...)`, `sum`, `min` / `max` over two or
+more arguments or over one iterable (with `key=`), `next(it, default)`,
+`print(*xs)`, `slice(start, stop, step)`, `abs`, `round`, `int` / `float` / `str`, `list` / `dict` /
+`set`, `isinstance`, `input()` with or without a prompt, and most exception
+types.
 
-**Not yet:** `tuple(...)`, `min` / `max` over a single iterable,
-`sorted(reverse=True)`, `next(it, default)`, `slice`, `vars`, `getattr`,
-`print(*xs)`, a built-in passed as a value (`key=len`), `frozenset`,
-`complex`, `memoryview`, `format`, `ascii`, `callable`, `id`, runtime
-`type(x)`.
+**By design:** `tuple(xs)` over a list or another sequence is rejected. A
+tuple's length is part of its type, so a variable-length sequence stays a
+list, and a tuple is written out element by element.
+
+**Not yet:** `vars`, `getattr`, a built-in passed as a value
+(`key=len`), `frozenset`, `complex`, `memoryview`, `format`, `ascii`,
+`callable`, `id`, runtime `type(x)`.
 
 **`str` methods.** The everyday set works. **Not yet:** `format()` and `%`
 formatting, `center` / `ljust` / `rjust` / `zfill`, `partition`, `rsplit`,
@@ -61,22 +65,19 @@ formatting, `center` / `ljust` / `rjust` / `zfill`, `partition`, `rsplit`,
 
 **Unpacking and splats.** `a, *rest = xs`, `[*a]`, `{**d}`, dict `|`, and
 `del xs[a:b]` are rejected, and `except*` is not available. `raise X from e`
-compiles but drops the cause.
+compiles with a warning and drops the cause.
 
-**Module-qualified class names.** Functions are callable as `module.func`.
-Classes and exception types in several modules are reachable only through
-`from module import Name`: `csv.DictReader`, `collections.Counter`,
-`asyncio.Queue` / `asyncio.Future`, and the `tplib.requests` exceptions, where
-a module-qualified `except requests.ConnectionError` compiles but does not
-catch.
+**Module-qualified class names.** Functions, classes and exception types are
+reachable as `module.Name` (`collections.Counter`, `asyncio.Queue`,
+`except requests.ConnectionError`). One exception remains: a loop over
+`csv.DictReader(...)` spelled module-qualified does not compile yet, while
+`from csv import DictReader` works.
 
 **`**kwargs`.** The typed form `**kwargs: Unpack[TypedDict]` works; the untyped
 `**kwargs: T` form is rejected.
 
-**f-strings.** Scalar values, format specs (`f"{x:.2f}"`), and containers with
-a declared type work; a list whose type is still being inferred (an
-unannotated literal or comprehension) cannot be formatted directly inside the
-braces.
+**f-strings.** Scalar values, format specs (`f"{x:.2f}"`), and containers
+work, including an unannotated list literal or comprehension.
 
 **`print(e)` on exceptions.** For built-in exceptions this prints the message,
 matching CPython, and `str(e)` and f-strings return the message on both
@@ -84,9 +85,9 @@ runtimes. For a user-defined exception class, `print(e)` prints the object
 rather than the message, with no diagnostic; a library exception class caught
 by its own type (`json.JSONDecodeError`, `zlib.error`) behaves the same way.
 
-**Tuples.** Unpacking works on a call result (`r, ok = pick(items)`); a tuple
-that holds a reference-type element and was stored in a local first cannot be
-unpacked yet.
+**Tuples.** Unpacking works on a call result (`r, ok = pick(items)`) and on a
+tuple stored in a local first. Iterating over a tuple (`for v in (a, b)`) is
+not available yet.
 
 **Protocol types in containers.** Matching on the elements of a `list[A | B]`
 works, and an element passes to a union-typed parameter. `list[SomeProtocol]`
@@ -168,8 +169,7 @@ list rather than a tuple.
 
 #### `csv` -- Partial { #csv }
 
-**Works:** `reader`, `writer`, `DictReader`, `DictWriter` (imported by name)
-over the `io` `Readable` / `Writable` protocols; the Excel dialect;
+**Works:** `reader`, `writer`, `DictReader`, `DictWriter` over the `io` `Readable` / `Writable` protocols; the Excel dialect;
 `delimiter` / `quotechar` / `doublequote` / `skipinitialspace` /
 `lineterminator` kwargs on `reader` / `writer`; `QUOTE_MINIMAL` writing.
 Byte-compatible with CPython.
@@ -203,8 +203,8 @@ and `unconsumed_tail`, `zlib.error`, and the constants. A bundled zlib is
 linked by default; `--zlib system` links the system library instead.
 
 **Not yet:** `zdict=` and `copy()` on the stream objects. `crc32` / `adler32`
-return `uint32`, so arithmetic on the result past the 32-bit range panics
-rather than growing.
+return `uint32`, so arithmetic on the result past the 32-bit range raises
+`OverflowError` rather than growing.
 
 #### `gzip` -- Partial { #gzip }
 
@@ -223,7 +223,7 @@ no mode argument: `read`, `readline`, iteration, `with`.
 
 #### `collections` -- Partial { #collections }
 
-**Works:** `Counter`, imported by name (construction, `[]`, `len`, `in`,
+**Works:** `Counter` (construction, `[]`, `len`, `in`,
 `total`, `most_common(n)`, `update` / `subtract` with another `Counter`).
 
 **Not yet:** `deque`, `defaultdict`, `namedtuple`, `OrderedDict`,
@@ -274,11 +274,11 @@ inheritance, `asdict` / `astuple`, `__post_init__`,
 `Enum` / `IntEnum`, `auto()`, `.name` / `.value`, `==` / `is`, iteration
 (`for c in Color`), value lookup (`Color(0)`), name lookup (`Color["red"]`),
 `tpy.try_parse`, `match` on members, a configurable underlying type via mixin
-(`(int8, Enum)`), methods on the enum class (instance methods, `@property`,
+(`(int8, Enum)`), `str()`, `repr()` and f-string formatting of a member,
+methods on the enum class (instance methods, `@property`,
 `@staticmethod`, `@classmethod`), and `@native` binding to a C++ `enum class`.
 
-**Not yet:** `StrEnum` / `Flag`, non-integer member values, `str(Color.red)`
-and f-string formatting of a member, `len(Color)`, the functional API
+**Not yet:** `StrEnum` / `Flag`, non-integer member values, `len(Color)`, the functional API
 (`Enum("Color", [...])`), dunder methods and property setters on an enum, and
 methods on a `@native` enum.
 
@@ -286,8 +286,9 @@ methods on a `@native` enum.
 
 **Works:** `Protocol`, `Self`, `overload`, `override`, `Sized`, `Iterable`,
 `Iterator`, `Sequence`, `Optional`, `Final`, `Callable`, `Literal`,
-`TypedDict`, `Unpack`, `ClassVar`, `Any`, `cast`. Most operations on an `Any`
-value require narrowing with `isinstance` or extraction with `cast` first.
+`TypedDict`, `Unpack`, `ClassVar`, `Any`, `cast`, `runtime_checkable`. Most
+operations on an `Any` value require narrowing with `isinstance` or
+extraction with `cast` first.
 `overload` takes CPython's form only: bodyless stubs followed by one
 implementation. A set of variants that each carry their own body is written
 with `tpy.dispatch` instead.
@@ -312,7 +313,8 @@ a times tuple), `truncate`); low-level fd I/O (`open` / `close` / `read` /
 `write` / `lseek` / `pipe` / `dup` / `dup2`, `get_blocking` / `set_blocking`,
 `openpty`, the `O_*` / `SEEK_*` constants); `access`; `urandom`;
 process and system queries (`getpid` / `getppid`, the `getuid` family,
-`umask`, `cpu_count`, `isatty`, `get_terminal_size`); `environ` (a snapshot
+`umask`, `cpu_count`, `isatty`, `get_terminal_size`); process control (`kill`,
+`waitpid` with `WNOHANG`, `waitstatus_to_exitcode`); `environ` (a snapshot
 mapping) with `putenv` / `unsetenv`; module constants (`name`, `sep`, ...).
 Errors carry structured `.errno` / `.strerror` / `.filename` with CPython-exact
 `str(e)`.
@@ -330,27 +332,47 @@ queries `exists` / `lexists` / `isfile` / `isdir` / `islink` / `getsize` /
 #### `io` -- Partial { #io }
 
 **Works:** `StringIO`, `BytesIO` (read / write / `read(size)` / `readline` /
-`seek` / `tell` / `truncate` / iteration / context manager); `FileIO` (raw
-fd); `BufferedReader`; the `Readable` / `Writable` / `BinaryReadable` /
-`BinaryWritable` protocols; `SEEK_*` and `DEFAULT_BUFFER_SIZE`.
+`seek` / `tell` / `truncate` / iteration / context manager); iterating an
+`open()` text file line by line (`for line in f`); `FileIO` (raw fd);
+`BufferedReader` and `BufferedWriter`; the `Readable` / `Writable` /
+`BinaryReadable` / `BinaryWritable` protocols; `SEEK_*` and
+`DEFAULT_BUFFER_SIZE`.
 
 **Not yet:** `TextIOWrapper`, the `IOBase` ABC hierarchy, `BufferedReader.peek`
-/ `readinto`, encoding / newline / errors kwargs, iterating an `open()` file
-object directly (`for line in f`; `readlines()` works).
+/ `readinto`, encoding / newline / errors kwargs.
 
 #### `sys` -- Partial { #sys }
 
-**Works:** `argv`, `stdout`, `stderr`, `exit`, `maxsize`, `byteorder`.
+**Works:** `argv`, `stdout`, `stderr`, `exit` (raising `SystemExit`, which
+the program can catch), `maxsize`, `byteorder`, `platform`.
 
-**Not yet:** `stdin`, `path`, `version_info`, `platform`.
+**Not yet:** `stdin`, `path`, `version_info`.
+
+#### `platform` -- Partial { #platform }
+
+**Works:** `system()` and `machine()`, which report the build target, so a
+cross build answers for the machine it targets.
+
+**Not yet:** `node()`, `release()`, `version()`, `uname()`, `processor()`,
+`python_implementation()` and the rest of the module.
 
 #### `signal` -- Partial { #signal }
 
-**Works:** `raise_signal` (the default action runs, so `SIGINT` terminates the
-process rather than raising `KeyboardInterrupt`), the `SIGINT` / `SIGTERM`
-constants.
+**Works:** `signal.signal` with a module-level handler function (annotated
+`frame: FrameType | None`, with `FrameType` from `types`),
+`default_int_handler`, `raise_signal`, and the common signal numbers
+(`SIGINT`, `SIGTERM`, `SIGHUP`, `SIGKILL`, `SIGCHLD`, ...). A Ctrl-C raises
+`KeyboardInterrupt`, and inside `asyncio.run` the first one cancels the main
+task, as in CPython.
 
-**Not yet:** `signal.signal` handler registration.
+Handlers run as in CPython, on the main thread at the next check point: a
+`print`, `time.sleep`, `input()`, a socket or subprocess wait. A loop that
+only computes reaches no check point, so a signal stays pending until it
+does. A handler's `frame` argument is always `None`, and `signal.signal`
+returns `None` rather than the previous handler.
+
+**Not yet:** `SIG_DFL` / `SIG_IGN`, `getsignal`, the `Handlers` enum, and
+restoring a previous handler through the `signal.signal` return value.
 
 #### `termios` -- Partial { #termios }
 
@@ -568,11 +590,18 @@ TurboPython has [its own threads](guide/beyond.md) (`tpy.thread`); the CPython
 
 #### `multiprocessing` -- Not yet { #multiprocessing }
 
-Needs process spawning.
+Not ported.
 
-#### `subprocess` -- Not yet { #subprocess }
+#### `subprocess` -- Partial { #subprocess }
 
-Needs process spawning.
+**Works:** `Popen(args, *, stdin=..., stdout=..., stderr=...)` with `PIPE`,
+`DEVNULL`, `STDOUT` or a file descriptor; the pipe streams as buffered binary
+readers and writers; `pid`, `returncode`, `poll`, `wait`, `send_signal`,
+`terminate`, `kill`; the context manager. A Ctrl-C ends a blocked `wait()` or
+pipe read with `KeyboardInterrupt`.
+
+**Not yet:** `run`, `call`, `check_output` and the other convenience
+functions, `communicate`, text mode, `cwd=` / `env=`, `shell=True`.
 
 ### Development & introspection
 

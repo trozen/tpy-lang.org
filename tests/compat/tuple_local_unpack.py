@@ -1,4 +1,4 @@
-# expect: error not yet supported by C++ code generation
+# expect: ok
 class R:
     x: int
     def __init__(self, x: int):

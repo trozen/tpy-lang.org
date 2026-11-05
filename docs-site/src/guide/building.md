@@ -80,7 +80,8 @@ $ tpyc --dump-code program.py
 ### Integrate with a CMake build
 
 Each project carries a `sources.cmake` that defines the generated sources, the
-include directories, the link libraries, and the required C++ standard. A CMake
+include directories, the link libraries, the compile definitions for the
+selected build options, and the required C++ standard. A CMake
 target consumes them directly:
 
 ```cmake
@@ -88,11 +89,13 @@ include(build/sources.cmake)
 add_executable(app ${TPYC_SOURCES})
 target_include_directories(app PRIVATE ${TPYC_INCLUDE_DIRS})
 target_link_libraries(app PRIVATE ${TPYC_LIBRARIES})
+target_compile_definitions(app PRIVATE ${TPYC_COMPILE_DEFINITIONS})
 set_target_properties(app PROPERTIES CXX_STANDARD ${TPYC_CXX_STANDARD})
 ```
 
 The `--no-main` flag omits the generated `main()` so the compiled code links
-into an existing C++ program rather than running on its own. When `tpyc`
+into an existing C++ program rather than running on its own, and
+`--no-signals` leaves Ctrl-C handling to the host program. When `tpyc`
 emits a project to an explicit `-o` directory, the runtime headers are bundled
 into it, which keeps the project self-contained and safe to commit or copy to
 another machine; the `--no-bundle-runtime` flag skips that copy. A native
@@ -101,11 +104,13 @@ runtime instead.
 
 ## Build a CPython extension
 
-A module marked `# tpy: ext_module` compiles into a regular CPython extension.
-Functions marked `@export` become the module's public API:
+A module whose `__tpy__` setting declares `"mod": "ext"` compiles into a
+regular CPython extension. The setting is an ordinary assignment placed after
+the module docstring, so the source remains valid Python. Functions marked
+`@export` become the module's public API:
 
 ```python
-# tpy: ext_module
+__tpy__ = {"mod": "ext"}
 from tpy.extern import export
 
 @export
@@ -143,6 +148,31 @@ pkg/
     __init__.py
     scale.py    # from pkg.scale import to_f
 ```
+
+## Run under CPython
+
+A TurboPython program is valid Python, and most programs also run under
+CPython 3.12 or later, or PyPy. The `tpy-lang` package ships, alongside the
+compiler, the `tpy` and `tplib` modules that programs import, so with the
+package installed in the interpreter's environment (`pip install tpy-lang`;
+`uv tool install` keeps it in an isolated environment of its own) the same
+source runs with the interpreter:
+
+```console
+$ python3 program.py
+```
+
+By default the `tpy` types behave as they do in compiled code while values
+stay in range: `int8(300)` raises `OverflowError`, `uint32.wrap(-1)` is
+4294967295, and `Own[T]` holds a plain value. Out of range, the interpreter's
+arithmetic keeps growing where the compiled program raises `OverflowError`.
+Setting `TPY_CPYTHON_FAST=1` maps the fixed-width types to `int` and
+`float32` to `float`, which removes the cost of the stand-ins when CPython or
+PyPy serves as a benchmark baseline; the width helpers such as `wrap` are not
+available in that mode. Type checkers such as mypy read the same packages.
+
+Code bound to C++ with `@native` has no CPython implementation, and
+`tplib.requests` and `tplib.json.model` do not import under CPython.
 
 ## Toolchain notes
 
